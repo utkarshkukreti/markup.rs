@@ -1,0 +1,10 @@
+[package]
+name = "markup"
+version = "0.1.0"
+authors = ["Utkarsh Kukreti <utkarshkukreti@gmail.com>"]
+edition = "2018"
+description = "A blazing fast, type-safe template engine for Rust."
+license = "MIT/Apache-2.0"
+
+[dependencies]
+markup-proc-macro = { path = "../markup-proc-macro", version = "0.1" }
