@@ -124,6 +124,8 @@ markup::define! {
         "world!\n"
         {1 + 2}
         {format!("{}{}", 3, 4)}
+        {if true { Some(5) } else { None }}
+        {if false { Some(6) } else { None }}
     }
 }
 ```
@@ -132,7 +134,7 @@ println!("{}", Hello {});
 ```
 ```html
 Hello, world!
-334
+3345
 ```
 
 ### Elements
@@ -176,8 +178,8 @@ println!("{}", Hello {});
 ```rust
 markup::define! {
     Hello {
-        div[a = 1, b = "2", c? = true, d? = false, "e-f" = 3, {"g".to_string() + "-h"} = 4]
-        br[i = 5];
+        div[a = 1, b = "2", c? = true, d? = false, "e-f" = 3, {"g".to_string() + "-h"} = 4, i = None::<i32>, j = Some(5)]
+        br[k = 6];
     }
 }
 ```
@@ -185,7 +187,7 @@ markup::define! {
 println!("{}", Hello {});
 ```
 ```html
-<div a="1" b="2" c e-f="3" g-h="4"></div><br i="5">
+<div a="1" b="2" c e-f="3" g-h="4" j="5"></div><br k="6">
 ```
 
 #### Children

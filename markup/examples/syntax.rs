@@ -6,6 +6,8 @@ mod e0 {
             "world!\n"
             {1 + 2}
             {format!("{}{}", 3, 4)}
+            {if true { Some(5) } else { None }}
+            {if false { Some(6) } else { None }}
         }
     }
 }
@@ -31,8 +33,8 @@ mod e2 {
 mod e3 {
     markup::define! {
         Hello {
-            div[a = 1, b = "2", c? = true, d? = false, "e-f" = 3, {"g".to_string() + "-h"} = 4]
-            br[i = 5];
+            div[a = 1, b = "2", c? = true, d? = false, "e-f" = 3, {"g".to_string() + "-h"} = 4, i = None::<i32>, j = Some(5)]
+            br[k = 6];
         }
     }
 }

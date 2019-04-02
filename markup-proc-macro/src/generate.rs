@@ -118,11 +118,15 @@ impl Generate for Element {
                     builder.expr(name);
                 });
             } else {
-                builder.str(" ");
-                builder.expr(name);
-                builder.raw("=\"");
-                builder.expr(value);
-                builder.raw("\"");
+                builder.extend(quote!(let value = #value;));
+                builder.extend(quote!(if !markup::Render::is_none(&value)));
+                builder.paren(|builder| {
+                    builder.str(" ");
+                    builder.expr(name);
+                    builder.raw("=\"");
+                    builder.expr(&syn::parse_quote!(value));
+                    builder.raw("\"");
+                });
             }
         }
         builder.raw(">");

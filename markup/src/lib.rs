@@ -4,11 +4,28 @@ pub use markup_proc_macro::define;
 
 pub trait Render {
     fn render(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result;
+
+    fn is_none(&self) -> bool {
+        false
+    }
 }
 
 impl<'a, T: Render + ?Sized> Render for &'a T {
     fn render(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         (*self).render(f)
+    }
+}
+
+impl<T: Render> Render for Option<T> {
+    fn render(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        match self {
+            Some(t) => t.render(f),
+            None => Ok(()),
+        }
+    }
+
+    fn is_none(&self) -> bool {
+        self.is_none()
     }
 }
 
