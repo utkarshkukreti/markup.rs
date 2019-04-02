@@ -229,7 +229,6 @@ impl<P: Parse> Parse for Many<P> {
 }
 
 fn identifier_or_string_literal_or_expression(input: ParseStream) -> Result<syn::Expr> {
-    use quote::quote;
     let lookahead = input.lookahead1();
     if lookahead.peek(syn::Ident) {
         let string = input.parse::<syn::Ident>()?.to_string();
