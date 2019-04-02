@@ -5,6 +5,7 @@ pub struct Struct {
     pub where_clause: Option<syn::WhereClause>,
     pub fields: Vec<(syn::Ident, syn::Type)>,
     pub nodes: Vec<Node>,
+    pub size_hint: usize,
 }
 
 #[derive(Debug)]

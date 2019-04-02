@@ -11,6 +11,7 @@ impl ToTokens for Struct {
             where_clause,
             fields,
             nodes,
+            size_hint,
         } = self;
         let mut builder = Builder::default();
         nodes.generate(&mut builder);
@@ -29,6 +30,14 @@ impl ToTokens for Struct {
         tokens.extend(quote! {
             pub struct #name #generics #where_clause {
                 #struct_fields
+            }
+            impl #impl_generics #name #ty_generics #where_clause {
+                pub fn to_string(&self) -> String {
+                    use std::fmt::{Display, Write};
+                    let mut string = String::with_capacity(#size_hint);
+                    write!(&mut string, "{}", self).unwrap();
+                    string
+                }
             }
             impl #impl_generics markup::Render for #name #ty_generics #where_clause {
                 fn render(&self, __writer: &mut std::fmt::Formatter) -> std::fmt::Result {

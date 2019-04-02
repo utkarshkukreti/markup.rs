@@ -5,6 +5,7 @@ use syn::Ident;
 
 impl Parse for Struct {
     fn parse(input: ParseStream) -> Result<Self> {
+        let start_input_len = input.to_string().len();
         let name = input.parse()?;
         let generics = input.parse()?;
         let fields = {
@@ -38,12 +39,18 @@ impl Parse for Struct {
         while !inner.is_empty() {
             nodes.push(inner.parse()?);
         }
+        // We use the length of the tokens that define this template as a rough estimate of the
+        // number of bytes the output of this template will occupy.
+        // Lifted from Maud [1].
+        // [1]: https://github.com/lfairy/maud/blob/13a5cfcaa31b3f6e2deb015ea49ef87d285cef7c/maud_macros/src/lib.rs#L38-L40
+        let size_hint = start_input_len - input.to_string().len();
         Ok(Struct {
             name,
             generics,
             where_clause,
             fields,
             nodes,
+            size_hint,
         })
     }
 }
