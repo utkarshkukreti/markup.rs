@@ -106,11 +106,11 @@ impl Generate for Element {
                 builder.extend(quote!(if #value));
                 builder.paren(|builder| {
                     builder.str(" ");
-                    builder.str(name);
+                    builder.expr(name);
                 });
             } else {
                 builder.str(" ");
-                builder.str(name);
+                builder.expr(name);
                 builder.raw("=\"");
                 builder.expr(value);
                 builder.raw("\"");

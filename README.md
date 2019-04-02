@@ -176,8 +176,8 @@ println!("{}", Hello {});
 ```rust
 markup::define! {
     Hello {
-        div[a = 1, b = "2", c? = true, d? = false]
-        br[e = 3];
+        div[a = 1, b = "2", c? = true, d? = false, "e-f" = 3, {"g".to_string() + "-h"} = 4]
+        br[i = 5];
     }
 }
 ```
@@ -185,7 +185,7 @@ markup::define! {
 println!("{}", Hello {});
 ```
 ```html
-<div a="1" b="2" c></div><br e="3">
+<div a="1" b="2" c e-f="3" g-h="4"></div><br i="5">
 ```
 
 #### Children

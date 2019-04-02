@@ -31,8 +31,8 @@ mod e2 {
 mod e3 {
     markup::define! {
         Hello {
-            div[a = 1, b = "2", c? = true, d? = false]
-            br[e = 3];
+            div[a = 1, b = "2", c? = true, d? = false, "e-f" = 3, {"g".to_string() + "-h"} = 4]
+            br[i = 5];
         }
     }
 }

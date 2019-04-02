@@ -52,7 +52,7 @@ pub struct For {
 
 #[derive(Debug)]
 pub struct Attribute {
-    pub name: String,
+    pub name: syn::Expr,
     pub value: syn::Expr,
     pub bool: bool,
 }
