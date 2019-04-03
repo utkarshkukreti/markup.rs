@@ -20,16 +20,32 @@ Define your template using the `markup::define!` macro:
 
 ```rust
 markup::define! {
-    Hello(name: &'static str) {
+    Hello<'a>(name: &'a str) {
         {markup::Doctype}
         html {
             head {
                 title { "Hello " {name} }
             }
             body {
-                p#greeting {
-                    "Hello "
-                    span.name { {name} }
+                div#main.container {
+                    {Greeting { name: "Everyone!" }}
+                    br;
+                    {Greeting { name: name }}
+                }
+            }
+        }
+    }
+    Greeting<'a>(name: &'a str) {
+        p.greeting.{if *name == "Ferris" { Some("ferris" ) } else { None }} {
+            "Hello "
+            span.name {
+                @if *name == "Ferris" {
+                    "FERRIS"
+                    @for _ in 0..3 {
+                        "!"
+                    }
+                } else {
+                    {name}
                 }
             }
         }
@@ -54,20 +70,53 @@ Render your template by either:
 The above template compiles to:
 
 ```rust
-pub struct Hello {
-    pub name: &'static str,
+pub struct Hello<'a> {
+    pub name: &'a str,
 }
 
-impl std::fmt::Display for Hello {
+impl<'a> std::fmt::Display for Hello<'a> {
     fn fmt(&self, __writer: &mut std::fmt::Formatter) -> std::fmt::Result {
         use std::fmt::Display;
         let Hello { name } = self;
         markup::Render::render(&(markup::Doctype), __writer)?;
         __writer.write_str("<html><head><title>Hello ")?;
         markup::Render::render(&(name), __writer)?;
-        __writer.write_str("</title></head><body><p id=\"greeting\">Hello <span class=\"name\">")?;
-        markup::Render::render(&(name), __writer)?;
-        __writer.write_str("</span></p></body></html>")?;
+        __writer.write_str("</title></head><body><div id=\"main\" class=\"container\">")?;
+        markup::Render::render(&(Greeting { name: "Everyone!" }), __writer)?;
+        __writer.write_str("<br>")?;
+        markup::Render::render(&(Greeting { name: name }), __writer)?;
+        __writer.write_str("</div></body></html>")?;
+        Ok(())
+    }
+}
+
+pub struct Greeting<'a> {
+    pub name: &'a str,
+}
+
+impl<'a> std::fmt::Display for Greeting<'a> {
+    fn fmt(&self, __writer: &mut std::fmt::Formatter) -> std::fmt::Result {
+        use std::fmt::Display;
+        let Greeting { name } = self;
+        __writer.write_str("<p class=\"greeting ")?;
+        markup::Render::render(
+            &(if *name == "Ferris" {
+                Some("ferris")
+            } else {
+                None
+            }),
+            __writer,
+        )?;
+        __writer.write_str("\">Hello <span class=\"name\">")?;
+        if *name == "Ferris" {
+            __writer.write_str("FERRIS!")?;
+            for _ in 0..3 {
+                __writer.write_str("!")?;
+            }
+        } else {
+            markup::Render::render(&(name), __writer)?;
+        }
+        __writer.write_str("</span></p>")?;
         Ok(())
     }
 }
@@ -82,7 +131,11 @@ Rendering the template produces (manually prettified):
     <title>Hello Ferris</title>
   </head>
   <body>
-    <p id="greeting">Hello <span class="name">Ferris</span></p>
+    <div id="main" class="container">
+      <p class="greeting ">Hello <span class="name">Everyone!</span></p>
+      <br>
+      <p class="greeting ferris">Hello <span class="name">FERRIS!!!</span></p>
+    </div>
   </body>
 </html>
 ```
