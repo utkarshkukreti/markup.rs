@@ -156,15 +156,12 @@ impl Generate for If {
             if first {
                 first = false;
                 builder.extend(quote!(if #test));
-                builder.paren(|builder| {
-                    consequent.generate(builder);
-                });
             } else {
                 builder.extend(quote!(else if #test));
-                builder.paren(|builder| {
-                    consequent.generate(builder);
-                })
             }
+            builder.paren(|builder| {
+                consequent.generate(builder);
+            });
         }
         if let Some(default) = &self.default {
             builder.extend(quote!(else));
