@@ -232,7 +232,10 @@ println!("{}", Hello {});
 markup::define! {
     Hello {
         div[a = 1, b = "2", c? = true, d? = false, "e-f" = 3, {"g".to_string() + "-h"} = 4, i = None::<i32>, j = Some(5)]
+        "\n"
         br[k = 6];
+        "\n"
+        input[type = "text"];
     }
 }
 ```
@@ -240,7 +243,9 @@ markup::define! {
 println!("{}", Hello {});
 ```
 ```html
-<div a="1" b="2" c e-f="3" g-h="4" j="5"></div><br k="6">
+<div a="1" b="2" c e-f="3" g-h="4" j="5"></div>
+<br k="6">
+<input type="text">
 ```
 
 #### Children
