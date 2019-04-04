@@ -138,6 +138,25 @@ Main {
 }
 - Main {}
 
+### If Let
+
++ Classify(value: Option<i32>) {
+    @if let Some(0) = *(value) {
+        "Some(ZERO)"
+    } else if let Some(value) = *(value) {
+        "Some(" {value} ")"
+    } else {
+        "None"
+    }
+    "\n"
+}
+Main {
+    {Classify { value: None }}
+    {Classify { value: Some(0) }}
+    {Classify { value: Some(1) }}
+}
+- Main {}
+
 ### For
 
 + Main {

@@ -127,6 +127,26 @@ mod e9 {
 
 mod e10 {
     markup::define! {
+        Classify(value: Option<i32>) {
+            @if let Some(0) = *(value) {
+                "Some(ZERO)"
+            } else if let Some(value) = *(value) {
+                "Some(" {value} ")"
+            } else {
+                "None"
+            }
+            "\n"
+        }
+        Main {
+            {Classify { value: None }}
+            {Classify { value: Some(0) }}
+            {Classify { value: Some(1) }}
+        }
+    }
+}
+
+mod e11 {
+    markup::define! {
         Main {
             @for i in 1..5 {
                 {i} " * 2 = " {i * 2} ";\n"
@@ -161,4 +181,5 @@ fn main() {
     println!("{}\n", e8::Hello {});
     println!("{}\n", e9::Main {});
     println!("{}\n", e10::Main {});
+    println!("{}\n", e11::Main {});
 }

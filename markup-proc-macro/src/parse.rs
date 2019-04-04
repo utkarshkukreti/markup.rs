@@ -1,4 +1,4 @@
-use crate::ast::{Attribute, Element, For, If, IfClause, Node, Struct, Text};
+use crate::ast::{Attribute, Element, For, If, IfClause, IfClauseTest, Node, Struct, Text};
 use syn::parse::{Parse, ParseStream, Result};
 use syn::punctuated::Punctuated;
 use syn::Ident;
@@ -188,6 +188,21 @@ impl Parse for IfClause {
             consequent.parse::<Many<_>>()?.0
         };
         Ok(IfClause { test, consequent })
+    }
+}
+
+impl Parse for IfClauseTest {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let lookahead = input.lookahead1();
+        if lookahead.peek(syn::token::Let) {
+            let _: syn::token::Let = input.parse()?;
+            let pattern = input.parse()?;
+            let _: syn::Token![=] = input.parse()?;
+            let expr = input.parse()?;
+            Ok(IfClauseTest::Let(pattern, expr))
+        } else {
+            Ok(IfClauseTest::Expr(input.parse()?))
+        }
     }
 }
 

@@ -1,4 +1,4 @@
-use crate::ast::{Attribute, Element, For, If, IfClause, Node, Struct, Text};
+use crate::ast::{Attribute, Element, For, If, IfClause, IfClauseTest, Node, Struct, Text};
 use proc_macro2::TokenStream;
 use proc_macro2::TokenTree;
 use quote::{quote, ToTokens};
@@ -155,9 +155,12 @@ impl Generate for If {
             let IfClause { test, consequent } = clause;
             if first {
                 first = false;
-                builder.extend(quote!(if #test));
             } else {
-                builder.extend(quote!(else if #test));
+                builder.extend(quote!(else));
+            }
+            match test {
+                IfClauseTest::Expr(expr) => builder.extend(quote!(if #expr)),
+                IfClauseTest::Let(pattern, expr) => builder.extend(quote!(if let #pattern = #expr)),
             }
             builder.paren(|builder| {
                 consequent.generate(builder);

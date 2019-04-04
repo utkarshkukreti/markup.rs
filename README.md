@@ -379,6 +379,36 @@ println!("{}", Main {});
  42 is positive.
 ```
 
+### If Let
+
+```rust
+markup::define! {
+    Classify(value: Option<i32>) {
+        @if let Some(0) = *(value) {
+            "Some(ZERO)"
+        } else if let Some(value) = *(value) {
+            "Some(" {value} ")"
+        } else {
+            "None"
+        }
+        "\n"
+    }
+    Main {
+        {Classify { value: None }}
+        {Classify { value: Some(0) }}
+        {Classify { value: Some(1) }}
+    }
+}
+```
+```rust
+println!("{}", Main {});
+```
+```html
+None
+Some(ZERO)
+Some(1)
+```
+
 ### For
 
 ```rust

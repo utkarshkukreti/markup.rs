@@ -40,8 +40,14 @@ pub struct If {
 
 #[derive(Debug)]
 pub struct IfClause {
-    pub test: syn::Expr,
+    pub test: IfClauseTest,
     pub consequent: Vec<Node>,
+}
+
+#[derive(Debug)]
+pub enum IfClauseTest {
+    Expr(syn::Expr),
+    Let(syn::Pat, syn::Expr),
 }
 
 #[derive(Debug)]
