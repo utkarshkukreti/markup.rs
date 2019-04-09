@@ -47,6 +47,9 @@ Second!
 #### id and class shorthands
 
 + Hello {
+    .foo {
+        .bar {}
+    }
     button#go.button."button-blue" {}
     button#"go-back".{1 + 2}.{2 + 3} {}
 }
@@ -66,7 +69,7 @@ Second!
 #### Children
 
 + Hello {
-    div[a = 1] {
+    .foo[a = 1] {
         "One"
         {0 + 1}
     }

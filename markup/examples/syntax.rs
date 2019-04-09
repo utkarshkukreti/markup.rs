@@ -24,6 +24,9 @@ mod e1 {
 mod e2 {
     markup::define! {
         Hello {
+            .foo {
+                .bar {}
+            }
             button#go.button."button-blue" {}
             button#"go-back".{1 + 2}.{2 + 3} {}
         }
@@ -45,7 +48,7 @@ mod e3 {
 mod e4 {
     markup::define! {
         Hello {
-            div[a = 1] {
+            .foo[a = 1] {
                 "One"
                 {0 + 1}
             }

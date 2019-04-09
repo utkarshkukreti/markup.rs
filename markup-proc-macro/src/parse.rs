@@ -58,7 +58,10 @@ impl Parse for Struct {
 impl Parse for Node {
     fn parse(input: ParseStream) -> Result<Self> {
         let lookahead = input.lookahead1();
-        if lookahead.peek(syn::Ident) {
+        if lookahead.peek(syn::Ident)
+            || lookahead.peek(syn::Token![#])
+            || lookahead.peek(syn::Token![.])
+        {
             Ok(Node::Element(input.parse()?))
         } else if lookahead.peek(syn::Token![@]) {
             let _: syn::Token![@] = input.parse()?;
@@ -80,10 +83,29 @@ impl Parse for Node {
 
 impl Parse for Element {
     fn parse(input: ParseStream) -> Result<Self> {
-        let name: Ident = input.parse()?;
-        let name = name.to_string();
-        let mut id = None;
-        let mut classes = Vec::new();
+        let (name, mut id, mut classes) = {
+            let lookahead = input.lookahead1();
+            if lookahead.peek(syn::Ident) {
+                let name: Ident = input.parse()?;
+                (name.to_string(), None, Vec::new())
+            } else if lookahead.peek(syn::Token![#]) {
+                let _: syn::Token![#] = input.parse()?;
+                (
+                    "div".into(),
+                    Some(identifier_or_string_literal_or_expression(input)?),
+                    Vec::new(),
+                )
+            } else if lookahead.peek(syn::Token![.]) {
+                let _: syn::Token![.] = input.parse()?;
+                (
+                    "div".into(),
+                    None,
+                    vec![identifier_or_string_literal_or_expression(input)?],
+                )
+            } else {
+                return Err(lookahead.error());
+            }
+        };
 
         loop {
             let lookahead = input.lookahead1();

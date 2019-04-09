@@ -214,6 +214,9 @@ println!("{}", Hello {});
 ```rust
 markup::define! {
     Hello {
+        .foo {
+            .bar {}
+        }
         button#go.button."button-blue" {}
         button#"go-back".{1 + 2}.{2 + 3} {}
     }
@@ -223,7 +226,7 @@ markup::define! {
 println!("{}", Hello {});
 ```
 ```html
-<button id="go" class="button button-blue"></button><button id="go-back" class="3 5"></button>
+<div class="foo"><div class="bar"></div></div><button id="go" class="button button-blue"></button><button id="go-back" class="3 5"></button>
 ```
 
 #### Attributes with and without values
@@ -253,7 +256,7 @@ println!("{}", Hello {});
 ```rust
 markup::define! {
     Hello {
-        div[a = 1] {
+        .foo[a = 1] {
             "One"
             {0 + 1}
         }
@@ -268,7 +271,7 @@ markup::define! {
 println!("{}", Hello {});
 ```
 ```html
-<div a="1">One1</div><div>Two2</div>
+<div class="foo" a="1">One1</div><div>Two2</div>
 ```
 
 ### Disable Automatic HTML Escaping
