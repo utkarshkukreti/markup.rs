@@ -197,7 +197,7 @@ Hello, world!
 ```rust
 markup::define! {
     Hello {
-        div
+        div {}
         br;
     }
 }
@@ -214,8 +214,8 @@ println!("{}", Hello {});
 ```rust
 markup::define! {
     Hello {
-        button#go.button."button-blue"
-        button#"go-back".{1 + 2}.{2 + 3}
+        button#go.button."button-blue" {}
+        button#"go-back".{1 + 2}.{2 + 3} {}
     }
 }
 ```
@@ -231,7 +231,7 @@ println!("{}", Hello {});
 ```rust
 markup::define! {
     Hello {
-        div[a = 1, b = "2", c? = true, d? = false, "e-f" = 3, {"g".to_string() + "-h"} = 4, i = None::<i32>, j = Some(5)]
+        div[a = 1, b = "2", c? = true, d? = false, "e-f" = 3, {"g".to_string() + "-h"} = 4, i = None::<i32>, j = Some(5)] {}
         "\n"
         br[k = 6];
         "\n"

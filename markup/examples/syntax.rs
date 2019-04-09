@@ -15,7 +15,7 @@ mod e0 {
 mod e1 {
     markup::define! {
         Hello {
-            div
+            div {}
             br;
         }
     }
@@ -24,8 +24,8 @@ mod e1 {
 mod e2 {
     markup::define! {
         Hello {
-            button#go.button."button-blue"
-            button#"go-back".{1 + 2}.{2 + 3}
+            button#go.button."button-blue" {}
+            button#"go-back".{1 + 2}.{2 + 3} {}
         }
     }
 }
@@ -33,7 +33,7 @@ mod e2 {
 mod e3 {
     markup::define! {
         Hello {
-            div[a = 1, b = "2", c? = true, d? = false, "e-f" = 3, {"g".to_string() + "-h"} = 4, i = None::<i32>, j = Some(5)]
+            div[a = 1, b = "2", c? = true, d? = false, "e-f" = 3, {"g".to_string() + "-h"} = 4, i = None::<i32>, j = Some(5)] {}
             "\n"
             br[k = 6];
             "\n"

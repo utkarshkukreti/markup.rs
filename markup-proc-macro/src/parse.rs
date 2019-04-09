@@ -121,7 +121,7 @@ impl Parse for Element {
                 syn::braced!(children in input);
                 (children.parse::<Many<_>>()?.0, true)
             } else {
-                (Vec::new(), true)
+                return Err(lookahead.error());
             }
         };
         Ok(Element {
