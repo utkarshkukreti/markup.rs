@@ -1,4 +1,4 @@
-use crate::ast::{Attribute, Element, For, If, IfClause, IfClauseTest, Node, Struct, Text};
+use crate::ast::{Attribute, Element, For, If, IfClause, IfClauseTest, Node, Struct};
 use syn::parse::{Parse, ParseStream, Result};
 use syn::punctuated::Punctuated;
 use syn::Ident;
@@ -75,8 +75,23 @@ impl Parse for Node {
             } else {
                 Err(lookahead.error())
             }
+        } else if lookahead.peek(syn::LitStr) {
+            Ok(Node::String(input.parse::<syn::LitStr>()?.value()))
+        } else if lookahead.peek(syn::token::Brace) {
+            let fork = input.fork();
+            let inner;
+            syn::braced!(inner in fork);
+            if inner.parse::<syn::Stmt>().is_ok() {
+                let inner;
+                syn::braced!(inner in input);
+                Ok(Node::Stmt(inner.parse()?))
+            } else {
+                let inner;
+                syn::braced!(inner in input);
+                Ok(Node::Expr(inner.parse()?))
+            }
         } else {
-            Ok(Node::Text(input.parse()?))
+            Err(lookahead.error())
         }
     }
 }
@@ -154,21 +169,6 @@ impl Parse for Element {
             children,
             close,
         })
-    }
-}
-
-impl Parse for Text {
-    fn parse(input: ParseStream) -> Result<Self> {
-        let lookahead = input.lookahead1();
-        if lookahead.peek(syn::LitStr) {
-            Ok(Text::String(input.parse::<syn::LitStr>()?.value()))
-        } else if lookahead.peek(syn::token::Brace) {
-            let inner;
-            syn::braced!(inner in input);
-            Ok(Text::Expr(inner.parse()?))
-        } else {
-            Err(lookahead.error())
-        }
     }
 }
 

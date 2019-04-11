@@ -11,9 +11,11 @@ pub struct Struct {
 #[derive(Debug)]
 pub enum Node {
     Element(Element),
-    Text(Text),
     If(If),
     For(For),
+    String(String),
+    Expr(syn::Expr),
+    Stmt(syn::Stmt),
 }
 
 #[derive(Debug)]
@@ -24,12 +26,6 @@ pub struct Element {
     pub attributes: Vec<Attribute>,
     pub children: Vec<Node>,
     pub close: bool,
-}
-
-#[derive(Debug)]
-pub enum Text {
-    String(String),
-    Expr(syn::Expr),
 }
 
 #[derive(Debug)]

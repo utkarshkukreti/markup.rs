@@ -158,6 +158,18 @@ mod e11 {
     }
 }
 
+mod e12 {
+    markup::define! {
+        Main {
+            {let x = 1;}
+            {fn add1(x: i32) -> i32 {
+                x + 1
+            }}
+            {add1(x)}
+        }
+    }
+}
+
 fn main() {
     println!("{}\n", e0::Hello {});
     println!("{}\n", e1::Hello {});
@@ -185,4 +197,5 @@ fn main() {
     println!("{}\n", e9::Main {});
     println!("{}\n", e10::Main {});
     println!("{}\n", e11::Main {});
+    println!("{}\n", e12::Main {});
 }

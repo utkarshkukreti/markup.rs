@@ -1,4 +1,4 @@
-use crate::ast::{Attribute, Element, For, If, IfClause, IfClauseTest, Node, Struct, Text};
+use crate::ast::{Attribute, Element, For, If, IfClause, IfClauseTest, Node, Struct};
 use proc_macro2::TokenStream;
 use proc_macro2::TokenTree;
 use quote::{quote, ToTokens};
@@ -73,9 +73,12 @@ impl Generate for Node {
     fn generate(&self, builder: &mut Builder) {
         match self {
             Node::Element(element) => element.generate(builder),
-            Node::Text(text) => text.generate(builder),
             Node::If(if_) => if_.generate(builder),
             Node::For(for_) => for_.generate(builder),
+            Node::String(string) => builder.str(string),
+            Node::Expr(expr) => builder.expr(expr),
+            Node::Stmt(syn::Stmt::Expr(expr)) => builder.expr(expr),
+            Node::Stmt(stmt) => builder.extend(stmt.into_token_stream()),
         }
     }
 }
@@ -136,15 +139,6 @@ impl Generate for Element {
             builder.str(name);
             builder.raw(">");
         }
-    }
-}
-
-impl Generate for Text {
-    fn generate(&self, builder: &mut Builder) {
-        match self {
-            Text::String(string) => builder.str(string),
-            Text::Expr(expr) => builder.expr(expr),
-        };
     }
 }
 

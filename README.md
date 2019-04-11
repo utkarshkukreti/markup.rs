@@ -433,4 +433,24 @@ println!("{}", Main {});
 4 * 2 = 8;
 ```
 
+### Statements
+
+```rust
+markup::define! {
+    Main {
+        {let x = 1;}
+        {fn add1(x: i32) -> i32 {
+            x + 1
+        }}
+        {add1(x)}
+    }
+}
+```
+```rust
+println!("{}", Main {});
+```
+```html
+2
+```
+
 <!-- /Syntax -->
