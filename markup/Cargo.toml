@@ -1,6 +1,6 @@
 [package]
 name = "markup"
-version = "0.1.5"
+version = "0.2.0"
 authors = ["Utkarsh Kukreti <utkarshkukreti@gmail.com>"]
 edition = "2018"
 description = "A blazing fast, type-safe template engine for Rust."
@@ -10,4 +10,4 @@ homepage = "https://github.com/utkarshkukreti/markup.rs"
 repository = "https://github.com/utkarshkukreti/markup.rs"
 
 [dependencies]
-markup-proc-macro = { path = "../markup-proc-macro", version = "0.1.5" }
+markup-proc-macro = { path = "../markup-proc-macro", version = "0.2.0" }
