@@ -121,13 +121,13 @@ impl Generate for Element {
                     builder.expr(name);
                 });
             } else {
-                builder.extend(quote!(let value = #value;));
-                builder.extend(quote!(if !markup::Render::is_none(&value)));
+                builder.extend(quote!(let __value = #value;));
+                builder.extend(quote!(if !markup::Render::is_none(&__value)));
                 builder.paren(|builder| {
                     builder.str(" ");
                     builder.expr(name);
                     builder.raw("=\"");
-                    builder.expr(&syn::parse_quote!(value));
+                    builder.expr(&syn::parse_quote!(__value));
                     builder.raw("\"");
                 });
             }
