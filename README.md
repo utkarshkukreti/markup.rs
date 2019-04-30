@@ -83,7 +83,7 @@ Rendering the template produces (manually prettified):
 
 <!-- Syntax -->
 
-### Define
+You can define multiple templates in a `define!` block.
 
 ```rust
 markup::define! {
@@ -102,10 +102,11 @@ println!("{}", Second.to_string());
 ```
 
 ```html
-First! Second!
+First!
+Second!
 ```
 
-### Literal Strings and Expressions
+A template can have bare literal strings and arbitrary expressions in braces.
 
 ```rust
 markup::define! {
@@ -120,18 +121,15 @@ markup::define! {
     }
 }
 ```
-
 ```rust
 println!("{}", Hello {});
 ```
-
 ```html
-Hello, world! 3345
+Hello, world!
+3345
 ```
 
-### Elements
-
-#### Normal and Void
+Elements can either have children inside `{}` or be a void tag, ending with `;`.
 
 ```rust
 markup::define! {
@@ -141,17 +139,15 @@ markup::define! {
     }
 }
 ```
-
 ```rust
 println!("{}", Hello {});
 ```
-
 ```html
-<div></div>
-<br />
+<div></div><br>
 ```
 
-#### id and class shorthands
+An id and multiple classes can be applied to an element using CSS like selectors.
+The value after `#` and `.` can be either an identifier, a literal string, or an expression inside braces.
 
 ```rust
 markup::define! {
@@ -164,23 +160,31 @@ markup::define! {
     }
 }
 ```
-
 ```rust
 println!("{}", Hello {});
 ```
-
 ```html
-<div class="foo"><div class="bar"></div></div>
-<button id="go" class="button button-blue"></button
-><button id="go-back" class="3 5"></button>
+<div class="foo"><div class="bar"></div></div><button id="go" class="button button-blue"></button><button id="go-back" class="3 5"></button>
 ```
 
-#### Attributes with and without values
+Attributes can either be normal or boolean (ends with ?).
+The name can be an identifier, a literal string, or an expression inside braces.
+Boolean attributes are printed without value if true and omitted if false.
+The value can be an Option, where None values are omitted and Some are unwrapped.
 
 ```rust
 markup::define! {
     Hello {
-        div[a = 1, b = "2", c? = true, d? = false, "e-f" = 3, {"g".to_string() + "-h"} = 4, i = None::<i32>, j = Some(5)] {}
+        div[
+            a = 1,
+            b = "2",
+            c? = true,
+            d? = false,
+            "e-f" = 3,
+            {"g".to_string() + "-h"} = 4,
+            i = None::<i32>,
+            j = Some(5)
+        ] {}
         "\n"
         br[k = 6];
         "\n"
@@ -188,18 +192,16 @@ markup::define! {
     }
 }
 ```
-
 ```rust
 println!("{}", Hello {});
 ```
-
 ```html
 <div a="1" b="2" c e-f="3" g-h="4" j="5"></div>
-<br k="6" />
-<input type="text" />
+<br k="6">
+<input type="text">
 ```
 
-#### Children
+An element can have zero or more children inside braces.
 
 ```rust
 markup::define! {
@@ -215,17 +217,15 @@ markup::define! {
     }
 }
 ```
-
 ```rust
 println!("{}", Hello {});
 ```
-
 ```html
-<div class="foo" a="1">One1</div>
-<div>Two2</div>
+<div class="foo" a="1">One1</div><div>Two2</div>
 ```
 
-### Disable Automatic HTML Escaping
+Automatic HTML escaping can be disabled using the `markup::raw` function.
+This function accepts any type implementing std::fmt::Display.
 
 ```rust
 markup::define! {
@@ -235,16 +235,14 @@ markup::define! {
     }
 }
 ```
-
 ```rust
 println!("{}", Hello {});
 ```
-
 ```html
 &lt;&amp;&quot;&gt;<span></span>
 ```
 
-### Arguments
+A template can accept simple arguments as well as generic arguments with where clauses.
 
 ```rust
 markup::define! {
@@ -256,11 +254,9 @@ markup::define! {
     }
 }
 ```
-
 ```rust
 println!("{}", Hello { foo: 1, bar: 2, string: String::from("hello") });
 ```
-
 ```html
 <div>3hello</div>
 ```
@@ -276,16 +272,14 @@ markup::define! {
     }
 }
 ```
-
 ```rust
 println!("{}", Hello { arg: (1, 2), arg2: "arg2", str: "str" });
 ```
-
 ```html
 <div>(1, 2)arg2str</div>
 ```
 
-### Embed Other Templates
+Other templates can be embedded by simply putting them in braces.
 
 ```rust
 markup::define! {
@@ -298,16 +292,14 @@ markup::define! {
     }
 }
 ```
-
 ```rust
 println!("{}", Hello {});
 ```
-
 ```html
 <span>3</span><span>7</span>
 ```
 
-### If
+@if
 
 ```rust
 markup::define! {
@@ -332,16 +324,16 @@ markup::define! {
     }
 }
 ```
-
 ```rust
 println!("{}", Main {});
 ```
-
 ```html
--42 is negative. 0 is zero. 42 is positive.
+-42 is negative.
+ 0 is zero.
+ 42 is positive.
 ```
 
-### If Let
+@if let
 
 ```rust
 markup::define! {
@@ -362,16 +354,16 @@ markup::define! {
     }
 }
 ```
-
 ```rust
 println!("{}", Main {});
 ```
-
 ```html
-None Some(ZERO) Some(1)
+None
+Some(ZERO)
+Some(1)
 ```
 
-### For
+@for
 
 ```rust
 markup::define! {
@@ -382,16 +374,17 @@ markup::define! {
     }
 }
 ```
-
 ```rust
 println!("{}", Main {});
 ```
-
 ```html
-1 * 2 = 2; 2 * 2 = 4; 3 * 2 = 6; 4 * 2 = 8;
+1 * 2 = 2;
+2 * 2 = 4;
+3 * 2 = 6;
+4 * 2 = 8;
 ```
 
-### Statements
+Curly braces also accept single statements and items and outputs it as-is in the generated code.
 
 ```rust
 markup::define! {
@@ -404,11 +397,9 @@ markup::define! {
     }
 }
 ```
-
 ```rust
 println!("{}", Main {});
 ```
-
 ```html
 2
 ```

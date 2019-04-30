@@ -1,4 +1,4 @@
-### Define
+You can define multiple templates in a `define!` block.
 
 ```rust
 markup::define! {
@@ -21,7 +21,7 @@ First!
 Second!
 ```
 
-### Literal Strings and Expressions
+A template can have bare literal strings and arbitrary expressions in braces.
 
 + Hello {
     "Hello,"
@@ -34,9 +34,7 @@ Second!
 }
 - Hello {}
 
-### Elements
-
-#### Normal and Void
+Elements can either have children inside `{}` or be a void tag, ending with `;`.
 
 + Hello {
     div {}
@@ -44,7 +42,8 @@ Second!
 }
 - Hello {}
 
-#### id and class shorthands
+An id and multiple classes can be applied to an element using CSS like selectors.
+The value after `#` and `.` can be either an identifier, a literal string, or an expression inside braces.
 
 + Hello {
     .foo {
@@ -55,10 +54,22 @@ Second!
 }
 - Hello {}
 
-#### Attributes with and without values
+Attributes can either be normal or boolean (ends with ?).
+The name can be an identifier, a literal string, or an expression inside braces.
+Boolean attributes are printed without value if true and omitted if false.
+The value can be an Option, where None values are omitted and Some are unwrapped.
 
 + Hello {
-    div[a = 1, b = "2", c? = true, d? = false, "e-f" = 3, {"g".to_string() + "-h"} = 4, i = None::<i32>, j = Some(5)] {}
+    div[
+        a = 1,
+        b = "2",
+        c? = true,
+        d? = false,
+        "e-f" = 3,
+        {"g".to_string() + "-h"} = 4,
+        i = None::<i32>,
+        j = Some(5)
+    ] {}
     "\n"
     br[k = 6];
     "\n"
@@ -66,7 +77,7 @@ Second!
 }
 - Hello {}
 
-#### Children
+An element can have zero or more children inside braces.
 
 + Hello {
     .foo[a = 1] {
@@ -80,7 +91,8 @@ Second!
 }
 - Hello {}
 
-### Disable Automatic HTML Escaping
+Automatic HTML escaping can be disabled using the `markup::raw` function.
+This function accepts any type implementing std::fmt::Display.
 
 + Hello {
     "<&\">"
@@ -88,7 +100,7 @@ Second!
 }
 - Hello {}
 
-### Arguments
+A template can accept simple arguments as well as generic arguments with where clauses.
 
 + Hello(foo: u32, bar: u32, string: String) {
     div {
@@ -107,7 +119,7 @@ Second!
 }
 - Hello { arg: (1, 2), arg2: "arg2", str: "str" }
 
-### Embed Other Templates
+Other templates can be embedded by simply putting them in braces.
 
 + Add(a: u32, b: u32) {
     span { {a + b} }
@@ -118,7 +130,7 @@ Hello {
 }
 - Hello {}
 
-### If
+@if
 
 + Classify(value: i32) {
     {value}
@@ -141,7 +153,7 @@ Main {
 }
 - Main {}
 
-### If Let
+@if let
 
 + Classify(value: Option<i32>) {
     @if let Some(0) = *(value) {
@@ -160,7 +172,7 @@ Main {
 }
 - Main {}
 
-### For
+@for
 
 + Main {
     @for i in 1..5 {
@@ -169,7 +181,7 @@ Main {
 }
 - Main {}
 
-### Statements
+Curly braces also accept single statements and items and outputs it as-is in the generated code.
 
 + Main {
     {let x = 1;}
