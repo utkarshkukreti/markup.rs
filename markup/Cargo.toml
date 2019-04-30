@@ -8,6 +8,9 @@ license = "MIT/Apache-2.0"
 documentation = "https://docs.rs/markup"
 homepage = "https://github.com/utkarshkukreti/markup.rs"
 repository = "https://github.com/utkarshkukreti/markup.rs"
+readme = "README.md"
+keywords = ["template", "html", "pug", "jade", "haml"]
+categories = ["template-engine"]
 
 [dependencies]
 markup-proc-macro = { path = "../markup-proc-macro", version = "0.3.0" }
