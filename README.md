@@ -21,13 +21,13 @@ Define your template using the `markup::define!` macro:
 ```rust
 markup::define! {
     Hello<'a>(name: &'a str) {
-        {markup::Doctype}
+        {markup::doctype()}
         html {
             head {
                 title { "Hello " {name} }
             }
             body {
-                div#main.container {
+                #main.container {
                     {Greeting { name: "Everyone!" }}
                     br;
                     {Greeting { name: name }}
@@ -36,20 +36,14 @@ markup::define! {
         }
     }
     Greeting<'a>(name: &'a str) {
-        p.greeting.{if *name == "Ferris" { Some("ferris" ) } else { None }} {
-            "Hello "
-            span.name {
-                @if *name == "Ferris" {
-                    "FERRIS"
-                    @for _ in 0..3 {
-                        "!"
-                    }
-                } else {
-                    {name}
-                }
-            }
+        p.greeting {
+            "Hello " {name} "!"
         }
     }
+}
+
+fn main() {
+    println!("{}", Hello { name: "Ferris" });
 }
 ```
 
@@ -67,61 +61,6 @@ Render your template by either:
    let string = Hello { name: "Ferris" }.to_string();
    ```
 
-The above template compiles to:
-
-```rust
-pub struct Hello<'a> {
-    pub name: &'a str,
-}
-
-impl<'a> std::fmt::Display for Hello<'a> {
-    fn fmt(&self, __writer: &mut std::fmt::Formatter) -> std::fmt::Result {
-        use std::fmt::Display;
-        let Hello { name } = self;
-        markup::Render::render(&(markup::Doctype), __writer)?;
-        __writer.write_str("<html><head><title>Hello ")?;
-        markup::Render::render(&(name), __writer)?;
-        __writer.write_str("</title></head><body><div id=\"main\" class=\"container\">")?;
-        markup::Render::render(&(Greeting { name: "Everyone!" }), __writer)?;
-        __writer.write_str("<br>")?;
-        markup::Render::render(&(Greeting { name: name }), __writer)?;
-        __writer.write_str("</div></body></html>")?;
-        Ok(())
-    }
-}
-
-pub struct Greeting<'a> {
-    pub name: &'a str,
-}
-
-impl<'a> std::fmt::Display for Greeting<'a> {
-    fn fmt(&self, __writer: &mut std::fmt::Formatter) -> std::fmt::Result {
-        use std::fmt::Display;
-        let Greeting { name } = self;
-        __writer.write_str("<p class=\"greeting ")?;
-        markup::Render::render(
-            &(if *name == "Ferris" {
-                Some("ferris")
-            } else {
-                None
-            }),
-            __writer,
-        )?;
-        __writer.write_str("\">Hello <span class=\"name\">")?;
-        if *name == "Ferris" {
-            __writer.write_str("FERRIS!")?;
-            for _ in 0..3 {
-                __writer.write_str("!")?;
-            }
-        } else {
-            markup::Render::render(&(name), __writer)?;
-        }
-        __writer.write_str("</span></p>")?;
-        Ok(())
-    }
-}
-```
-
 Rendering the template produces (manually prettified):
 
 ```html
@@ -132,9 +71,9 @@ Rendering the template produces (manually prettified):
   </head>
   <body>
     <div id="main" class="container">
-      <p class="greeting ">Hello <span class="name">Everyone!</span></p>
+      <p class="greeting">Hello Everyone!</p>
       <br>
-      <p class="greeting ferris">Hello <span class="name">FERRIS!!!</span></p>
+      <p class="greeting">Hello Ferris!</p>
     </div>
   </body>
 </html>
@@ -163,8 +102,7 @@ println!("{}", Second.to_string());
 ```
 
 ```html
-First!
-Second!
+First! Second!
 ```
 
 ### Literal Strings and Expressions
@@ -182,12 +120,13 @@ markup::define! {
     }
 }
 ```
+
 ```rust
 println!("{}", Hello {});
 ```
+
 ```html
-Hello, world!
-3345
+Hello, world! 3345
 ```
 
 ### Elements
@@ -202,11 +141,14 @@ markup::define! {
     }
 }
 ```
+
 ```rust
 println!("{}", Hello {});
 ```
+
 ```html
-<div></div><br>
+<div></div>
+<br />
 ```
 
 #### id and class shorthands
@@ -222,11 +164,15 @@ markup::define! {
     }
 }
 ```
+
 ```rust
 println!("{}", Hello {});
 ```
+
 ```html
-<div class="foo"><div class="bar"></div></div><button id="go" class="button button-blue"></button><button id="go-back" class="3 5"></button>
+<div class="foo"><div class="bar"></div></div>
+<button id="go" class="button button-blue"></button
+><button id="go-back" class="3 5"></button>
 ```
 
 #### Attributes with and without values
@@ -242,13 +188,15 @@ markup::define! {
     }
 }
 ```
+
 ```rust
 println!("{}", Hello {});
 ```
+
 ```html
 <div a="1" b="2" c e-f="3" g-h="4" j="5"></div>
-<br k="6">
-<input type="text">
+<br k="6" />
+<input type="text" />
 ```
 
 #### Children
@@ -267,11 +215,14 @@ markup::define! {
     }
 }
 ```
+
 ```rust
 println!("{}", Hello {});
 ```
+
 ```html
-<div class="foo" a="1">One1</div><div>Two2</div>
+<div class="foo" a="1">One1</div>
+<div>Two2</div>
 ```
 
 ### Disable Automatic HTML Escaping
@@ -284,9 +235,11 @@ markup::define! {
     }
 }
 ```
+
 ```rust
 println!("{}", Hello {});
 ```
+
 ```html
 &lt;&amp;&quot;&gt;<span></span>
 ```
@@ -303,9 +256,11 @@ markup::define! {
     }
 }
 ```
+
 ```rust
 println!("{}", Hello { foo: 1, bar: 2, string: String::from("hello") });
 ```
+
 ```html
 <div>3hello</div>
 ```
@@ -321,9 +276,11 @@ markup::define! {
     }
 }
 ```
+
 ```rust
 println!("{}", Hello { arg: (1, 2), arg2: "arg2", str: "str" });
 ```
+
 ```html
 <div>(1, 2)arg2str</div>
 ```
@@ -341,9 +298,11 @@ markup::define! {
     }
 }
 ```
+
 ```rust
 println!("{}", Hello {});
 ```
+
 ```html
 <span>3</span><span>7</span>
 ```
@@ -373,13 +332,13 @@ markup::define! {
     }
 }
 ```
+
 ```rust
 println!("{}", Main {});
 ```
+
 ```html
--42 is negative.
- 0 is zero.
- 42 is positive.
+-42 is negative. 0 is zero. 42 is positive.
 ```
 
 ### If Let
@@ -403,13 +362,13 @@ markup::define! {
     }
 }
 ```
+
 ```rust
 println!("{}", Main {});
 ```
+
 ```html
-None
-Some(ZERO)
-Some(1)
+None Some(ZERO) Some(1)
 ```
 
 ### For
@@ -423,14 +382,13 @@ markup::define! {
     }
 }
 ```
+
 ```rust
 println!("{}", Main {});
 ```
+
 ```html
-1 * 2 = 2;
-2 * 2 = 4;
-3 * 2 = 6;
-4 * 2 = 8;
+1 * 2 = 2; 2 * 2 = 4; 3 * 2 = 6; 4 * 2 = 8;
 ```
 
 ### Statements
@@ -446,9 +404,11 @@ markup::define! {
     }
 }
 ```
+
 ```rust
 println!("{}", Main {});
 ```
+
 ```html
 2
 ```

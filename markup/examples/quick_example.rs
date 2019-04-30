@@ -6,7 +6,7 @@ markup::define! {
                 title { "Hello " {name} }
             }
             body {
-                div#main.container {
+                #main.container {
                     {Greeting { name: "Everyone!" }}
                     br;
                     {Greeting { name: name }}
@@ -15,18 +15,8 @@ markup::define! {
         }
     }
     Greeting<'a>(name: &'a str) {
-        p.greeting.{if *name == "Ferris" { Some("ferris" ) } else { None }} {
-            "Hello "
-            span.name {
-                @if *name == "Ferris" {
-                    "FERRIS"
-                    @for _ in 0..3 {
-                        "!"
-                    }
-                } else {
-                    {name}
-                }
-            }
+        p.greeting {
+            "Hello " {name} "!"
         }
     }
 }
