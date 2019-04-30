@@ -1,6 +1,6 @@
 markup::define! {
     Hello<'a>(name: &'a str) {
-        {markup::Doctype}
+        {markup::doctype()}
         html {
             head {
                 title { "Hello " {name} }

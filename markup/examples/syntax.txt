@@ -84,7 +84,7 @@ Second!
 
 + Hello {
     "<&\">"
-    {markup::Raw("<span></span>")}
+    {markup::raw("<span></span>")}
 }
 - Hello {}
 

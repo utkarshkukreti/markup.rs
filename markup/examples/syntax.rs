@@ -64,7 +64,7 @@ mod e5 {
     markup::define! {
         Hello {
             "<&\">"
-            {markup::Raw("<span></span>")}
+            {markup::raw("<span></span>")}
         }
     }
 }

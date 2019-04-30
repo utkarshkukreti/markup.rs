@@ -57,12 +57,16 @@ impl Render for String {
     }
 }
 
-pub struct Raw<T: Display>(pub T);
+struct Raw<T: Display>(pub T);
 
 impl<T: Display> Render for Raw<T> {
     fn render(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
         self.0.fmt(f)
     }
+}
+
+pub fn raw<T: Display>(t: T) -> impl Render {
+    Raw(t)
 }
 
 macro_rules! raw_display {
@@ -84,10 +88,6 @@ raw_display! {
     f32 f64
 }
 
-pub struct Doctype;
-
-impl Render for Doctype {
-    fn render(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "<!DOCTYPE html>")
-    }
+pub fn doctype() -> impl Render {
+    raw("<!DOCTYPE html>")
 }
