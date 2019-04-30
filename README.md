@@ -115,6 +115,7 @@ markup::define! {
         " "
         "world!\n"
         {1 + 2}
+        {'π'}
         {format!("{}{}", 3, 4)}
         {if true { Some(5) } else { None }}
         {if false { Some(6) } else { None }}
@@ -126,7 +127,7 @@ println!("{}", Hello {});
 ```
 ```html
 Hello, world!
-3345
+3π345
 ```
 
 Elements can either have children inside `{}` or be a void tag, ending with `;`.

@@ -5,6 +5,7 @@ mod e0 {
             " "
             "world!\n"
             {1 + 2}
+            {'π'}
             {format!("{}{}", 3, 4)}
             {if true { Some(5) } else { None }}
             {if false { Some(6) } else { None }}
