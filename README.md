@@ -79,6 +79,32 @@ Rendering the template produces (manually prettified):
 </html>
 ```
 
+## Note
+
+Due to [a limitation in syn](https://github.com/dtolnay/syn/issues/515), the
+crate this crate uses to parse templates, it is necessary to wrap identifiers
+which precede an opening brace to be put in parentheses.
+
+Example:
+
+```rust
+// Wrong
+@if let Some(foo) = bar {
+  ...
+}
+@match foo {
+  ...
+}
+
+// Right
+@if let Some(foo) = *&(bar) {
+  ...
+}
+@match *&(foo) {
+  ...
+}
+```
+
 ## Syntax
 
 <!-- Syntax -->
