@@ -1,4 +1,6 @@
-use crate::ast::{Attribute, Element, For, If, IfClause, IfClauseTest, Node, Struct};
+use crate::ast::{
+    Attribute, Element, For, If, IfClause, IfClauseTest, Match, MatchClause, Node, Struct,
+};
 use syn::parse::{Parse, ParseStream, Result};
 use syn::punctuated::Punctuated;
 use syn::Ident;
@@ -72,6 +74,9 @@ impl Parse for Node {
             } else if lookahead.peek(syn::token::For) {
                 let _: syn::token::For = input.parse()?;
                 Ok(Node::For(input.parse()?))
+            } else if lookahead.peek(syn::token::Match) {
+                let _: syn::token::Match = input.parse()?;
+                Ok(Node::Match(input.parse()?))
             } else {
                 Err(lookahead.error())
             }
@@ -225,6 +230,55 @@ impl Parse for IfClauseTest {
         } else {
             Ok(IfClauseTest::Expr(input.parse()?))
         }
+    }
+}
+
+impl Parse for Match {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let expr: syn::Expr = input.parse()?;
+        let inner;
+        syn::braced!(inner in input);
+        let clauses = inner.parse::<Many<_>>()?.0;
+        Ok(Match { expr, clauses })
+    }
+}
+
+impl Parse for MatchClause {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let leading_vert: Option<syn::Token![|]> = input.parse()?;
+        let pat: syn::Pat = input.parse()?;
+        let pat = if leading_vert.is_some() || input.peek(syn::Token![|]) {
+            let mut cases = Punctuated::new();
+            cases.push_value(pat);
+            while input.peek(syn::Token![|]) {
+                let punct = input.parse()?;
+                cases.push_punct(punct);
+                let pat: syn::Pat = input.parse()?;
+                cases.push_value(pat);
+            }
+            syn::Pat::Or(syn::PatOr {
+                attrs: Vec::new(),
+                leading_vert,
+                cases,
+            })
+        } else {
+            pat
+        };
+        let guard = if input.peek(syn::Token![if]) {
+            let _: syn::Token![if] = input.parse()?;
+            Some(input.parse()?)
+        } else {
+            None
+        };
+        let _: syn::Token![=>] = input.parse()?;
+        let inner;
+        syn::braced!(inner in input);
+        let consequent = inner.parse::<Many<_>>()?.0;
+        Ok(MatchClause {
+            pat,
+            guard,
+            consequent,
+        })
     }
 }
 

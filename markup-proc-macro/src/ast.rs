@@ -16,6 +16,7 @@ pub enum Node {
     String(String),
     Expr(syn::Expr),
     Stmt(syn::Stmt),
+    Match(Match),
 }
 
 #[derive(Debug)]
@@ -44,6 +45,19 @@ pub struct IfClause {
 pub enum IfClauseTest {
     Expr(syn::Expr),
     Let(syn::Pat, syn::Expr),
+}
+
+#[derive(Debug)]
+pub struct Match {
+    pub expr: syn::Expr,
+    pub clauses: Vec<MatchClause>,
+}
+
+#[derive(Debug)]
+pub struct MatchClause {
+    pub pat: syn::Pat,
+    pub guard: Option<syn::Expr>,
+    pub consequent: Vec<Node>,
 }
 
 #[derive(Debug)]

@@ -1,4 +1,6 @@
-use crate::ast::{Attribute, Element, For, If, IfClause, IfClauseTest, Node, Struct};
+use crate::ast::{
+    Attribute, Element, For, If, IfClause, IfClauseTest, Match, MatchClause, Node, Struct,
+};
 use proc_macro2::TokenStream;
 use proc_macro2::TokenTree;
 use quote::{quote, ToTokens};
@@ -74,6 +76,7 @@ impl Generate for Node {
         match self {
             Node::Element(element) => element.generate(builder),
             Node::If(if_) => if_.generate(builder),
+            Node::Match(match_) => match_.generate(builder),
             Node::For(for_) => for_.generate(builder),
             Node::String(string) => builder.str(string),
             Node::Expr(expr) => builder.expr(expr),
@@ -164,6 +167,30 @@ impl Generate for If {
             builder.extend(quote!(else));
             builder.paren(|builder| default.generate(builder))
         }
+    }
+}
+
+impl Generate for Match {
+    fn generate(&self, builder: &mut Builder) {
+        let Match { expr, clauses } = &*self;
+        builder.extend(quote!(match #expr));
+        builder.paren(|builder| {
+            for clause in clauses {
+                let MatchClause {
+                    pat,
+                    guard,
+                    consequent,
+                } = clause;
+                builder.extend(quote!(#pat));
+                if let Some(guard) = guard {
+                    builder.extend(quote!(if #guard));
+                }
+                builder.extend(quote!(=>));
+                builder.paren(|builder| {
+                    consequent.generate(builder);
+                })
+            }
+        });
     }
 }
 

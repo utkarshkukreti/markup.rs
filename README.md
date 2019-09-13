@@ -364,6 +364,48 @@ Some(ZERO)
 Some(1)
 ```
 
+@match
+
+```rust
+markup::define! {
+    Classify(value: Option<i32>) {
+        @match *(value) {
+          Some(1) | Some(2) => {
+            "1"
+            " or 2"
+          }
+          Some(n) if n == 3 => {
+            {n} {n}
+          }
+          Some(_) => {
+            "Other"
+          }
+          None => {
+            "None"
+          }
+        }
+        "\n"
+    }
+    Main {
+        {Classify { value: None }}
+        {Classify { value: Some(0) }}
+        {Classify { value: Some(1) }}
+        {Classify { value: Some(2) }}
+        {Classify { value: Some(3) }}
+    }
+}
+```
+```rust
+println!("{}", Main {});
+```
+```html
+None
+Other
+1 or 2
+1 or 2
+33
+```
+
 @for
 
 ```rust
