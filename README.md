@@ -96,7 +96,15 @@ Example:
   ...
 }
 
-// Right
+// Correct
+@if let Some(foo) = {bar} {
+  ...
+}
+@match {foo} {
+  ...
+}
+
+// Also works
 @if let Some(foo) = *&(bar) {
   ...
 }
