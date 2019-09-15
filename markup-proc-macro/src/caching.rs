@@ -12,6 +12,8 @@ pub fn cached(tokens: TokenStream, f: impl FnOnce(TokenStream) -> TokenStream) -
 
     let dir = dirs::cache_dir().unwrap().join("markup-rs");
     let _ = fs::create_dir(&dir);
+    let dir = dir.join(version::version!().to_string());
+    let _ = fs::create_dir(&dir);
 
     let input = tokens.to_string();
     let mut hasher = Sha256::new();
