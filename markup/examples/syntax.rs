@@ -92,7 +92,11 @@ mod e6 {
 
 mod e7 {
     markup::define! {
-        Hello<'a, T: std::fmt::Debug, U>(arg: T, arg2: U, str: &'a str) where U: std::fmt::Display {
+        Hello<'a, T: std::fmt::Debug, U>(
+            arg: T,
+            arg2: U,
+            str: &'a str,
+        ) where U: std::fmt::Display {
             div {
                 {format!("{:?}", arg)}
                 {format!("{}", arg2)}

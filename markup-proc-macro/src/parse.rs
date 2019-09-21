@@ -15,7 +15,7 @@ impl Parse for Struct {
             if lookahead.peek(syn::token::Paren) {
                 let fields;
                 syn::parenthesized!(fields in input);
-                Punctuated::<(syn::Ident, syn::Type), syn::token::Comma>::parse_separated_nonempty_with(
+                Punctuated::<(syn::Ident, syn::Type), syn::token::Comma>::parse_terminated_with(
                     &fields,
                     |inner| {
                         let name = inner.parse()?;
@@ -23,7 +23,8 @@ impl Parse for Struct {
                         let ty = inner.parse()?;
                         Ok((name, ty))
                     },
-                )?.into_pairs()
+                )?
+                .into_pairs()
                 .map(|pair| pair.into_value())
                 .collect()
             } else {

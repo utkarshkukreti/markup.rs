@@ -102,6 +102,7 @@ This function accepts any type implementing std::fmt::Display.
 - Hello {}
 
 A template can accept simple arguments as well as generic arguments with where clauses.
+The arguments may have an optional trailing comma.
 
 + Hello(foo: u32, bar: u32, string: String) {
     div {
@@ -111,7 +112,11 @@ A template can accept simple arguments as well as generic arguments with where c
 }
 - Hello { foo: 1, bar: 2, string: String::from("hello") }
 
-+ Hello<'a, T: std::fmt::Debug, U>(arg: T, arg2: U, str: &'a str) where U: std::fmt::Display {
++ Hello<'a, T: std::fmt::Debug, U>(
+    arg: T,
+    arg2: U,
+    str: &'a str,
+) where U: std::fmt::Display {
     div {
         {format!("{:?}", arg)}
         {format!("{}", arg2)}

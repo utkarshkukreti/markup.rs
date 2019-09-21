@@ -278,6 +278,7 @@ println!("{}", Hello {});
 ```
 
 A template can accept simple arguments as well as generic arguments with where clauses.
+The arguments may have an optional trailing comma.
 
 ```rust
 markup::define! {
@@ -298,7 +299,11 @@ println!("{}", Hello { foo: 1, bar: 2, string: String::from("hello") });
 
 ```rust
 markup::define! {
-    Hello<'a, T: std::fmt::Debug, U>(arg: T, arg2: U, str: &'a str) where U: std::fmt::Display {
+    Hello<'a, T: std::fmt::Debug, U>(
+        arg: T,
+        arg2: U,
+        str: &'a str,
+    ) where U: std::fmt::Display {
         div {
             {format!("{:?}", arg)}
             {format!("{}", arg2)}
