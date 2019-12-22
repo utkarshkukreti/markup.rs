@@ -20,7 +20,7 @@ markup::define! {
                 }
                 ul {
                     @for (index, team) in teams.iter().enumerate() {
-                        li.{if index == 0 { "champion" } else { "" } } {
+                        li.{if index == 0 { Some("champion") } else { None } } {
                             b { {team.name} } ": " {team.score}
                         }
                     }
