@@ -15,6 +15,7 @@ jobs:
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.rust }}
+          components: clippy
       - run: cargo build --verbose
       - run: cargo test --verbose
       - run: cargo clippy
