@@ -17,6 +17,7 @@ jobs:
           toolchain: ${{ matrix.rust }}
           components: clippy
       - run: cargo build --verbose
+      - run: rake
       - run: cargo test --verbose
       - run: cargo bench --verbose
         if: ${{ matrix.rust == 'nightly' }}
