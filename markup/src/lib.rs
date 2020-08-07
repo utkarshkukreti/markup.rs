@@ -1,6 +1,19 @@
 use std::fmt::Display;
 
-pub use markup_proc_macro::define;
+pub use markup_proc_macro::{define, html};
+
+pub struct Template<F>(pub F)
+where
+    F: Fn(&mut std::fmt::Formatter) -> std::fmt::Result;
+
+impl<F> std::fmt::Display for Template<F>
+where
+    F: Fn(&mut std::fmt::Formatter) -> std::fmt::Result,
+{
+    fn fmt(&self, __writer: &mut std::fmt::Formatter) -> std::fmt::Result {
+        (self.0)(__writer)
+    }
+}
 
 pub trait Render {
     fn render(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result;

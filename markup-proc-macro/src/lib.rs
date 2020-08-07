@@ -10,3 +10,10 @@ pub fn define(tokens: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let structs = syn::parse_macro_input!(tokens as parse::Many<ast::Struct>).0;
     quote::quote!( #(#structs)* ).into()
 }
+
+#[proc_macro]
+pub fn html(tokens: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let nodes = syn::parse_macro_input!(tokens as parse::Many<ast::Node>).0;
+    let template = ast::Template { nodes };
+    quote::quote!( #template ).into()
+}

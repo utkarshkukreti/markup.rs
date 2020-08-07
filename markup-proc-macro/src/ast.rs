@@ -9,6 +9,11 @@ pub struct Struct {
 }
 
 #[derive(Debug)]
+pub struct Template {
+    pub nodes: Vec<Node>,
+}
+
+#[derive(Debug)]
 pub enum Node {
     Element(Element),
     If(If),

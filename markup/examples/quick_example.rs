@@ -23,4 +23,18 @@ markup::define! {
 
 fn main() {
     println!("{}", Hello { name: "Ferris" });
+
+    let name = "Ferris";
+    let times = 5;
+    println!(
+        "{}",
+        markup::html! {
+            h1 { "Greeting" }
+            @for _ in 0..(times) {
+                p.greeting {
+                    "Hello " {name} "!"
+                }
+            }
+        }
+    );
 }

@@ -1,5 +1,5 @@
 use crate::ast::{
-    Attribute, Element, For, If, IfClause, IfClauseTest, Match, MatchClause, Node, Struct,
+    Attribute, Element, For, If, IfClause, IfClauseTest, Match, MatchClause, Node, Struct, Template,
 };
 use proc_macro2::TokenStream;
 use proc_macro2::TokenTree;
@@ -55,6 +55,20 @@ impl ToTokens for Struct {
                     Ok(())
                 }
             }
+        })
+    }
+}
+
+impl ToTokens for Template {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let mut builder = Builder::default();
+        self.nodes.generate(&mut builder);
+        let built = builder.finish();
+        tokens.extend(quote! {
+            markup::Template(|__writer| {
+                #(#built)*
+                Ok(())
+            })
         })
     }
 }
