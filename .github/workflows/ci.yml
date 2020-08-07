@@ -16,7 +16,7 @@ jobs:
         with:
           toolchain: ${{ matrix.rust }}
           override: true
-          components: clippy
+          components: clippy, rustfmt
       - run: cargo build --verbose
       - run: rake
       - run: cargo test --verbose
