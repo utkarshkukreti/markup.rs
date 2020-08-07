@@ -15,6 +15,15 @@ where
     }
 }
 
+impl<F> Render for Template<F>
+where
+    F: Fn(&mut std::fmt::Formatter) -> std::fmt::Result,
+{
+    fn render(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        (self.0)(f)
+    }
+}
+
 pub trait Render {
     fn render(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result;
 
