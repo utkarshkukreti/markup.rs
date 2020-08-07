@@ -145,7 +145,7 @@ mod e9 {
 mod e10 {
     markup::define! {
         Classify(value: Option<i32>) {
-            @if let Some(0) = *(value) {
+            @if let Some(0) = *value {
                 "Some(ZERO)"
             } else if let Some(value) = *(value) {
                 "Some(" {value} ")"
@@ -165,7 +165,7 @@ mod e10 {
 mod e11 {
     markup::define! {
         Classify(value: Option<i32>) {
-            @match *(value) {
+            @match *value {
               Some(1) | Some(2) => {
                 "1"
                 " or 2"

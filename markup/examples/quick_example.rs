@@ -30,7 +30,7 @@ fn main() {
         "{}",
         markup::html! {
             h1 { "Greeting" }
-            @for _ in 0..(times) {
+            @for _ in 0..times {
                 p.greeting {
                     "Hello " {name} "!"
                 }

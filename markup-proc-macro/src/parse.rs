@@ -226,17 +226,19 @@ impl Parse for IfClauseTest {
             let _: syn::token::Let = input.parse()?;
             let pattern = input.parse()?;
             let _: syn::Token![=] = input.parse()?;
-            let expr = input.parse()?;
+            let expr = syn::Expr::parse_without_eager_brace(input)?;
             Ok(IfClauseTest::Let(pattern, expr))
         } else {
-            Ok(IfClauseTest::Expr(input.parse()?))
+            Ok(IfClauseTest::Expr(syn::Expr::parse_without_eager_brace(
+                input,
+            )?))
         }
     }
 }
 
 impl Parse for Match {
     fn parse(input: ParseStream) -> Result<Self> {
-        let expr: syn::Expr = input.parse()?;
+        let expr = syn::Expr::parse_without_eager_brace(input)?;
         let inner;
         syn::braced!(inner in input);
         let clauses = inner.parse::<Many<_>>()?.0;
@@ -287,7 +289,7 @@ impl Parse for For {
     fn parse(input: ParseStream) -> Result<Self> {
         let pat = input.parse()?;
         let _: syn::token::In = input.parse()?;
-        let expr = input.parse()?;
+        let expr = syn::Expr::parse_without_eager_brace(input)?;
         let body;
         syn::braced!(body in input);
         let body = body.parse::<Many<_>>()?.0;

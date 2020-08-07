@@ -60,9 +60,9 @@ fn bench_teams(b: &mut test::Bencher) {
 markup::define! {
     BigTable(table: Vec<Vec<usize>>) {
         table {
-            @for r1 in table.iter() {
+            @for r1 in table {
                 tr {
-                    @for r2 in r1.iter() {
+                    @for r2 in r1 {
                         td { {r2} }
                     }
                 }

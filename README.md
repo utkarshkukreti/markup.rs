@@ -79,40 +79,6 @@ Rendering the template produces (manually prettified):
 </html>
 ```
 
-## Note
-
-Due to [a limitation in syn](https://github.com/dtolnay/syn/issues/515), the
-crate this crate uses to parse templates, it is necessary to wrap identifiers
-which precede an opening brace to be put in parentheses.
-
-Example:
-
-```rust
-// Wrong
-@if let Some(foo) = bar {
-  ...
-}
-@match foo {
-  ...
-}
-
-// Correct
-@if let Some(foo) = {bar} {
-  ...
-}
-@match {foo} {
-  ...
-}
-
-// Also works
-@if let Some(foo) = *&(bar) {
-  ...
-}
-@match *&(foo) {
-  ...
-}
-```
-
 ## Syntax
 
 <!-- Syntax -->
@@ -378,7 +344,7 @@ println!("{}", Main {});
 ```rust
 markup::define! {
     Classify(value: Option<i32>) {
-        @if let Some(0) = *(value) {
+        @if let Some(0) = *value {
             "Some(ZERO)"
         } else if let Some(value) = *(value) {
             "Some(" {value} ")"
@@ -408,7 +374,7 @@ Some(1)
 ```rust
 markup::define! {
     Classify(value: Option<i32>) {
-        @match *(value) {
+        @match *value {
           Some(1) | Some(2) => {
             "1"
             " or 2"
