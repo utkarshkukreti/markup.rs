@@ -18,5 +18,7 @@ jobs:
           components: clippy
       - run: cargo build --verbose
       - run: cargo test --verbose
+      - run: cargo bench --verbose
+        if: ${{ matrix.rust == 'nightly' }}
       - run: cargo clippy
         continue-on-error: true
