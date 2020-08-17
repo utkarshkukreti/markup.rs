@@ -12,7 +12,7 @@ pub fn define(tokens: proc_macro::TokenStream) -> proc_macro::TokenStream {
 }
 
 #[proc_macro]
-pub fn html(tokens: proc_macro::TokenStream) -> proc_macro::TokenStream {
+pub fn render(tokens: proc_macro::TokenStream) -> proc_macro::TokenStream {
     let template = syn::parse_macro_input!(tokens as ast::Template);
     quote::quote!( #template ).into()
 }

@@ -28,7 +28,7 @@ fn main() {
     let times = 5;
     println!(
         "{}",
-        markup::html! {
+        markup::render! {
             h1 { "Greeting" }
             @for _ in 0..times {
                 p.greeting {

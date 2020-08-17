@@ -1,6 +1,6 @@
 use std::fmt::Display;
 
-pub use markup_proc_macro::{define, html};
+pub use markup_proc_macro::{define, render};
 
 pub struct Template<F>(pub F)
 where
