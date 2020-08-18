@@ -136,6 +136,17 @@ Hello {
 }
 - Hello {}
 
+@let
+
++ Main {
+    @for x in &[1, 2, 3] {
+        @let (double, triple) = (x * 2, x * 3);
+        @let sum = double + triple;
+        {double} " + " {triple} " = " {sum} "\n"
+    }
+}
+- Main {}
+
 @if
 
 + Classify(value: i32) {

@@ -305,6 +305,28 @@ println!("{}", Hello {});
 <span>3</span><span>7</span>
 ```
 
+@let
+
+```rust
+markup::define! {
+    Main {
+        @for x in &[1, 2, 3] {
+            @let (double, triple) = (x * 2, x * 3);
+            @let sum = double + triple;
+            {double} " + " {triple} " = " {sum} "\n"
+        }
+    }
+}
+```
+```rust
+println!("{}", Main {});
+```
+```html
+2 + 3 = 5
+4 + 6 = 10
+6 + 9 = 15
+```
+
 @if
 
 ```rust

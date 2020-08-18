@@ -120,6 +120,18 @@ mod e8 {
 
 mod e9 {
     markup::define! {
+        Main {
+            @for x in &[1, 2, 3] {
+                @let (double, triple) = (x * 2, x * 3);
+                @let sum = double + triple;
+                {double} " + " {triple} " = " {sum} "\n"
+            }
+        }
+    }
+}
+
+mod e10 {
+    markup::define! {
         Classify(value: i32) {
             {value}
             " is "
@@ -142,7 +154,7 @@ mod e9 {
     }
 }
 
-mod e10 {
+mod e11 {
     markup::define! {
         Classify(value: Option<i32>) {
             @if let Some(0) = *value {
@@ -162,7 +174,7 @@ mod e10 {
     }
 }
 
-mod e11 {
+mod e12 {
     markup::define! {
         Classify(value: Option<i32>) {
             @match *value {
@@ -192,7 +204,7 @@ mod e11 {
     }
 }
 
-mod e12 {
+mod e13 {
     markup::define! {
         Main {
             @for i in 1..5 {
@@ -202,7 +214,7 @@ mod e12 {
     }
 }
 
-mod e13 {
+mod e14 {
     markup::define! {
         Main {
             {let x = 1;}
@@ -243,4 +255,5 @@ fn main() {
     println!("{}\n", e11::Main {});
     println!("{}\n", e12::Main {});
     println!("{}\n", e13::Main {});
+    println!("{}\n", e14::Main {});
 }
