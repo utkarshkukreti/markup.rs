@@ -14,3 +14,10 @@ categories = ["template-engine"]
 
 [dependencies]
 markup-proc-macro = { path = "../markup-proc-macro", version = "0.6.2" }
+
+[dev-dependencies]
+criterion = "0.3"
+
+[[bench]]
+name = "tbr"
+harness = false

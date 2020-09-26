@@ -1,7 +1,9 @@
 // https://github.com/djc/template-benchmarks-rs/
-#![feature(test)]
 
-extern crate test;
+use criterion::{criterion_group, criterion_main, Criterion, Throughput};
+
+criterion_group!(benches, bench_teams, bench_big_table);
+criterion_main!(benches);
 
 pub struct Team {
     name: String,
@@ -30,8 +32,7 @@ markup::define! {
     }
 }
 
-#[bench]
-fn bench_teams(b: &mut test::Bencher) {
+fn bench_teams(c: &mut Criterion) {
     let teams = Teams {
         year: 2015,
         teams: vec![
@@ -53,8 +54,11 @@ fn bench_teams(b: &mut test::Bencher) {
             },
         ],
     };
-    b.iter(|| teams.to_string());
-    b.bytes = teams.to_string().len() as u64;
+
+    let mut group = c.benchmark_group("teams");
+    group.throughput(Throughput::Bytes(teams.to_string().len() as u64));
+    group.bench_function("teams", |b| b.iter(|| teams.to_string()));
+    group.finish();
 }
 
 markup::define! {
@@ -71,11 +75,13 @@ markup::define! {
     }
 }
 
-#[bench]
-fn bench_big_table(b: &mut test::Bencher) {
+fn bench_big_table(c: &mut Criterion) {
     let size = 100;
     let table = (0..size).map(|_| (0..size).collect()).collect();
     let big_table = BigTable { table };
-    b.iter(|| big_table.to_string());
-    b.bytes = big_table.to_string().len() as u64;
+
+    let mut group = c.benchmark_group("big_table");
+    group.throughput(Throughput::Bytes(big_table.to_string().len() as u64));
+    group.bench_function("big_table", |b| b.iter(|| big_table.to_string()));
+    group.finish();
 }
