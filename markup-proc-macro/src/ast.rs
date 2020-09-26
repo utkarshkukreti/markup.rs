@@ -1,6 +1,7 @@
 #[derive(Debug)]
 pub struct Struct {
     pub name: syn::Ident,
+    pub attributes: Vec<syn::Attribute>,
     pub generics: syn::Generics,
     pub where_clause: Option<syn::WhereClause>,
     pub fields: Vec<(syn::Ident, syn::Type)>,

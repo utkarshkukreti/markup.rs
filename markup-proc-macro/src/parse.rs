@@ -9,6 +9,7 @@ use syn::Ident;
 impl Parse for Struct {
     fn parse(input: ParseStream) -> Result<Self> {
         let start_input_len = input.to_string().len();
+        let attributes = input.call(syn::Attribute::parse_outer)?;
         let name = input.parse()?;
         let generics = input.parse()?;
         let fields = {
@@ -50,6 +51,7 @@ impl Parse for Struct {
         let size_hint = start_input_len - input.to_string().len();
         Ok(Struct {
             name,
+            attributes,
             generics,
             where_clause,
             fields,

@@ -14,6 +14,9 @@ markup::define! {
             }
         }
     }
+
+    #[derive(Clone)]
+    /// A doc comment.
     Greeting<'a>(name: &'a str) {
         p.greeting {
             "Hello " {name} "!"

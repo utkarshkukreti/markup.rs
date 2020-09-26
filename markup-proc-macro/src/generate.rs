@@ -10,6 +10,7 @@ impl ToTokens for Struct {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         let Struct {
             name,
+            attributes,
             generics,
             where_clause,
             fields,
@@ -31,6 +32,7 @@ impl ToTokens for Struct {
             });
         }
         tokens.extend(quote! {
+            #(#attributes)*
             pub struct #name #generics #where_clause {
                 #struct_fields
             }
