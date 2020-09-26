@@ -1,3 +1,4 @@
+/markup/target
 /target
 **/*.rs.bk
 Cargo.lock
