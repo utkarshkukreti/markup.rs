@@ -3,7 +3,7 @@ use std::fmt::Display;
 pub use markup_proc_macro::{define, render};
 
 pub trait Render {
-    fn render(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result;
+    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result;
 
     fn is_none(&self) -> bool {
         false
@@ -11,15 +11,15 @@ pub trait Render {
 }
 
 impl<'a, T: Render + ?Sized> Render for &'a T {
-    fn render(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        (*self).render(f)
+    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
+        (*self).render(w)
     }
 }
 
 impl<T: Render> Render for Option<T> {
-    fn render(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
         match self {
-            Some(t) => t.render(f),
+            Some(t) => t.render(w),
             None => Ok(()),
         }
     }
@@ -30,13 +30,13 @@ impl<T: Render> Render for Option<T> {
 }
 
 impl Render for str {
-    fn render(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
         let mut last = 0;
         for (index, byte) in self.bytes().enumerate() {
             match byte {
                 b'&' | b'<' | b'>' | b'"' => {
-                    f.write_str(&self[last..index])?;
-                    f.write_str(match byte {
+                    w.write_str(&self[last..index])?;
+                    w.write_str(match byte {
                         b'&' => "&amp;",
                         b'<' => "&lt;",
                         b'>' => "&gt;",
@@ -47,21 +47,21 @@ impl Render for str {
                 _ => {}
             }
         }
-        f.write_str(&self[last..])
+        w.write_str(&self[last..])
     }
 }
 
 impl Render for String {
-    fn render(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.as_str().render(f)
+    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
+        self.as_str().render(w)
     }
 }
 
 struct Raw<T: Display>(pub T);
 
 impl<T: Display> Render for Raw<T> {
-    fn render(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        self.0.fmt(f)
+    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
+        write!(w, "{}", self.0)
     }
 }
 
@@ -73,8 +73,8 @@ macro_rules! raw_display {
     ($($ty:ty)*) => {
         $(
             impl Render for $ty {
-                fn render(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-                    self.fmt(f)
+                fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
+                    write!(w, "{}", self)
                 }
             }
         )*
@@ -110,7 +110,7 @@ impl<F> Render for Template<F>
 where
     F: Fn(&mut std::fmt::Formatter) -> std::fmt::Result,
 {
-    fn render(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        (self.0)(f)
+    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
+        write!(w, "{}", self)
     }
 }

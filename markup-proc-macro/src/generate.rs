@@ -40,22 +40,21 @@ impl ToTokens for Struct {
                 pub fn to_string(&self) -> String {
                     use std::fmt::{Display, Write};
                     let mut string = String::with_capacity(#size_hint);
-                    write!(&mut string, "{}", self).unwrap();
+                    markup::Render::render(self, &mut string).unwrap();
                     string
                 }
             }
             impl #impl_generics markup::Render for #name #ty_generics #where_clause {
-                fn render(&self, __fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-                    use std::fmt::Display;
-                    self.fmt(__fmt)
-                }
-            }
-            impl #impl_generics std::fmt::Display for #name #ty_generics #where_clause {
-                fn fmt(&self, __fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
+                fn render(&self, __writer: &mut impl std::fmt::Write) -> std::fmt::Result {
                     use std::fmt::Display;
                     let #name { #splat_fields } = self;
                     #(#built)*
                     Ok(())
+                }
+            }
+            impl #impl_generics std::fmt::Display for #name #ty_generics #where_clause {
+                fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    markup::Render::render(self, fmt)
                 }
             }
         })
@@ -68,7 +67,7 @@ impl ToTokens for Template {
         self.nodes.generate(&mut builder);
         let built = builder.finish();
         tokens.extend(quote! {
-            markup::Template(|__fmt| {
+            markup::Template(|__writer| {
                 #(#built)*
                 Ok(())
             })
@@ -256,7 +255,7 @@ impl Builder {
                 lit: syn::Lit::Str(lit_str),
                 ..
             }) => self.str(&lit_str.value()),
-            _ => self.extend(quote!(markup::Render::render(&(#expr), __fmt)?;)),
+            _ => self.extend(quote!(markup::Render::render(&(#expr), __writer)?;)),
         }
     }
 
@@ -264,7 +263,7 @@ impl Builder {
         if !self.buffer.is_empty() {
             let buffer = &self.buffer;
             self.tokens.extend(quote! {
-                __fmt.write_str(#buffer)?;
+                __writer.write_str(#buffer)?;
             });
             self.buffer.clear();
         }
