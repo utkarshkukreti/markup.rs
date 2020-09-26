@@ -2,28 +2,6 @@ use std::fmt::Display;
 
 pub use markup_proc_macro::{define, render};
 
-pub struct Template<F>(pub F)
-where
-    F: Fn(&mut std::fmt::Formatter) -> std::fmt::Result;
-
-impl<F> std::fmt::Display for Template<F>
-where
-    F: Fn(&mut std::fmt::Formatter) -> std::fmt::Result,
-{
-    fn fmt(&self, __fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-        (self.0)(__fmt)
-    }
-}
-
-impl<F> Render for Template<F>
-where
-    F: Fn(&mut std::fmt::Formatter) -> std::fmt::Result,
-{
-    fn render(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        (self.0)(f)
-    }
-}
-
 pub trait Render {
     fn render(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result;
 
@@ -113,4 +91,26 @@ raw_display! {
 
 pub fn doctype() -> impl Render {
     raw("<!DOCTYPE html>")
+}
+
+pub struct Template<F>(pub F)
+where
+    F: Fn(&mut std::fmt::Formatter) -> std::fmt::Result;
+
+impl<F> std::fmt::Display for Template<F>
+where
+    F: Fn(&mut std::fmt::Formatter) -> std::fmt::Result,
+{
+    fn fmt(&self, __fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
+        (self.0)(__fmt)
+    }
+}
+
+impl<F> Render for Template<F>
+where
+    F: Fn(&mut std::fmt::Formatter) -> std::fmt::Result,
+{
+    fn render(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        (self.0)(f)
+    }
 }
