@@ -10,8 +10,8 @@ impl<F> std::fmt::Display for Template<F>
 where
     F: Fn(&mut std::fmt::Formatter) -> std::fmt::Result,
 {
-    fn fmt(&self, __writer: &mut std::fmt::Formatter) -> std::fmt::Result {
-        (self.0)(__writer)
+    fn fmt(&self, __fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
+        (self.0)(__fmt)
     }
 }
 
