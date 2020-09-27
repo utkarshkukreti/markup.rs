@@ -64,40 +64,24 @@ pub fn raw<T: Display>(t: T) -> impl Render {
 }
 
 macro_rules! display {
-    ($($ty:ty)*) => {
+    ($([$($ty:ty)+] => |$self_:ident, $w:ident| $expr:expr,)+) => {
         $(
-            impl Render for $ty {
-                #[inline]
-                fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
-                    write!(w, "{}", self)
+            $(
+                impl Render for $ty {
+                    #[inline]
+                    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
+                        let ($self_, $w) = (self, w);
+                        $expr
+                    }
                 }
-            }
-        )*
+            )+
+        )+
     };
 }
 
 display! {
-    bool
-    char
-    f32 f64
-}
-
-macro_rules! itoa {
-    ($($ty:ty)*) => {
-        $(
-            impl Render for $ty {
-                #[inline]
-                fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
-                    itoa::fmt(w, *self)
-                }
-            }
-        )*
-    };
-}
-
-itoa! {
-    u8 u16 u32 u64 u128 usize
-    i8 i16 i32 i64 i128 isize
+    [bool char f32 f64] => |self_, w| write!(w, "{}", self_),
+    [u8 u16 u32 u64 u128 usize i8 i16 i32 i64 i128 isize] => |self_, w| itoa::fmt(w, *self_),
 }
 
 #[inline]
