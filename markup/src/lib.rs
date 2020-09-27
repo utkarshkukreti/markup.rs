@@ -1,5 +1,3 @@
-use std::fmt::Display;
-
 pub use markup_proc_macro::{define, render};
 
 mod escape;
@@ -49,17 +47,17 @@ impl Render for String {
     }
 }
 
-struct Raw<T: Display>(pub T);
+pub struct Raw<'a>(&'a str);
 
-impl<T: Display> Render for Raw<T> {
+impl<'a> Render for Raw<'a> {
     #[inline]
     fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
-        write!(w, "{}", self.0)
+        w.write_str(self.0)
     }
 }
 
 #[inline]
-pub fn raw<T: Display>(t: T) -> impl Render {
+pub fn raw<'a>(t: &'a str) -> Raw<'a> {
     Raw(t)
 }
 
