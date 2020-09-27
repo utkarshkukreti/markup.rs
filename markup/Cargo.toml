@@ -1,6 +1,6 @@
 [package]
 name = "markup"
-version = "0.7.0"
+version = "0.8.0"
 authors = ["Utkarsh Kukreti <utkarshkukreti@gmail.com>"]
 edition = "2018"
 description = "A blazing fast, type-safe template engine for Rust."
@@ -13,7 +13,7 @@ keywords = ["template", "html", "pug", "jade", "haml"]
 categories = ["template-engine"]
 
 [dependencies]
-markup-proc-macro = { path = "../markup-proc-macro", version = "0.7.0" }
+markup-proc-macro = { path = "../markup-proc-macro", version = "0.8.0" }
 itoa = { version = "0.4", features = ["i128"] }
 
 [dev-dependencies]
