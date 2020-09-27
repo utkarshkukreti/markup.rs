@@ -238,15 +238,9 @@ impl Builder {
     }
 
     fn str(&mut self, str: &str) {
-        for ch in str.chars() {
-            match ch {
-                '&' => self.buffer.push_str("&amp;"),
-                '<' => self.buffer.push_str("&lt;"),
-                '>' => self.buffer.push_str("&gt;"),
-                '"' => self.buffer.push_str("&quot;"),
-                _ => self.buffer.push(ch),
-            }
-        }
+        let mut string = String::new();
+        crate::escape::escape(str, &mut string).unwrap();
+        self.buffer.push_str(&string);
     }
 
     fn expr(&mut self, expr: &syn::Expr) {

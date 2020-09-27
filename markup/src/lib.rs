@@ -2,6 +2,8 @@ use std::fmt::Display;
 
 pub use markup_proc_macro::{define, render};
 
+mod escape;
+
 pub trait Render {
     fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result;
 
@@ -31,23 +33,7 @@ impl<T: Render> Render for Option<T> {
 
 impl Render for str {
     fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
-        let mut last = 0;
-        for (index, byte) in self.bytes().enumerate() {
-            match byte {
-                b'&' | b'<' | b'>' | b'"' => {
-                    w.write_str(&self[last..index])?;
-                    w.write_str(match byte {
-                        b'&' => "&amp;",
-                        b'<' => "&lt;",
-                        b'>' => "&gt;",
-                        _ => "&quot;",
-                    })?;
-                    last = index + 1;
-                }
-                _ => {}
-            }
-        }
-        w.write_str(&self[last..])
+        escape::escape(self, w)
     }
 }
 
