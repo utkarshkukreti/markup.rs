@@ -56,7 +56,9 @@ fn bench_teams(c: &mut Criterion) {
     };
 
     let mut group = c.benchmark_group("teams");
-    group.throughput(Throughput::Bytes(teams.to_string().len() as u64));
+    let len = teams.to_string().len();
+    assert_eq!(len, 239);
+    group.throughput(Throughput::Bytes(len as u64));
     group.bench_function("teams", |b| b.iter(|| teams.to_string()));
     group.finish();
 }
@@ -81,7 +83,9 @@ fn bench_big_table(c: &mut Criterion) {
     let big_table = BigTable { table };
 
     let mut group = c.benchmark_group("big_table");
-    group.throughput(Throughput::Bytes(big_table.to_string().len() as u64));
+    let len = big_table.to_string().len();
+    assert_eq!(len, 109915);
+    group.throughput(Throughput::Bytes(len as u64));
     group.bench_function("big_table", |b| b.iter(|| big_table.to_string()));
     group.finish();
 }
