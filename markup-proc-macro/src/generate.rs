@@ -37,6 +37,7 @@ impl ToTokens for Struct {
                 #struct_fields
             }
             impl #impl_generics #name #ty_generics #where_clause {
+                #[inline]
                 pub fn to_string(&self) -> String {
                     use std::fmt::{Display, Write};
                     let mut string = String::with_capacity(#size_hint);
@@ -53,6 +54,7 @@ impl ToTokens for Struct {
                 }
             }
             impl #impl_generics std::fmt::Display for #name #ty_generics #where_clause {
+                #[inline]
                 fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
                     markup::Render::render(self, fmt)
                 }
