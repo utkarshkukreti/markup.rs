@@ -19,5 +19,9 @@ markup-proc-macro = { path = "../markup-proc-macro", version = "0.7.0" }
 criterion = "0.3"
 
 [[bench]]
+name = "escape"
+harness = false
+
+[[bench]]
 name = "tbr"
 harness = false
