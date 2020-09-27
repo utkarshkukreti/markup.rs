@@ -20,14 +20,27 @@ pub fn escape(str: &str, w: &mut impl std::fmt::Write) -> std::fmt::Result {
 
 #[test]
 fn test() {
-    let mut string = String::new();
-    escape(
+    t("", "");
+    t("<", "&lt;");
+    t("a<", "a&lt;");
+    t("<b", "&lt;b");
+    t("a<b", "a&lt;b");
+    t("a<>b", "a&lt;&gt;b");
+    t("<>", "&lt;&gt;");
+    t("≤", "≤");
+    t("a≤", "a≤");
+    t("≤b", "≤b");
+    t("a≤b", "a≤b");
+    t("a≤≥b", "a≤≥b");
+    t("≤≥", "≤≥");
+    t(
         r#"foo &<>" bar&bar<bar>bar"bar baz&&<<baz>>""baz"#,
-        &mut string,
-    )
-    .unwrap();
-    assert_eq!(
-        string,
-        r#"foo &amp;&lt;&gt;&quot; bar&amp;bar&lt;bar&gt;bar&quot;bar baz&amp;&amp;&lt;&lt;baz&gt;&gt;&quot;&quot;baz"#
-    )
+        r#"foo &amp;&lt;&gt;&quot; bar&amp;bar&lt;bar&gt;bar&quot;bar baz&amp;&amp;&lt;&lt;baz&gt;&gt;&quot;&quot;baz"#,
+    );
+
+    fn t(input: &str, output: &str) {
+        let mut string = String::new();
+        escape(input, &mut string).unwrap();
+        assert_eq!(string, output);
+    }
 }
