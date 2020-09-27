@@ -17,3 +17,17 @@ pub fn escape(str: &str, w: &mut impl std::fmt::Write) -> std::fmt::Result {
     }
     w.write_str(&str[last..])
 }
+
+#[test]
+fn test() {
+    let mut string = String::new();
+    escape(
+        r#"foo &<>" bar&bar<bar>bar"bar baz&&<<baz>>""baz"#,
+        &mut string,
+    )
+    .unwrap();
+    assert_eq!(
+        string,
+        r#"foo &amp;&lt;&gt;&quot; bar&amp;bar&lt;bar&gt;bar&quot;bar baz&amp;&amp;&lt;&lt;baz&gt;&gt;&quot;&quot;baz"#
+    )
+}
