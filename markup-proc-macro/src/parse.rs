@@ -90,13 +90,11 @@ impl Parse for Node {
             } else {
                 if let Ok(_) = input.fork().parse::<syn::Stmt>() {
                     Ok(Node::Stmt(input.parse()?))
-                } else if let Ok(syn::Expr::Call(_)) = input.fork().parse::<syn::Expr>() {
-                    Ok(Node::Expr(input.parse()?))
-                } else if let Ok(syn::Expr::Field(_)) = input.fork().parse::<syn::Expr>() {
-                    Ok(Node::Expr(input.parse()?))
-                } else if let Ok(syn::Expr::Macro(_)) = input.fork().parse::<syn::Expr>() {
-                    Ok(Node::Expr(input.parse()?))
-                } else if let Ok(syn::Expr::MethodCall(_)) = input.fork().parse::<syn::Expr>() {
+                } else if let Ok(syn::Expr::Call(_))
+                | Ok(syn::Expr::Field(_))
+                | Ok(syn::Expr::Macro(_))
+                | Ok(syn::Expr::MethodCall(_)) = input.fork().parse::<syn::Expr>()
+                {
                     Ok(Node::Expr(input.parse()?))
                 } else {
                     let tt: proc_macro2::TokenTree = input.parse()?;
