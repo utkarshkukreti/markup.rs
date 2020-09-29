@@ -319,7 +319,9 @@ markup::define! {
         @let Int(two) = Int(2);
         @format!("{} {}\n", ONE, two)
         @two.pow(10) "\n"
-        @for x in &[1, 2, 3] {
+        @mod three { pub const THREE: i32 = 3; }
+        @fn four() -> i32 { 4 }
+        @for x in &[three::THREE, four(), 5] {
             @let (_double, triple) = (x * 2, x * 3);
             {x} " * 3 = " {triple} "\n"
         }
@@ -332,9 +334,9 @@ println!("{}", Main {});
 ```html
 1 2
 1024
-1 * 3 = 3
-2 * 3 = 6
 3 * 3 = 9
+4 * 3 = 12
+5 * 3 = 15
 ```
 
 @if
