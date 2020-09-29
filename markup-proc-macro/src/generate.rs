@@ -95,7 +95,6 @@ impl Generate for Node {
             Node::If(if_) => if_.generate(builder),
             Node::Match(match_) => match_.generate(builder),
             Node::For(for_) => for_.generate(builder),
-            Node::String(string) => builder.str(string),
             Node::Expr(expr) => builder.expr(expr),
             Node::Stmt(syn::Stmt::Expr(expr)) => builder.expr(expr),
             Node::Stmt(stmt) => builder.extend(stmt.into_token_stream()),

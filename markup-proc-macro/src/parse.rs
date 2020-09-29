@@ -100,8 +100,9 @@ impl Parse for Node {
                     Ok(Node::Expr(expr))
                 }
             }
-        } else if lookahead.peek(syn::LitStr) {
-            Ok(Node::String(input.parse::<syn::LitStr>()?.value()))
+        } else if lookahead.peek(syn::Lit) {
+            let lit: syn::Lit = input.parse()?;
+            Ok(Node::Expr(syn::parse2(quote::quote!(#lit))?))
         } else if lookahead.peek(syn::token::Brace) {
             let fork = input.fork();
             let inner;

@@ -11,6 +11,8 @@ mod e0 {
             {if false { Some(6) } else { None }}
             @7
             @{8 + 9}
+            10
+            11.12
         }
     }
 }

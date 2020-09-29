@@ -21,7 +21,7 @@ First!
 Second!
 ```
 
-A template can have bare literal strings and arbitrary expressions in braces.
+A template can have bare literal values and arbitrary expressions in braces.
 
 + Hello {
     "Hello,"
@@ -34,6 +34,8 @@ A template can have bare literal strings and arbitrary expressions in braces.
     {if false { Some(6) } else { None }}
     @7
     @{8 + 9}
+    10
+    11.12
 }
 - Hello {}
 

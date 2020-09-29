@@ -106,7 +106,7 @@ First!
 Second!
 ```
 
-A template can have bare literal strings and arbitrary expressions in braces.
+A template can have bare literal values and arbitrary expressions in braces.
 
 ```rust
 markup::define! {
@@ -121,6 +121,8 @@ markup::define! {
         {if false { Some(6) } else { None }}
         @7
         @{8 + 9}
+        10
+        11.12
     }
 }
 ```
@@ -129,7 +131,7 @@ println!("{}", Hello {});
 ```
 ```html
 Hello, world!
-3π345717
+3π3457171011.12
 ```
 
 Elements can either have children inside `{}` or be a void tag, ending with `;`.

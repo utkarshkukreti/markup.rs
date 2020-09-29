@@ -19,7 +19,6 @@ pub enum Node {
     Element(Element),
     If(If),
     For(For),
-    String(String),
     Expr(syn::Expr),
     Stmt(syn::Stmt),
     Match(Match),
