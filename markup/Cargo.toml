@@ -18,6 +18,7 @@ itoa = { version = "0.4", features = ["i128"] }
 
 [dev-dependencies]
 criterion = "0.3"
+insta = "0.16"
 
 [[bench]]
 name = "escape"
