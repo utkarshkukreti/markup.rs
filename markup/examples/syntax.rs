@@ -130,8 +130,12 @@ mod e9 {
             @let Int(two) = Int(2);
             @format!("{} {}\n", ONE, two)
             @two.pow(10) "\n"
-            @mod three { pub const THREE: i32 = 3; }
-            @fn four() -> i32 { 4 }
+            @mod three {
+                pub const THREE: i32 = 3;
+            }
+            @fn four() -> i32 {
+                4
+            }
             @for x in &[three::THREE, four(), 5] {
                 @let (_double, triple) = (x * 2, x * 3);
                 {x} " * 3 = " {triple} "\n"
