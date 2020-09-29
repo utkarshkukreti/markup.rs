@@ -1,4 +1,7 @@
 default:
+	rake
+	cargo build
+	cargo test
 
 publish:
 	cd markup-proc-macro && cargo publish
