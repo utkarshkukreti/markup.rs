@@ -1,0 +1,8 @@
+---
+source: markup/tests/tests.rs
+expression: "Main{}"
+---
+None
+Some(ZERO)
+Some(1)
+

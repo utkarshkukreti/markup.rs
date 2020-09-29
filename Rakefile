@@ -12,7 +12,7 @@ task :default do
     if line.strip.empty?
       stdout << line
       next if define.empty? || invoke.empty?
-      codes << {define: define.strip, invoke: invoke.strip}
+      codes << { define: define.strip, invoke: invoke.strip }
       define = ""
       invoke = ""
       stdout << "{{#{i}}}"
@@ -43,6 +43,27 @@ task :default do
 
     stdout << line
   end
+
+  rs = File.open("markup/tests/tests.rs", "wb")
+
+  codes.each.with_index do |code, index|
+    rs << <<-RS
+mod e#{index + 1} {
+    markup::define! {
+#{indent(code[:define], 8)}
+    }
+
+    #[test] fn t() {
+        insta::assert_display_snapshot!(#{code[:invoke]});
+    }
+}
+
+RS
+  end
+
+  rs.close
+
+  system "rustfmt markup/tests/tests.rs"
 
   rs = File.open("markup/examples/syntax.rs", "wb")
 

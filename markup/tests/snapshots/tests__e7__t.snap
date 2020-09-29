@@ -1,0 +1,5 @@
+---
+source: markup/tests/tests.rs
+expression: "Hello{foo: 1, bar: 2, string: String::from(\"hello\"),}"
+---
+<div>3hello</div>

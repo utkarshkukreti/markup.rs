@@ -1,0 +1,10 @@
+---
+source: markup/tests/tests.rs
+expression: "Main{}"
+---
+1 2
+1024
+3 * 3 = 9
+4 * 3 = 12
+5 * 3 = 15
+

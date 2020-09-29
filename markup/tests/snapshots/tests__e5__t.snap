@@ -1,0 +1,5 @@
+---
+source: markup/tests/tests.rs
+expression: "Hello{}"
+---
+<div class="foo" a="1">One1</div><div>Two2</div>

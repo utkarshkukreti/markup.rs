@@ -361,9 +361,7 @@ markup::define! {
     }
     Main {
         @Classify { value: -42 }
-        " "
         @Classify { value: 0 }
-        " "
         @Classify { value: 42 }
     }
 }
@@ -373,8 +371,8 @@ println!("{}", Main {});
 ```
 ```html
 -42 is negative.
- 0 is zero.
- 42 is positive.
+0 is zero.
+42 is positive.
 ```
 
 @if let

@@ -1,0 +1,6 @@
+---
+source: markup/tests/tests.rs
+expression: "Hello{}"
+---
+Hello, world!
+3π3457171011.12

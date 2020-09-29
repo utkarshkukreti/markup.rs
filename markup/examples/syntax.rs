@@ -160,9 +160,7 @@ mod e10 {
         }
         Main {
             @Classify { value: -42 }
-            " "
             @Classify { value: 0 }
-            " "
             @Classify { value: 42 }
         }
     }
