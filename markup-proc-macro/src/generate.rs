@@ -253,7 +253,7 @@ impl Stream {
             });
             self.buffer.clear();
         }
-        self.stream.extend(iter.into_iter());
+        self.stream.extend(iter);
     }
 
     fn paren(&mut self, f: impl Fn(&mut Stream)) {
