@@ -14,16 +14,14 @@ markup::define! {
     Teams(year: u16, teams: Vec<Team>) {
         html {
             head {
-                title { {year} }
+                title { @year }
             }
             body {
-                h1 {
-                    "CSL " {year}
-                }
+                h1 { "CSL " @year }
                 ul {
                     @for (index, team) in teams.iter().enumerate() {
                         li.{if index == 0 { Some("champion") } else { None } } {
-                            b { {team.name} } ": " {team.score}
+                            b { @team.name } ": " @team.score
                         }
                     }
                 }
@@ -69,7 +67,7 @@ markup::define! {
             @for r1 in table {
                 tr {
                     @for r2 in r1 {
-                        td { {r2} }
+                        td { @r2 }
                     }
                 }
             }
