@@ -297,8 +297,8 @@ markup::define! {
         span { @{a + b} }
     }
     Hello {
-        @{Add { a: 1, b: 2 }}
-        @{Add { a: 3, b: 4 }}
+        @Add { a: 1, b: 2 }
+        @Add { a: 3, b: 4 }
     }
 }
 ```
@@ -360,11 +360,11 @@ markup::define! {
         ".\n"
     }
     Main {
-        @{Classify { value: -42 }}
+        @Classify { value: -42 }
         " "
-        @{Classify { value: 0 }}
+        @Classify { value: 0 }
         " "
-        @{Classify { value: 42 }}
+        @Classify { value: 42 }
     }
 }
 ```
@@ -392,9 +392,9 @@ markup::define! {
         "\n"
     }
     Main {
-        @{Classify { value: None }}
-        @{Classify { value: Some(0) }}
-        @{Classify { value: Some(1) }}
+        @Classify { value: None }
+        @Classify { value: Some(0) }
+        @Classify { value: Some(1) }
     }
 }
 ```
@@ -430,11 +430,11 @@ markup::define! {
         "\n"
     }
     Main {
-        @{Classify { value: None }}
-        @{Classify { value: Some(0) }}
-        @{Classify { value: Some(1) }}
-        @{Classify { value: Some(2) }}
-        @{Classify { value: Some(3) }}
+        @Classify { value: None }
+        @Classify { value: Some(0) }
+        @Classify { value: Some(1) }
+        @Classify { value: Some(2) }
+        @Classify { value: Some(3) }
     }
 }
 ```

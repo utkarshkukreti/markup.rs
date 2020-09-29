@@ -7,9 +7,9 @@ markup::define! {
             }
             body {
                 #main.container {
-                    @{Greeting { name: "Everyone!" }}
+                    @Greeting { name: "Everyone!" }
                     br;
-                    @{Greeting { name: name }}
+                    @Greeting { name: name }
                 }
             }
         }

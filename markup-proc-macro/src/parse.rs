@@ -93,7 +93,8 @@ impl Parse for Node {
                 } else if let Ok(syn::Expr::Call(_))
                 | Ok(syn::Expr::Field(_))
                 | Ok(syn::Expr::Macro(_))
-                | Ok(syn::Expr::MethodCall(_)) = input.fork().parse::<syn::Expr>()
+                | Ok(syn::Expr::MethodCall(_))
+                | Ok(syn::Expr::Struct(_)) = input.fork().parse::<syn::Expr>()
                 {
                     Ok(Node::Expr(input.parse()?))
                 } else {
