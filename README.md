@@ -318,6 +318,7 @@ markup::define! {
         @#[derive(Debug)] struct Int(i32);
         @let Int(two) = Int(2);
         @format!("{} {}\n", ONE, two)
+        @two.pow(10) "\n"
         @for x in &[1, 2, 3] {
             @let (_double, triple) = (x * 2, x * 3);
             {x} " * 3 = " {triple} "\n"
@@ -330,6 +331,7 @@ println!("{}", Main {});
 ```
 ```html
 1 2
+1024
 1 * 3 = 3
 2 * 3 = 6
 3 * 3 = 9
