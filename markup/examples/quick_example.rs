@@ -1,15 +1,15 @@
 markup::define! {
     Hello<'a>(name: &'a str) {
-        {markup::doctype()}
+        @markup::doctype()
         html {
             head {
-                title { "Hello " {name} }
+                title { "Hello " @name }
             }
             body {
                 #main.container {
-                    {Greeting { name: "Everyone!" }}
+                    @{Greeting { name: "Everyone!" }}
                     br;
-                    {Greeting { name: name }}
+                    @{Greeting { name: name }}
                 }
             }
         }
@@ -19,7 +19,7 @@ markup::define! {
     /// A doc comment.
     Greeting<'a>(name: &'a str) {
         p.greeting {
-            "Hello " {name} "!"
+            "Hello " @name "!"
         }
     }
 }
@@ -35,7 +35,7 @@ fn main() {
             h1 { "Greeting" }
             @for _ in 0..times {
                 p.greeting {
-                    "Hello " {name} "!"
+                    "Hello " @name "!"
                 }
             }
         }

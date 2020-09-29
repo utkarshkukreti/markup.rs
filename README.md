@@ -114,11 +114,11 @@ markup::define! {
         "Hello,"
         " "
         "world!\n"
-        {1 + 2}
-        {'π'}
-        {format!("{}{}", 3, 4)}
-        {if true { Some(5) } else { None }}
-        {if false { Some(6) } else { None }}
+        @{1 + 2}
+        @{'π'}
+        @{format!("{}{}", 3, 4)}
+        @{if true { Some(5) } else { None }}
+        @{if false { Some(6) } else { None }}
         @7
         @{8 + 9}
         10
@@ -213,11 +213,11 @@ markup::define! {
     Hello {
         .foo[a = 1] {
             "One"
-            {0 + 1}
+            @{0 + 1}
         }
         div {
             "Two"
-            {1 + 1}
+            @{1 + 1}
         }
     }
 }
@@ -236,7 +236,7 @@ This function accepts any type implementing std::fmt::Display.
 markup::define! {
     Hello {
         "<&\">"
-        {markup::raw("<span></span>")}
+        @markup::raw("<span></span>")
     }
 }
 ```
@@ -254,8 +254,8 @@ The arguments may have an optional trailing comma.
 markup::define! {
     Hello(foo: u32, bar: u32, string: String) {
         div {
-            {foo + bar}
-            {string}
+            @{foo + bar}
+            @string
         }
     }
 }
@@ -275,9 +275,9 @@ markup::define! {
         str: &'a str,
     ) where U: std::fmt::Display {
         div {
-            {format!("{:?}", arg)}
-            {format!("{}", arg2)}
-            {str}
+            @format!("{:?}", arg)
+            @format!("{}", arg2)
+            @str
         }
     }
 }
@@ -294,11 +294,11 @@ Other templates can be embedded by simply putting them in braces.
 ```rust
 markup::define! {
     Add(a: u32, b: u32) {
-        span { {a + b} }
+        span { @{a + b} }
     }
     Hello {
-        {Add { a: 1, b: 2 }}
-        {Add { a: 3, b: 4 }}
+        @{Add { a: 1, b: 2 }}
+        @{Add { a: 3, b: 4 }}
     }
 }
 ```
@@ -327,7 +327,7 @@ markup::define! {
         }
         @for x in &[three::THREE, four(), 5] {
             @let (_double, triple) = (x * 2, x * 3);
-            {x} " * 3 = " {triple} "\n"
+            @x " * 3 = " @triple "\n"
         }
     }
 }
@@ -348,7 +348,7 @@ println!("{}", Main {});
 ```rust
 markup::define! {
     Classify(value: i32) {
-        {value}
+        @value
         " is "
         @if *value < 0 {
             "negative"
@@ -360,11 +360,11 @@ markup::define! {
         ".\n"
     }
     Main {
-        {Classify { value: -42 }}
+        @{Classify { value: -42 }}
         " "
-        {Classify { value: 0 }}
+        @{Classify { value: 0 }}
         " "
-        {Classify { value: 42 }}
+        @{Classify { value: 42 }}
     }
 }
 ```
@@ -385,16 +385,16 @@ markup::define! {
         @if let Some(0) = *value {
             "Some(ZERO)"
         } else if let Some(value) = *(value) {
-            "Some(" {value} ")"
+            "Some(" @value ")"
         } else {
             "None"
         }
         "\n"
     }
     Main {
-        {Classify { value: None }}
-        {Classify { value: Some(0) }}
-        {Classify { value: Some(1) }}
+        @{Classify { value: None }}
+        @{Classify { value: Some(0) }}
+        @{Classify { value: Some(1) }}
     }
 }
 ```
@@ -418,7 +418,7 @@ markup::define! {
             " or 2"
           }
           Some(n) if n == 3 => {
-            {n} {n}
+            @n @n
           }
           Some(_) => {
             "Other"
@@ -430,11 +430,11 @@ markup::define! {
         "\n"
     }
     Main {
-        {Classify { value: None }}
-        {Classify { value: Some(0) }}
-        {Classify { value: Some(1) }}
-        {Classify { value: Some(2) }}
-        {Classify { value: Some(3) }}
+        @{Classify { value: None }}
+        @{Classify { value: Some(0) }}
+        @{Classify { value: Some(1) }}
+        @{Classify { value: Some(2) }}
+        @{Classify { value: Some(3) }}
     }
 }
 ```
@@ -455,7 +455,7 @@ Other
 markup::define! {
     Main {
         @for i in 1..5 {
-            {i} " * 2 = " {i * 2} ";\n"
+            @i " * 2 = " @{i * 2} ";\n"
         }
     }
 }
@@ -468,31 +468,6 @@ println!("{}", Main {});
 2 * 2 = 4;
 3 * 2 = 6;
 4 * 2 = 8;
-```
-
-Curly braces also accept single statements and items and outputs it as-is in the generated code.
-
-```rust
-markup::define! {
-    Main {
-        {let x = 1;}
-        {
-            mod math {
-                pub fn add(x: i32, y: i32) -> i32 {
-                    x + y
-                }
-            }
-        }
-        {math::add(x, x)}
-        @math::add(x, x)
-    }
-}
-```
-```rust
-println!("{}", Main {});
-```
-```html
-22
 ```
 
 <!-- /Syntax -->

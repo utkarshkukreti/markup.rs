@@ -27,11 +27,11 @@ A template can have bare literal values and arbitrary expressions in braces.
     "Hello,"
     " "
     "world!\n"
-    {1 + 2}
-    {'π'}
-    {format!("{}{}", 3, 4)}
-    {if true { Some(5) } else { None }}
-    {if false { Some(6) } else { None }}
+    @{1 + 2}
+    @{'π'}
+    @{format!("{}{}", 3, 4)}
+    @{if true { Some(5) } else { None }}
+    @{if false { Some(6) } else { None }}
     @7
     @{8 + 9}
     10
@@ -87,11 +87,11 @@ An element can have zero or more children inside braces.
 + Hello {
     .foo[a = 1] {
         "One"
-        {0 + 1}
+        @{0 + 1}
     }
     div {
         "Two"
-        {1 + 1}
+        @{1 + 1}
     }
 }
 - Hello {}
@@ -101,7 +101,7 @@ This function accepts any type implementing std::fmt::Display.
 
 + Hello {
     "<&\">"
-    {markup::raw("<span></span>")}
+    @markup::raw("<span></span>")
 }
 - Hello {}
 
@@ -110,8 +110,8 @@ The arguments may have an optional trailing comma.
 
 + Hello(foo: u32, bar: u32, string: String) {
     div {
-        {foo + bar}
-        {string}
+        @{foo + bar}
+        @string
     }
 }
 - Hello { foo: 1, bar: 2, string: String::from("hello") }
@@ -122,9 +122,9 @@ The arguments may have an optional trailing comma.
     str: &'a str,
 ) where U: std::fmt::Display {
     div {
-        {format!("{:?}", arg)}
-        {format!("{}", arg2)}
-        {str}
+        @format!("{:?}", arg)
+        @format!("{}", arg2)
+        @str
     }
 }
 - Hello { arg: (1, 2), arg2: "arg2", str: "str" }
@@ -132,11 +132,11 @@ The arguments may have an optional trailing comma.
 Other templates can be embedded by simply putting them in braces.
 
 + Add(a: u32, b: u32) {
-    span { {a + b} }
+    span { @{a + b} }
 }
 Hello {
-    {Add { a: 1, b: 2 }}
-    {Add { a: 3, b: 4 }}
+    @{Add { a: 1, b: 2 }}
+    @{Add { a: 3, b: 4 }}
 }
 - Hello {}
 
@@ -156,7 +156,7 @@ Hello {
     }
     @for x in &[three::THREE, four(), 5] {
         @let (_double, triple) = (x * 2, x * 3);
-        {x} " * 3 = " {triple} "\n"
+        @x " * 3 = " @triple "\n"
     }
 }
 - Main {}
@@ -164,7 +164,7 @@ Hello {
 @if
 
 + Classify(value: i32) {
-    {value}
+    @value
     " is "
     @if *value < 0 {
         "negative"
@@ -176,11 +176,11 @@ Hello {
     ".\n"
 }
 Main {
-    {Classify { value: -42 }}
+    @{Classify { value: -42 }}
     " "
-    {Classify { value: 0 }}
+    @{Classify { value: 0 }}
     " "
-    {Classify { value: 42 }}
+    @{Classify { value: 42 }}
 }
 - Main {}
 
@@ -190,16 +190,16 @@ Main {
     @if let Some(0) = *value {
         "Some(ZERO)"
     } else if let Some(value) = *(value) {
-        "Some(" {value} ")"
+        "Some(" @value ")"
     } else {
         "None"
     }
     "\n"
 }
 Main {
-    {Classify { value: None }}
-    {Classify { value: Some(0) }}
-    {Classify { value: Some(1) }}
+    @{Classify { value: None }}
+    @{Classify { value: Some(0) }}
+    @{Classify { value: Some(1) }}
 }
 - Main {}
 
@@ -212,7 +212,7 @@ Main {
         " or 2"
       }
       Some(n) if n == 3 => {
-        {n} {n}
+        @n @n
       }
       Some(_) => {
         "Other"
@@ -224,11 +224,11 @@ Main {
     "\n"
 }
 Main {
-    {Classify { value: None }}
-    {Classify { value: Some(0) }}
-    {Classify { value: Some(1) }}
-    {Classify { value: Some(2) }}
-    {Classify { value: Some(3) }}
+    @{Classify { value: None }}
+    @{Classify { value: Some(0) }}
+    @{Classify { value: Some(1) }}
+    @{Classify { value: Some(2) }}
+    @{Classify { value: Some(3) }}
 }
 - Main {}
 
@@ -236,23 +236,7 @@ Main {
 
 + Main {
     @for i in 1..5 {
-        {i} " * 2 = " {i * 2} ";\n"
+        @i " * 2 = " @{i * 2} ";\n"
     }
-}
-- Main {}
-
-Curly braces also accept single statements and items and outputs it as-is in the generated code.
-
-+ Main {
-    {let x = 1;}
-    {
-        mod math {
-            pub fn add(x: i32, y: i32) -> i32 {
-                x + y
-            }
-        }
-    }
-    {math::add(x, x)}
-    @math::add(x, x)
 }
 - Main {}

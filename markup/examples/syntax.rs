@@ -4,11 +4,11 @@ mod e0 {
             "Hello,"
             " "
             "world!\n"
-            {1 + 2}
-            {'π'}
-            {format!("{}{}", 3, 4)}
-            {if true { Some(5) } else { None }}
-            {if false { Some(6) } else { None }}
+            @{1 + 2}
+            @{'π'}
+            @{format!("{}{}", 3, 4)}
+            @{if true { Some(5) } else { None }}
+            @{if false { Some(6) } else { None }}
             @7
             @{8 + 9}
             10
@@ -64,11 +64,11 @@ mod e4 {
         Hello {
             .foo[a = 1] {
                 "One"
-                {0 + 1}
+                @{0 + 1}
             }
             div {
                 "Two"
-                {1 + 1}
+                @{1 + 1}
             }
         }
     }
@@ -78,7 +78,7 @@ mod e5 {
     markup::define! {
         Hello {
             "<&\">"
-            {markup::raw("<span></span>")}
+            @markup::raw("<span></span>")
         }
     }
 }
@@ -87,8 +87,8 @@ mod e6 {
     markup::define! {
         Hello(foo: u32, bar: u32, string: String) {
             div {
-                {foo + bar}
-                {string}
+                @{foo + bar}
+                @string
             }
         }
     }
@@ -102,9 +102,9 @@ mod e7 {
             str: &'a str,
         ) where U: std::fmt::Display {
             div {
-                {format!("{:?}", arg)}
-                {format!("{}", arg2)}
-                {str}
+                @format!("{:?}", arg)
+                @format!("{}", arg2)
+                @str
             }
         }
     }
@@ -113,11 +113,11 @@ mod e7 {
 mod e8 {
     markup::define! {
         Add(a: u32, b: u32) {
-            span { {a + b} }
+            span { @{a + b} }
         }
         Hello {
-            {Add { a: 1, b: 2 }}
-            {Add { a: 3, b: 4 }}
+            @{Add { a: 1, b: 2 }}
+            @{Add { a: 3, b: 4 }}
         }
     }
 }
@@ -138,7 +138,7 @@ mod e9 {
             }
             @for x in &[three::THREE, four(), 5] {
                 @let (_double, triple) = (x * 2, x * 3);
-                {x} " * 3 = " {triple} "\n"
+                @x " * 3 = " @triple "\n"
             }
         }
     }
@@ -147,7 +147,7 @@ mod e9 {
 mod e10 {
     markup::define! {
         Classify(value: i32) {
-            {value}
+            @value
             " is "
             @if *value < 0 {
                 "negative"
@@ -159,11 +159,11 @@ mod e10 {
             ".\n"
         }
         Main {
-            {Classify { value: -42 }}
+            @{Classify { value: -42 }}
             " "
-            {Classify { value: 0 }}
+            @{Classify { value: 0 }}
             " "
-            {Classify { value: 42 }}
+            @{Classify { value: 42 }}
         }
     }
 }
@@ -174,16 +174,16 @@ mod e11 {
             @if let Some(0) = *value {
                 "Some(ZERO)"
             } else if let Some(value) = *(value) {
-                "Some(" {value} ")"
+                "Some(" @value ")"
             } else {
                 "None"
             }
             "\n"
         }
         Main {
-            {Classify { value: None }}
-            {Classify { value: Some(0) }}
-            {Classify { value: Some(1) }}
+            @{Classify { value: None }}
+            @{Classify { value: Some(0) }}
+            @{Classify { value: Some(1) }}
         }
     }
 }
@@ -197,7 +197,7 @@ mod e12 {
                 " or 2"
               }
               Some(n) if n == 3 => {
-                {n} {n}
+                @n @n
               }
               Some(_) => {
                 "Other"
@@ -209,11 +209,11 @@ mod e12 {
             "\n"
         }
         Main {
-            {Classify { value: None }}
-            {Classify { value: Some(0) }}
-            {Classify { value: Some(1) }}
-            {Classify { value: Some(2) }}
-            {Classify { value: Some(3) }}
+            @{Classify { value: None }}
+            @{Classify { value: Some(0) }}
+            @{Classify { value: Some(1) }}
+            @{Classify { value: Some(2) }}
+            @{Classify { value: Some(3) }}
         }
     }
 }
@@ -222,25 +222,8 @@ mod e13 {
     markup::define! {
         Main {
             @for i in 1..5 {
-                {i} " * 2 = " {i * 2} ";\n"
+                @i " * 2 = " @{i * 2} ";\n"
             }
-        }
-    }
-}
-
-mod e14 {
-    markup::define! {
-        Main {
-            {let x = 1;}
-            {
-                mod math {
-                    pub fn add(x: i32, y: i32) -> i32 {
-                        x + y
-                    }
-                }
-            }
-            {math::add(x, x)}
-            @math::add(x, x)
         }
     }
 }
@@ -274,5 +257,4 @@ fn main() {
     println!("{}\n", e11::Main {});
     println!("{}\n", e12::Main {});
     println!("{}\n", e13::Main {});
-    println!("{}\n", e14::Main {});
 }
