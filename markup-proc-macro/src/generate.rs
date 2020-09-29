@@ -16,9 +16,9 @@ impl ToTokens for Struct {
             nodes,
             size_hint,
         } = self;
-        let mut builder = Builder::default();
-        nodes.generate(&mut builder);
-        let built = builder.finish();
+        let mut stream = Stream::default();
+        nodes.generate(&mut stream);
+        let built = stream.finish();
         let (impl_generics, ty_generics, _) = generics.split_for_impl();
         let mut struct_fields = TokenStream::new();
         let mut splat_fields = TokenStream::new();
@@ -64,9 +64,9 @@ impl ToTokens for Struct {
 
 impl ToTokens for Template {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        let mut builder = Builder::default();
-        self.nodes.generate(&mut builder);
-        let built = builder.finish();
+        let mut stream = Stream::default();
+        self.nodes.generate(&mut stream);
+        let built = stream.finish();
         tokens.extend(quote! {
             markup::Template(|__writer| {
                 #built
@@ -77,33 +77,33 @@ impl ToTokens for Template {
 }
 
 trait Generate {
-    fn generate(&self, builder: &mut Builder);
+    fn generate(&self, stream: &mut Stream);
 }
 
 impl<T: Generate> Generate for Vec<T> {
-    fn generate(&self, builder: &mut Builder) {
+    fn generate(&self, stream: &mut Stream) {
         for x in self {
-            x.generate(builder)
+            x.generate(stream)
         }
     }
 }
 
 impl Generate for Node {
-    fn generate(&self, builder: &mut Builder) {
+    fn generate(&self, stream: &mut Stream) {
         match self {
-            Node::Element(element) => element.generate(builder),
-            Node::If(if_) => if_.generate(builder),
-            Node::Match(match_) => match_.generate(builder),
-            Node::For(for_) => for_.generate(builder),
-            Node::Expr(expr) => builder.expr(expr),
-            Node::Stmt(syn::Stmt::Expr(expr)) => builder.expr(expr),
-            Node::Stmt(stmt) => builder.extend(stmt.into_token_stream()),
+            Node::Element(element) => element.generate(stream),
+            Node::If(if_) => if_.generate(stream),
+            Node::Match(match_) => match_.generate(stream),
+            Node::For(for_) => for_.generate(stream),
+            Node::Expr(expr) => stream.expr(expr),
+            Node::Stmt(syn::Stmt::Expr(expr)) => stream.expr(expr),
+            Node::Stmt(stmt) => stream.extend(stmt.into_token_stream()),
         }
     }
 }
 
 impl Generate for Element {
-    fn generate(&self, builder: &mut Builder) {
+    fn generate(&self, stream: &mut Stream) {
         let Element {
             name,
             id,
@@ -112,98 +112,98 @@ impl Generate for Element {
             children,
             close,
         } = self;
-        builder.raw("<");
-        builder.str(name);
+        stream.raw("<");
+        stream.str(name);
         if let Some(id) = id {
-            builder.raw(" id=\"");
-            builder.expr(id);
-            builder.raw("\"");
+            stream.raw(" id=\"");
+            stream.expr(id);
+            stream.raw("\"");
         }
         if !classes.is_empty() {
-            builder.raw(" class=\"");
+            stream.raw(" class=\"");
             let mut first = true;
             for class in classes {
                 if first {
                     first = false;
                 } else {
-                    builder.str(" ");
+                    stream.str(" ");
                 }
-                builder.expr(class);
+                stream.expr(class);
             }
-            builder.raw("\"");
+            stream.raw("\"");
         }
         for Attribute { name, value, bool } in attributes {
             if *bool {
-                builder.extend(quote!(if #value));
-                builder.paren(|builder| {
-                    builder.str(" ");
-                    builder.expr(name);
+                stream.extend(quote!(if #value));
+                stream.paren(|stream| {
+                    stream.str(" ");
+                    stream.expr(name);
                 });
             } else {
-                builder.extend(quote!(let __value = #value;));
-                builder.extend(quote!(if !markup::Render::is_none(&__value)));
-                builder.paren(|builder| {
-                    builder.str(" ");
-                    builder.expr(name);
-                    builder.raw("=\"");
-                    builder.expr(&syn::parse_quote!(__value));
-                    builder.raw("\"");
+                stream.extend(quote!(let __value = #value;));
+                stream.extend(quote!(if !markup::Render::is_none(&__value)));
+                stream.paren(|stream| {
+                    stream.str(" ");
+                    stream.expr(name);
+                    stream.raw("=\"");
+                    stream.expr(&syn::parse_quote!(__value));
+                    stream.raw("\"");
                 });
             }
         }
-        builder.raw(">");
-        children.generate(builder);
+        stream.raw(">");
+        children.generate(stream);
         if *close {
-            builder.raw("</");
-            builder.str(name);
-            builder.raw(">");
+            stream.raw("</");
+            stream.str(name);
+            stream.raw(">");
         }
     }
 }
 
 impl Generate for If {
-    fn generate(&self, builder: &mut Builder) {
+    fn generate(&self, stream: &mut Stream) {
         let mut first = true;
         for clause in &self.clauses {
             let IfClause { test, consequent } = clause;
             if first {
                 first = false;
             } else {
-                builder.extend(quote!(else));
+                stream.extend(quote!(else));
             }
             match test {
-                IfClauseTest::Expr(expr) => builder.extend(quote!(if #expr)),
-                IfClauseTest::Let(pattern, expr) => builder.extend(quote!(if let #pattern = #expr)),
+                IfClauseTest::Expr(expr) => stream.extend(quote!(if #expr)),
+                IfClauseTest::Let(pattern, expr) => stream.extend(quote!(if let #pattern = #expr)),
             }
-            builder.paren(|builder| {
-                consequent.generate(builder);
+            stream.paren(|stream| {
+                consequent.generate(stream);
             });
         }
         if let Some(default) = &self.default {
-            builder.extend(quote!(else));
-            builder.paren(|builder| default.generate(builder))
+            stream.extend(quote!(else));
+            stream.paren(|stream| default.generate(stream))
         }
     }
 }
 
 impl Generate for Match {
-    fn generate(&self, builder: &mut Builder) {
+    fn generate(&self, stream: &mut Stream) {
         let Match { expr, clauses } = &*self;
-        builder.extend(quote!(match #expr));
-        builder.paren(|builder| {
+        stream.extend(quote!(match #expr));
+        stream.paren(|stream| {
             for clause in clauses {
                 let MatchClause {
                     pat,
                     guard,
                     consequent,
                 } = clause;
-                builder.extend(quote!(#pat));
+                stream.extend(quote!(#pat));
                 if let Some(guard) = guard {
-                    builder.extend(quote!(if #guard));
+                    stream.extend(quote!(if #guard));
                 }
-                builder.extend(quote!(=>));
-                builder.paren(|builder| {
-                    consequent.generate(builder);
+                stream.extend(quote!(=>));
+                stream.paren(|stream| {
+                    consequent.generate(stream);
                 })
             }
         });
@@ -211,20 +211,20 @@ impl Generate for Match {
 }
 
 impl Generate for For {
-    fn generate(&self, builder: &mut Builder) {
+    fn generate(&self, stream: &mut Stream) {
         let For { pat, expr, body } = self;
-        builder.extend(quote!(for #pat in #expr));
-        builder.paren(|builder| body.generate(builder))
+        stream.extend(quote!(for #pat in #expr));
+        stream.paren(|stream| body.generate(stream))
     }
 }
 
 #[derive(Default)]
-struct Builder {
+struct Stream {
     stream: TokenStream,
     buffer: String,
 }
 
-impl Builder {
+impl Stream {
     fn raw(&mut self, str: &str) {
         self.buffer.push_str(str);
     }
@@ -256,10 +256,10 @@ impl Builder {
         self.stream.extend(iter.into_iter());
     }
 
-    fn paren(&mut self, f: impl Fn(&mut Builder)) {
-        let mut builder = Builder::default();
-        f(&mut builder);
-        let stream = builder.finish();
+    fn paren(&mut self, f: impl Fn(&mut Stream)) {
+        let mut stream = Stream::default();
+        f(&mut stream);
+        let stream = stream.finish();
         self.stream.extend(quote!({#stream}));
     }
 
