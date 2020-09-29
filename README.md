@@ -307,15 +307,18 @@ println!("{}", Hello {});
 <span>3</span><span>7</span>
 ```
 
-@let
+`@` can be followed by any [Item](https://docs.rs/syn/1/syn/enum.Item.html):
 
 ```rust
 markup::define! {
     Main {
+        @const ONE: i32 = 1;
+        @#[derive(Debug)] struct Int(i32);
+        @let Int(two) = Int(2);
+        @ONE @two "\n"
         @for x in &[1, 2, 3] {
-            @let (double, triple) = (x * 2, x * 3);
-            @let sum = double + triple;
-            {double} " + " {triple} " = " {sum} "\n"
+            @let (_double, triple) = (x * 2, x * 3);
+            {x} " * 3 = " {triple} "\n"
         }
     }
 }
@@ -324,9 +327,10 @@ markup::define! {
 println!("{}", Main {});
 ```
 ```html
-2 + 3 = 5
-4 + 6 = 10
-6 + 9 = 15
+12
+1 * 3 = 3
+2 * 3 = 6
+3 * 3 = 9
 ```
 
 @if

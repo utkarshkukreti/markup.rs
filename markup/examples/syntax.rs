@@ -123,10 +123,13 @@ mod e8 {
 mod e9 {
     markup::define! {
         Main {
+            @const ONE: i32 = 1;
+            @#[derive(Debug)] struct Int(i32);
+            @let Int(two) = Int(2);
+            @ONE @two "\n"
             @for x in &[1, 2, 3] {
-                @let (double, triple) = (x * 2, x * 3);
-                @let sum = double + triple;
-                {double} " + " {triple} " = " {sum} "\n"
+                @let (_double, triple) = (x * 2, x * 3);
+                {x} " * 3 = " {triple} "\n"
             }
         }
     }

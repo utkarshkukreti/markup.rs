@@ -23,7 +23,6 @@ pub enum Node {
     Expr(syn::Expr),
     Stmt(syn::Stmt),
     Match(Match),
-    Let(Let),
 }
 
 #[derive(Debug)]
@@ -72,12 +71,6 @@ pub struct For {
     pub pat: syn::Pat,
     pub expr: syn::Expr,
     pub body: Vec<Node>,
-}
-
-#[derive(Debug)]
-pub struct Let {
-    pub pat: syn::Pat,
-    pub expr: syn::Expr,
 }
 
 #[derive(Debug)]

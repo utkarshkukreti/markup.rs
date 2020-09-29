@@ -1,6 +1,5 @@
 use crate::ast::{
-    Attribute, Element, For, If, IfClause, IfClauseTest, Let, Match, MatchClause, Node, Struct,
-    Template,
+    Attribute, Element, For, If, IfClause, IfClauseTest, Match, MatchClause, Node, Struct, Template,
 };
 use proc_macro2::TokenStream;
 use proc_macro2::TokenTree;
@@ -100,7 +99,6 @@ impl Generate for Node {
             Node::Expr(expr) => builder.expr(expr),
             Node::Stmt(syn::Stmt::Expr(expr)) => builder.expr(expr),
             Node::Stmt(stmt) => builder.extend(stmt.into_token_stream()),
-            Node::Let(let_) => let_.generate(builder),
         }
     }
 }
@@ -218,13 +216,6 @@ impl Generate for For {
         let For { pat, expr, body } = self;
         builder.extend(quote!(for #pat in #expr));
         builder.paren(|builder| body.generate(builder))
-    }
-}
-
-impl Generate for Let {
-    fn generate(&self, builder: &mut Builder) {
-        let Let { pat, expr } = self;
-        builder.extend(quote!(let #pat = #expr;))
     }
 }
 

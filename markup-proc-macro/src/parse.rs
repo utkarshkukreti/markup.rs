@@ -1,6 +1,5 @@
 use crate::ast::{
-    Attribute, Element, For, If, IfClause, IfClauseTest, Let, Match, MatchClause, Node, Struct,
-    Template,
+    Attribute, Element, For, If, IfClause, IfClauseTest, Match, MatchClause, Node, Struct, Template,
 };
 use syn::parse::{Parse, ParseStream, Result};
 use syn::punctuated::Punctuated;
@@ -88,11 +87,10 @@ impl Parse for Node {
             } else if lookahead.peek(syn::token::Match) {
                 let _: syn::token::Match = input.parse()?;
                 Ok(Node::Match(input.parse()?))
-            } else if lookahead.peek(syn::token::Let) {
-                let _: syn::token::Let = input.parse()?;
-                Ok(Node::Let(input.parse()?))
             } else {
-                if let Ok(syn::Expr::Call(_)) = input.fork().parse::<syn::Expr>() {
+                if let Ok(_) = input.fork().parse::<syn::Stmt>() {
+                    Ok(Node::Stmt(input.parse()?))
+                } else if let Ok(syn::Expr::Call(_)) = input.fork().parse::<syn::Expr>() {
                     Ok(Node::Expr(input.parse()?))
                 } else {
                     let tt: proc_macro2::TokenTree = input.parse()?;
@@ -313,16 +311,6 @@ impl Parse for For {
         syn::braced!(body in input);
         let body = body.parse::<Many<_>>()?.0;
         Ok(For { pat, expr, body })
-    }
-}
-
-impl Parse for Let {
-    fn parse(input: ParseStream) -> Result<Self> {
-        let pat = input.parse()?;
-        let _: syn::token::Eq = input.parse()?;
-        let expr = syn::Expr::parse_without_eager_brace(input)?;
-        let _: syn::token::Semi = input.parse()?;
-        Ok(Let { pat, expr })
     }
 }
 
