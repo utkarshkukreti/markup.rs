@@ -9,6 +9,8 @@ mod e0 {
             {format!("{}{}", 3, 4)}
             {if true { Some(5) } else { None }}
             {if false { Some(6) } else { None }}
+            @7
+            @{8 + 9}
         }
     }
 }

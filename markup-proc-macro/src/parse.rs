@@ -92,7 +92,9 @@ impl Parse for Node {
                 let _: syn::token::Let = input.parse()?;
                 Ok(Node::Let(input.parse()?))
             } else {
-                Err(lookahead.error())
+                let tokens: proc_macro2::TokenTree = input.parse()?;
+                let expr = syn::parse2(tokens.into())?;
+                Ok(Node::Expr(expr))
             }
         } else if lookahead.peek(syn::LitStr) {
             Ok(Node::String(input.parse::<syn::LitStr>()?.value()))
