@@ -462,10 +462,15 @@ Curly braces also accept single statements and items and outputs it as-is in the
 markup::define! {
     Main {
         {let x = 1;}
-        {fn add1(x: i32) -> i32 {
-            x + 1
-        }}
-        {add1(x)}
+        {
+            mod math {
+                pub fn add(x: i32, y: i32) -> i32 {
+                    x + y
+                }
+            }
+        }
+        {math::add(x, x)}
+        @math::add(x, x)
     }
 }
 ```
@@ -473,7 +478,7 @@ markup::define! {
 println!("{}", Main {});
 ```
 ```html
-2
+22
 ```
 
 <!-- /Syntax -->
