@@ -48,7 +48,7 @@ impl ToTokens for Struct {
                 fn render(&self, __writer: &mut impl std::fmt::Write) -> std::fmt::Result {
                     use std::fmt::Display;
                     let #name { #splat_fields } = self;
-                    #(#built)*
+                    #built
                     Ok(())
                 }
             }
@@ -69,7 +69,7 @@ impl ToTokens for Template {
         let built = builder.finish();
         tokens.extend(quote! {
             markup::Template(|__writer| {
-                #(#built)*
+                #built
                 Ok(())
             })
         })
@@ -220,7 +220,7 @@ impl Generate for For {
 
 #[derive(Default)]
 struct Builder {
-    tokens: Vec<TokenTree>,
+    stream: TokenStream,
     buffer: String,
 }
 
@@ -248,28 +248,23 @@ impl Builder {
     fn extend<Iter: IntoIterator<Item = TokenTree>>(&mut self, iter: Iter) {
         if !self.buffer.is_empty() {
             let buffer = &self.buffer;
-            self.tokens.extend(quote! {
+            self.stream.extend(quote! {
                 __writer.write_str(#buffer)?;
             });
             self.buffer.clear();
         }
-        self.tokens.extend(iter.into_iter());
+        self.stream.extend(iter.into_iter());
     }
 
     fn paren(&mut self, f: impl Fn(&mut Builder)) {
         let mut builder = Builder::default();
         f(&mut builder);
-        self.tokens.push(
-            proc_macro2::Group::new(
-                proc_macro2::Delimiter::Brace,
-                builder.finish().into_iter().collect(),
-            )
-            .into(),
-        );
+        let stream = builder.finish();
+        self.stream.extend(quote!({#stream}));
     }
 
-    fn finish(mut self) -> Vec<TokenTree> {
-        self.extend(quote!());
-        self.tokens
+    fn finish(mut self) -> TokenStream {
+        self.extend(None);
+        self.stream
     }
 }
