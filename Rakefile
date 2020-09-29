@@ -79,9 +79,9 @@ RS
 
   rs.close
 
-  system "rustfmt markup/examples/syntax.rs"
-
   output = `cd markup/examples && cargo run --quiet --example syntax`.split("\n\n")
+
+  rm "markup/examples/syntax.rs"
 
   md = stdout.gsub(/\n\{\{(\d+)\}\}/) {
     index = $1.to_i
