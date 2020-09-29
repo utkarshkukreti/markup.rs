@@ -135,14 +135,14 @@ impl Generate for Element {
         for Attribute { name, value, bool } in attributes {
             if *bool {
                 stream.extend(quote!(if #value));
-                stream.paren(|stream| {
+                stream.braced(|stream| {
                     stream.str(" ");
                     stream.expr(name);
                 });
             } else {
                 stream.extend(quote!(let __value = #value;));
                 stream.extend(quote!(if !markup::Render::is_none(&__value)));
-                stream.paren(|stream| {
+                stream.braced(|stream| {
                     stream.str(" ");
                     stream.expr(name);
                     stream.raw("=\"");
@@ -175,13 +175,13 @@ impl Generate for If {
                 IfClauseTest::Expr(expr) => stream.extend(quote!(if #expr)),
                 IfClauseTest::Let(pattern, expr) => stream.extend(quote!(if let #pattern = #expr)),
             }
-            stream.paren(|stream| {
+            stream.braced(|stream| {
                 consequent.generate(stream);
             });
         }
         if let Some(default) = &self.default {
             stream.extend(quote!(else));
-            stream.paren(|stream| default.generate(stream))
+            stream.braced(|stream| default.generate(stream))
         }
     }
 }
@@ -190,7 +190,7 @@ impl Generate for Match {
     fn generate(&self, stream: &mut Stream) {
         let Match { expr, clauses } = &*self;
         stream.extend(quote!(match #expr));
-        stream.paren(|stream| {
+        stream.braced(|stream| {
             for clause in clauses {
                 let MatchClause {
                     pat,
@@ -202,7 +202,7 @@ impl Generate for Match {
                     stream.extend(quote!(if #guard));
                 }
                 stream.extend(quote!(=>));
-                stream.paren(|stream| {
+                stream.braced(|stream| {
                     consequent.generate(stream);
                 })
             }
@@ -214,7 +214,7 @@ impl Generate for For {
     fn generate(&self, stream: &mut Stream) {
         let For { pat, expr, body } = self;
         stream.extend(quote!(for #pat in #expr));
-        stream.paren(|stream| body.generate(stream))
+        stream.braced(|stream| body.generate(stream))
     }
 }
 
@@ -256,7 +256,7 @@ impl Stream {
         self.stream.extend(iter);
     }
 
-    fn paren(&mut self, f: impl Fn(&mut Stream)) {
+    fn braced(&mut self, f: impl Fn(&mut Stream)) {
         let mut stream = Stream::default();
         f(&mut stream);
         let stream = stream.finish();
