@@ -126,7 +126,7 @@ mod e9 {
             @const ONE: i32 = 1;
             @#[derive(Debug)] struct Int(i32);
             @let Int(two) = Int(2);
-            @ONE @two "\n"
+            @format!("{} {}\n", ONE, two)
             @for x in &[1, 2, 3] {
                 @let (_double, triple) = (x * 2, x * 3);
                 {x} " * 3 = " {triple} "\n"

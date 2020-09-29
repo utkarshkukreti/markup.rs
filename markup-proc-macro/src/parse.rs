@@ -92,6 +92,8 @@ impl Parse for Node {
                     Ok(Node::Stmt(input.parse()?))
                 } else if let Ok(syn::Expr::Call(_)) = input.fork().parse::<syn::Expr>() {
                     Ok(Node::Expr(input.parse()?))
+                } else if let Ok(syn::Expr::Macro(_)) = input.fork().parse::<syn::Expr>() {
+                    Ok(Node::Expr(input.parse()?))
                 } else {
                     let tt: proc_macro2::TokenTree = input.parse()?;
                     let expr = syn::parse2(tt.into())?;
