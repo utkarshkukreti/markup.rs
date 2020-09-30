@@ -68,7 +68,7 @@ impl ToTokens for Template {
         self.nodes.generate(&mut stream);
         let built = stream.finish();
         tokens.extend(quote! {
-            markup::Template(|__writer| {
+            markup::Template::new(|__writer| {
                 #built
                 Ok(())
             })

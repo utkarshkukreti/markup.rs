@@ -87,9 +87,22 @@ pub fn doctype() -> impl Render {
     raw("<!DOCTYPE html>")
 }
 
-pub struct Template<F>(pub F)
+pub struct Template<F>
 where
-    F: Fn(&mut std::fmt::Formatter) -> std::fmt::Result;
+    F: Fn(&mut std::fmt::Formatter) -> std::fmt::Result,
+{
+    f: F,
+}
+
+impl<F> Template<F>
+where
+    F: Fn(&mut std::fmt::Formatter) -> std::fmt::Result,
+{
+    #[inline]
+    pub fn new(f: F) -> Self {
+        Template { f }
+    }
+}
 
 impl<F> std::fmt::Display for Template<F>
 where
@@ -97,7 +110,7 @@ where
 {
     #[inline]
     fn fmt(&self, __fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-        (self.0)(__fmt)
+        (self.f)(__fmt)
     }
 }
 
