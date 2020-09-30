@@ -12,9 +12,12 @@ readme = "README.md"
 keywords = ["template", "html", "pug", "jade", "haml"]
 categories = ["template-engine"]
 
+[features]
+faster = ["itoa"]
+
 [dependencies]
 markup-proc-macro = { path = "../markup-proc-macro", version = "0.9.1" }
-itoa = { version = "0.4", features = ["i128"] }
+itoa = { version = "0.4", features = ["i128"], optional = true }
 
 [dev-dependencies]
 criterion = "0.3"
