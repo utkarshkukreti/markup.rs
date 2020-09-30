@@ -21,4 +21,5 @@ jobs:
       - run: rake
       - run: cargo test
       - run: cargo bench
+      - run: cargo fmt -- --check
       - run: cargo clippy
