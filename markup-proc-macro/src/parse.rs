@@ -1,5 +1,6 @@
 use crate::ast::{
-    Attribute, Element, For, If, IfClause, IfClauseTest, Match, MatchClause, Node, Struct, Template,
+    Attribute, Element, For, If, IfClause, IfClauseTest, Match, MatchClause, Node, Struct,
+    ToString, ToWriter,
 };
 use syn::parse::{Parse, ParseStream, Result};
 use syn::punctuated::Punctuated;
@@ -60,10 +61,19 @@ impl Parse for Struct {
     }
 }
 
-impl Parse for Template {
+impl Parse for ToString {
     fn parse(input: ParseStream) -> Result<Self> {
         let nodes = input.parse::<Many<Node>>()?.0;
-        Ok(Template { nodes })
+        Ok(Self { nodes })
+    }
+}
+
+impl Parse for ToWriter {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let writer = input.parse()?;
+        let _: syn::Token![=>] = input.parse()?;
+        let nodes = input.parse::<Many<Node>>()?.0;
+        Ok(Self { writer, nodes })
     }
 }
 

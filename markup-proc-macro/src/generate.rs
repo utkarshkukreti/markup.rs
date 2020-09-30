@@ -1,5 +1,6 @@
 use crate::ast::{
-    Attribute, Element, For, If, IfClause, IfClauseTest, Match, MatchClause, Node, Struct, Template,
+    Attribute, Element, For, If, IfClause, IfClauseTest, Match, MatchClause, Node, Struct,
+    ToString, ToWriter,
 };
 use proc_macro2::TokenStream;
 use proc_macro2::TokenTree;
@@ -62,17 +63,38 @@ impl ToTokens for Struct {
     }
 }
 
-impl ToTokens for Template {
+impl ToTokens for ToString {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         let mut stream = Stream::default();
         self.nodes.generate(&mut stream);
         let built = stream.finish();
-        tokens.extend(quote! {
-            markup::Template::new(|__writer| {
+        tokens.extend(quote! {{
+            use std::fmt::Write;
+            let mut __string = String::new();
+            let __writer = &mut __string;
+            (|| -> std::fmt::Result {
                 #built
                 Ok(())
-            })
-        })
+            })().unwrap();
+            __string
+        }})
+    }
+}
+
+impl ToTokens for ToWriter {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let mut stream = Stream::default();
+        self.nodes.generate(&mut stream);
+        let built = stream.finish();
+        let writer = &self.writer;
+        tokens.extend(quote! {{
+            use std::fmt::Write;
+            let mut __writer = #writer;
+            (|| -> std::fmt::Result {
+                #built
+                Ok(())
+            })()
+        }})
     }
 }
 

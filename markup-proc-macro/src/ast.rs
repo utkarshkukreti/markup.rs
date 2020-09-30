@@ -10,7 +10,13 @@ pub struct Struct {
 }
 
 #[derive(Debug)]
-pub struct Template {
+pub struct ToString {
+    pub nodes: Vec<Node>,
+}
+
+#[derive(Debug)]
+pub struct ToWriter {
+    pub writer: syn::Expr,
     pub nodes: Vec<Node>,
 }
 

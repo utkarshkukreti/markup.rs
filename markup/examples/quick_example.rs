@@ -29,15 +29,25 @@ fn main() {
 
     let name = "Ferris";
     let times = 5;
+
     println!(
         "{}",
-        markup::render! {
+        markup::to_string! {
             h1 { "Greeting" }
             @for _ in 0..times {
-                p.greeting {
-                    "Hello " @name "!"
-                }
+                "Hello " @name "!"
             }
         }
     );
+
+    let mut string = String::new();
+    markup::to_writer! (
+        &mut string =>
+        h1 { "Greeting" }
+        @for _ in 0..times {
+            "Hello " @name "!"
+        }
+    )
+    .unwrap();
+    println!("{}", string);
 }
