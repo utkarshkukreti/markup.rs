@@ -13,7 +13,7 @@ Add the `markup` crate to your dependencies:
 
 ```toml
 [dependencies]
-markup = "0.9.0"
+markup = "0.9.1"
 ```
 
 Define your template using the `markup::define!` macro:
