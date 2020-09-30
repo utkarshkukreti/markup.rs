@@ -22,4 +22,3 @@ jobs:
       - run: cargo test
       - run: cargo bench
       - run: cargo clippy
-        continue-on-error: true
