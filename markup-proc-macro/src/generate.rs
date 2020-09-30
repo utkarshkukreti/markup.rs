@@ -96,7 +96,6 @@ impl Generate for Node {
             Node::Match(match_) => match_.generate(stream),
             Node::For(for_) => for_.generate(stream),
             Node::Expr(expr) => stream.expr(expr),
-            Node::Stmt(syn::Stmt::Expr(expr)) => stream.expr(expr),
             Node::Stmt(stmt) => stream.extend(stmt.into_token_stream()),
         }
     }

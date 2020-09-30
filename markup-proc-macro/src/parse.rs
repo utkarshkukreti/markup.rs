@@ -88,9 +88,8 @@ impl Parse for Node {
                 let _: syn::token::Match = input.parse()?;
                 Ok(Node::Match(input.parse()?))
             } else {
-                if let Ok(_) = input.fork().parse::<syn::Stmt>() {
-                    Ok(Node::Stmt(input.parse()?))
-                } else if let Ok(syn::Expr::Call(_))
+                if let Ok(syn::Expr::Block(_))
+                | Ok(syn::Expr::Call(_))
                 | Ok(syn::Expr::Field(_))
                 | Ok(syn::Expr::Lit(_))
                 | Ok(syn::Expr::Macro(_))
@@ -99,6 +98,8 @@ impl Parse for Node {
                 | Ok(syn::Expr::Struct(_)) = input.fork().parse::<syn::Expr>()
                 {
                     Ok(Node::Expr(input.parse()?))
+                } else if let Ok(_) = input.fork().parse::<syn::Stmt>() {
+                    Ok(Node::Stmt(input.parse()?))
                 } else {
                     Err(lookahead.error())
                 }
