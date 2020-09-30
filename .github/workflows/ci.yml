@@ -20,6 +20,7 @@ jobs:
       - run: cargo build
       - run: rake
       - run: cargo test
+      - run: cargo test --features faster
       - run: cargo bench
       - run: cargo fmt -- --check
         if: ${{ matrix.os == 'ubuntu-latest' }}
