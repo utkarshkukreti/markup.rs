@@ -57,7 +57,7 @@ impl<'a> Render for Raw<'a> {
 }
 
 #[inline]
-pub fn raw<'a>(t: &'a str) -> Raw<'a> {
+pub fn raw(t: &str) -> Raw {
     Raw(t)
 }
 

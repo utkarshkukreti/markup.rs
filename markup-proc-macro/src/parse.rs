@@ -89,20 +89,18 @@ impl Parse for Node {
                 Ok(Node::Match(input.parse()?))
             } else if lookahead.peek(syn::token::Brace) || lookahead.peek(syn::Lit) {
                 Ok(Node::Expr(input.parse()?))
+            } else if let Ok(syn::Expr::Call(_))
+            | Ok(syn::Expr::Field(_))
+            | Ok(syn::Expr::Macro(_))
+            | Ok(syn::Expr::MethodCall(_))
+            | Ok(syn::Expr::Path(_))
+            | Ok(syn::Expr::Struct(_)) = input.fork().parse::<syn::Expr>()
+            {
+                Ok(Node::Expr(input.parse()?))
+            } else if input.fork().parse::<syn::Stmt>().is_ok() {
+                Ok(Node::Stmt(input.parse()?))
             } else {
-                if let Ok(syn::Expr::Call(_))
-                | Ok(syn::Expr::Field(_))
-                | Ok(syn::Expr::Macro(_))
-                | Ok(syn::Expr::MethodCall(_))
-                | Ok(syn::Expr::Path(_))
-                | Ok(syn::Expr::Struct(_)) = input.fork().parse::<syn::Expr>()
-                {
-                    Ok(Node::Expr(input.parse()?))
-                } else if let Ok(_) = input.fork().parse::<syn::Stmt>() {
-                    Ok(Node::Stmt(input.parse()?))
-                } else {
-                    Err(lookahead.error())
-                }
+                Err(lookahead.error())
             }
         } else if lookahead.peek(syn::Lit) {
             let lit: syn::Lit = input.parse()?;
