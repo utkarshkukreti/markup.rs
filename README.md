@@ -16,54 +16,65 @@ Add the `markup` crate to your dependencies:
 markup = "0.9.1"
 ```
 
-Define your template using the `markup::define!` macro:
+### Template
 
 ```rust
+pub struct User {
+    name: String,
+}
+
+pub struct Post {
+    id: u32,
+    title: String,
+}
+
 markup::define! {
-    Hello<'a>(name: &'a str) {
+    Page<'a>(user: &'a User, posts: &'a [Post]) {
         @markup::doctype()
         html {
             head {
-                title { "Hello " @name }
+                title { "Hello " @user.name }
             }
             body {
                 #main.container {
-                    @Greeting { name: "Everyone!" }
-                    br;
-                    @Greeting { name: name }
+                    @for post in *posts {
+                        div#{format!("post-{}", post.id)}["data-id" = post.id] {
+                            .title { @post.title }
+                        }
+                    }
                 }
+                @Footer { name: &user.name, year: 2020 }
             }
         }
     }
-    Greeting<'a>(name: &'a str) {
-        p.greeting {
-            "Hello " @name "!"
-        }
+
+    Footer<'a>(name: &'a str, year: u32) {
+        "(c) " @year " " @name
     }
 }
 
 fn main() {
-    println!("{}", Hello { name: "Ferris" });
+    let user = User {
+        name: "Ferris".into(),
+    };
+    let posts = [Post {
+        id: 1,
+        title: "Announcing the Portable SIMD Project Group".into(),
+    }];
+
+    println!(
+        "{}",
+        Page {
+            user: &user,
+            posts: &posts
+        }
+    )
 }
 ```
 
-Render your template by either:
+### Output (manually prettified)
 
-1. Writing it to any instance of `std::io::Write`:
-
-   ```rust
-   write!(writer, "{}", Hello { name: "Ferris" });
-   ```
-
-2. Converting it to a string and using it however you like:
-
-   ```rust
-   let string = Hello { name: "Ferris" }.to_string();
-   ```
-
-Rendering the template produces (manually prettified):
-
-```html
+```
 <!DOCTYPE html>
 <html>
   <head>
@@ -71,12 +82,36 @@ Rendering the template produces (manually prettified):
   </head>
   <body>
     <div id="main" class="container">
-      <p class="greeting">Hello Everyone!</p>
-      <br>
-      <p class="greeting">Hello Ferris!</p>
+      <div id="post-1" data-id="1">
+        <div class="title">Road to Rust 1.0</div>
+      </div>
+      <div id="post-2" data-id="2">
+        <div class="title">Stability as a Deliverable</div>
+      </div>
+      <div id="post-3" data-id="3">
+        <div class="title">Cargo: Rust's community crate host</div>
+      </div>
     </div>
+    (c) 2020 Ferris
   </body>
 </html>
+```
+
+The template can either be rendered as a String or streamed into a writer.
+
+```
+let into_string = Page { user: &user, posts: &posts }.to_string();
+
+println!(
+    "{}",
+    Page { user: &user, posts: &posts }
+)
+
+write!(
+    writer,
+    "{}",
+    Page { user: &user, posts: &posts }
+)
 ```
 
 ## Syntax
