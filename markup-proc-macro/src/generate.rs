@@ -65,12 +65,13 @@ impl ToTokens for Struct {
 
 impl ToTokens for ToString {
     fn to_tokens(&self, tokens: &mut TokenStream) {
+        let Self { nodes, size_hint } = self;
         let mut stream = Stream::default();
-        self.nodes.generate(&mut stream);
+        nodes.generate(&mut stream);
         let built = stream.finish();
         tokens.extend(quote! {{
             use std::fmt::Write;
-            let mut __string = String::new();
+            let mut __string = String::with_capacity(#size_hint);
             let __writer = &mut __string;
             (|| -> std::fmt::Result {
                 #built

@@ -12,6 +12,7 @@ pub struct Struct {
 #[derive(Debug)]
 pub struct ToString {
     pub nodes: Vec<Node>,
+    pub size_hint: usize,
 }
 
 #[derive(Debug)]

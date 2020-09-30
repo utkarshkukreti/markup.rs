@@ -63,8 +63,11 @@ impl Parse for Struct {
 
 impl Parse for ToString {
     fn parse(input: ParseStream) -> Result<Self> {
+        let start_input_len = input.to_string().len();
         let nodes = input.parse::<Many<Node>>()?.0;
-        Ok(Self { nodes })
+        // See comment above for an explanation of this calculation.
+        let size_hint = start_input_len - input.to_string().len();
+        Ok(Self { nodes, size_hint })
     }
 }
 
