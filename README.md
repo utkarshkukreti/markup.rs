@@ -57,10 +57,21 @@ fn main() {
     let user = User {
         name: "Ferris".into(),
     };
-    let posts = [Post {
-        id: 1,
-        title: "Announcing the Portable SIMD Project Group".into(),
-    }];
+
+    let posts = [
+        Post {
+            id: 1,
+            title: "Road to Rust 1.0".into(),
+        },
+        Post {
+            id: 2,
+            title: "Stability as a Deliverable".into(),
+        },
+        Post {
+            id: 3,
+            title: "Cargo: Rust's community crate host".into(),
+        },
+    ];
 
     println!(
         "{}",
@@ -70,6 +81,7 @@ fn main() {
         }
     )
 }
+
 ```
 
 ### Output (manually prettified)
