@@ -92,15 +92,15 @@ impl Parse for Node {
                     Ok(Node::Stmt(input.parse()?))
                 } else if let Ok(syn::Expr::Call(_))
                 | Ok(syn::Expr::Field(_))
+                | Ok(syn::Expr::Lit(_))
                 | Ok(syn::Expr::Macro(_))
                 | Ok(syn::Expr::MethodCall(_))
+                | Ok(syn::Expr::Path(_))
                 | Ok(syn::Expr::Struct(_)) = input.fork().parse::<syn::Expr>()
                 {
                     Ok(Node::Expr(input.parse()?))
                 } else {
-                    let tt: proc_macro2::TokenTree = input.parse()?;
-                    let expr = syn::parse2(tt.into())?;
-                    Ok(Node::Expr(expr))
+                    Err(lookahead.error())
                 }
             }
         } else if lookahead.peek(syn::Lit) {
