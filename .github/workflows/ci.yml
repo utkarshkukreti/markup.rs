@@ -21,8 +21,10 @@ jobs:
       - run: rake
       - run: cargo test
       - run: cargo test --features faster
+        working-directory: markup
       - run: cargo bench
       - run: cargo bench --features faster
+        working-directory: markup
       - run: cargo fmt -- --check
         if: ${{ matrix.os == 'ubuntu-latest' }}
       - run: cargo clippy
