@@ -1,53 +1,62 @@
+pub struct User {
+    name: String,
+}
+
+pub struct Post {
+    id: u32,
+    title: String,
+}
+
 markup::define! {
-    Hello<'a>(name: &'a str) {
+    Page<'a>(user: &'a User, posts: &'a [Post]) {
         @markup::doctype()
         html {
             head {
-                title { "Hello " @name }
+                title { "Hello " @user.name }
             }
             body {
                 #main.container {
-                    @Greeting { name: "Everyone!" }
-                    br;
-                    @Greeting { name: name }
+                    @for post in *posts {
+                        div#{format!("post-{}", post.id)}["data-id" = post.id] {
+                            .title { @post.title }
+                        }
+                    }
                 }
+                @Footer { name: &user.name, year: 2020 }
             }
         }
     }
 
-    #[derive(Clone)]
-    /// A doc comment.
-    Greeting<'a>(name: &'a str) {
-        p.greeting {
-            "Hello " @name "!"
-        }
+    Footer<'a>(name: &'a str, year: u32) {
+        "(c) " @year " " @name
     }
 }
 
 fn main() {
-    println!("{}", Hello { name: "Ferris" });
+    let user = User {
+        name: "Ferris".into(),
+    };
 
-    let name = "Ferris";
-    let times = 5;
+    let posts = [
+        Post {
+            id: 1,
+            title: "Road to Rust 1.0".into(),
+        },
+        Post {
+            id: 2,
+            title: "Stability as a Deliverable".into(),
+        },
+        Post {
+            id: 3,
+            title: "Cargo: Rust's community crate host".into(),
+        },
+    ];
 
     println!(
         "{}",
-        markup::to_string! {
-            h1 { "Greeting" }
-            @for _ in 0..times {
-                "Hello " @name "!"
-            }
-        }
-    );
-
-    let mut string = String::new();
-    markup::to_writer! (
-        &mut string =>
-        h1 { "Greeting" }
-        @for _ in 0..times {
-            "Hello " @name "!"
+        Page {
+            user: &user,
+            posts: &posts
         }
     )
-    .unwrap();
-    println!("{}", string);
 }
