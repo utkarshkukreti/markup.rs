@@ -21,23 +21,23 @@ Define your template using the `markup::define!` macro:
 ```rust
 markup::define! {
     Hello<'a>(name: &'a str) {
-        {markup::doctype()}
+        @markup::doctype()
         html {
             head {
-                title { "Hello " {name} }
+                title { "Hello " @name }
             }
             body {
                 #main.container {
-                    {Greeting { name: "Everyone!" }}
+                    @Greeting { name: "Everyone!" }
                     br;
-                    {Greeting { name: name }}
+                    @Greeting { name: name }
                 }
             }
         }
     }
     Greeting<'a>(name: &'a str) {
         p.greeting {
-            "Hello " {name} "!"
+            "Hello " @name "!"
         }
     }
 }
