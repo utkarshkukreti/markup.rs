@@ -123,6 +123,7 @@ markup::define! {
         @{8 + 9}
         10
         11.12
+        {13 + 14}
     }
 }
 ```
@@ -131,7 +132,7 @@ println!("{}", Hello {});
 ```
 ```html
 Hello, world!
-3π3457171011.12
+3π3457171011.1227
 ```
 
 Elements can either have children inside `{}` or be a void tag, ending with `;`.

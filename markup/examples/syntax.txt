@@ -36,6 +36,7 @@ A template can have bare literal values and arbitrary expressions in braces.
     @{8 + 9}
     10
     11.12
+    {13 + 14}
 }
 - Hello {}
 
