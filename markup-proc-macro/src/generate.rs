@@ -126,7 +126,7 @@ impl Generate for Element {
                 if first {
                     first = false;
                 } else {
-                    stream.escaped(" ");
+                    stream.raw(" ");
                 }
                 stream.expr(class);
             }
@@ -136,14 +136,14 @@ impl Generate for Element {
             if *bool {
                 stream.extend(quote!(if #value));
                 stream.braced(|stream| {
-                    stream.escaped(" ");
+                    stream.raw(" ");
                     stream.expr(name);
                 });
             } else {
                 stream.extend(quote!(let __value = #value;));
                 stream.extend(quote!(if !markup::Render::is_none(&__value)));
                 stream.braced(|stream| {
-                    stream.escaped(" ");
+                    stream.raw(" ");
                     stream.expr(name);
                     stream.raw("=\"");
                     stream.expr(&syn::parse_quote!(__value));
