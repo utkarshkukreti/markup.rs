@@ -113,7 +113,7 @@ impl Generate for Element {
             close,
         } = self;
         stream.raw("<");
-        stream.str(name);
+        stream.escaped(name);
         if let Some(id) = id {
             stream.raw(" id=\"");
             stream.expr(id);
@@ -126,7 +126,7 @@ impl Generate for Element {
                 if first {
                     first = false;
                 } else {
-                    stream.str(" ");
+                    stream.escaped(" ");
                 }
                 stream.expr(class);
             }
@@ -136,14 +136,14 @@ impl Generate for Element {
             if *bool {
                 stream.extend(quote!(if #value));
                 stream.braced(|stream| {
-                    stream.str(" ");
+                    stream.escaped(" ");
                     stream.expr(name);
                 });
             } else {
                 stream.extend(quote!(let __value = #value;));
                 stream.extend(quote!(if !markup::Render::is_none(&__value)));
                 stream.braced(|stream| {
-                    stream.str(" ");
+                    stream.escaped(" ");
                     stream.expr(name);
                     stream.raw("=\"");
                     stream.expr(&syn::parse_quote!(__value));
@@ -155,7 +155,7 @@ impl Generate for Element {
         children.generate(stream);
         if *close {
             stream.raw("</");
-            stream.str(name);
+            stream.escaped(name);
             stream.raw(">");
         }
     }
@@ -229,7 +229,7 @@ impl Stream {
         self.buffer.push_str(str);
     }
 
-    fn str(&mut self, str: &str) {
+    fn escaped(&mut self, str: &str) {
         let mut string = String::new();
         crate::escape::escape(str, &mut string).unwrap();
         self.buffer.push_str(&string);
@@ -240,7 +240,7 @@ impl Stream {
             syn::Expr::Lit(syn::ExprLit {
                 lit: syn::Lit::Str(lit_str),
                 ..
-            }) => self.str(&lit_str.value()),
+            }) => self.escaped(&lit_str.value()),
             _ => self.extend(quote!(markup::Render::render(&(#expr), __writer)?;)),
         }
     }
