@@ -86,7 +86,7 @@ fn main() {
 
 ### Output (manually prettified)
 
-```
+```html
 <!DOCTYPE html>
 <html>
   <head>
@@ -111,7 +111,7 @@ fn main() {
 
 The template can either be rendered to a String or written to a writer.
 
-```
+```rust
 // Render to a String.
 let string = Page { user: &user, posts: &posts }.to_string();
 
