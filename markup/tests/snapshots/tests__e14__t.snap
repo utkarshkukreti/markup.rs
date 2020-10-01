@@ -1,9 +1,0 @@
----
-source: markup/tests/tests.rs
-expression: "Main{}"
----
-1 * 2 = 2;
-2 * 2 = 4;
-3 * 2 = 6;
-4 * 2 = 8;
-

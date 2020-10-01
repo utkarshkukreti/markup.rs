@@ -1,5 +1,4 @@
 default:
-	rake
 	cargo build
 	cargo test
 

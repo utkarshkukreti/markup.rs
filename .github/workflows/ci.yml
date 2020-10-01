@@ -18,7 +18,6 @@ jobs:
           override: true
           components: clippy, rustfmt
       - run: cargo build
-      - run: rake
       - run: cargo test
       - run: cargo bench
       - run: cargo fmt -- --check
