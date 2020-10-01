@@ -29,3 +29,63 @@ t! {
     E {} => "7 &lt; 8",
     F {} => "9 ≤ 10",
 }
+
+t! {
+    t2,
+    {
+        A {
+            {1 + 2}
+            {'π'}
+            {if true { Some(3) } else { Some(4) }}
+            {if false { Some(5) } else { Some(6) }}
+            {"<>"}
+        }
+    },
+    A {} => "3π36&lt;&gt;",
+}
+
+t! {
+    t3,
+    {
+        A {
+            div {}
+            br;
+        }
+    },
+    A {} => "<div></div><br>",
+}
+
+t! {
+    t4,
+    {
+        A {
+            1
+            .foo {
+                2
+                .bar.baz {
+                    3
+                    #quux {
+                        4
+                    }
+                    5
+                }
+                6
+            }
+            7
+        }
+    },
+    A {} => r#"1<div class="foo">2<div class="bar baz">3<div id="quux">4</div>5</div>6</div>7"#,
+}
+
+t! {
+    t5,
+    {
+        A {
+            foo#bar {
+                baz.quux#"foo".{1}.{2 + 3} {}
+                bar#{4}.{5 - 6} { 7 }
+            }
+        }
+    },
+    A {} => r#"<foo id="bar"><baz id="foo" class="quux 1 5"></baz><bar id="4" class="-1">7</bar></foo>"#,
+}
