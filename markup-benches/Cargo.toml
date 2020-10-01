@@ -1,0 +1,22 @@
+[package]
+name = "markup-benches"
+version = "0.0.0"
+edition = "2018"
+
+[dependencies]
+markup = { path = "../markup", version = "0.9.1" }
+
+[dev-dependencies]
+criterion = "0.3"
+
+[[bench]]
+name = "dynamic"
+harness = false
+
+[[bench]]
+name = "escape"
+harness = false
+
+[[bench]]
+name = "tbr"
+harness = false

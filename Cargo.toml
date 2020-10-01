@@ -1,2 +1,2 @@
 [workspace]
-members = ["markup", "markup-proc-macro"]
+members = ["markup", "markup-proc-macro", "markup-benches"]

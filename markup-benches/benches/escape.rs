@@ -3,7 +3,7 @@ use criterion::{criterion_group, criterion_main, Criterion, Throughput};
 criterion_group!(benches, bench_escape);
 criterion_main!(benches);
 
-#[path = "../src/escape.rs"]
+#[path = "../../markup/src/escape.rs"]
 mod escape;
 
 fn bench_escape(c: &mut Criterion) {
