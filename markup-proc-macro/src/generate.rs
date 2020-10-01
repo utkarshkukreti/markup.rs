@@ -71,7 +71,7 @@ impl ToTokens for Dynamic {
         nodes.generate(&mut stream);
         let built = stream.finish();
         tokens.extend(quote! {{
-            ::markup::dynamic(move |mut __writer: &mut dyn std::fmt::Write| -> std::fmt::Result {
+            ::markup::dynamic(move |mut __writer| {
                 let mut __writer = &mut __writer;
                 #built
                 Ok(())
@@ -91,7 +91,7 @@ impl ToTokens for ToString {
             let mut __string = String::with_capacity(#size_hint);
             let __writer = &mut __string;
             // Ignoring the result because writing to a String can't fail.
-            let _ = (|| -> std::fmt::Result {
+            let _ = (|| {
                 #built
                 Ok(())
             })();
@@ -109,7 +109,7 @@ impl ToTokens for ToWriter {
         tokens.extend(quote! {{
             use std::fmt::Write;
             let mut __writer = #writer;
-            (|| -> std::fmt::Result {
+            (|| {
                 #built
                 Ok(())
             })()
