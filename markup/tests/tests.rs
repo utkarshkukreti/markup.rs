@@ -89,3 +89,23 @@ t! {
     },
     A {} => r#"<foo id="bar"><baz id="foo" class="quux 1 5"></baz><bar id="4" class="-1">7</bar></foo>"#,
 }
+
+t! {
+    t6,
+    {
+        A {
+            div [
+                a = 1,
+                b = "2",
+                c? = true,
+                d? = false,
+                "e-f" = 3,
+                {"g".to_string() + "-h"} = 4,
+                i = None::<i32>,
+                j = Some(5)
+            ] {}
+            br[k = 6];
+        }
+    },
+    A {} => r#"<div a="1" b="2" c e-f="3" g-h="4" j="5"></div><br k="6">"#,
+}
