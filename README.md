@@ -333,7 +333,7 @@ markup::define! {
 }
 ```
 ```rust
-println!("{}", Hello { arg: (1, 2), arg2: "arg2", str: "str", v: markup::new!(foo {}) });
+println!("{}", Hello { arg: (1, 2), arg2: "arg2", str: "str", v: markup::dynamic!(foo {}) });
 ```
 ```html
 <div>(1, 2)arg2str<foo></foo></div>

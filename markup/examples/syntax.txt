@@ -130,7 +130,7 @@ The arguments may have an optional trailing comma.
         @v
     }
 }
-- Hello { arg: (1, 2), arg2: "arg2", str: "str", v: markup::new!(foo {}) }
+- Hello { arg: (1, 2), arg2: "arg2", str: "str", v: markup::dynamic!(foo {}) }
 
 Other templates can be embedded by simply putting them in braces.
 

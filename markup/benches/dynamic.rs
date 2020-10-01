@@ -14,7 +14,7 @@ markup::define! {
 }
 
 fn dynamic<'a>(data: &'a [usize]) -> impl markup::Render + std::fmt::Display + 'a {
-    markup::new! {
+    markup::dynamic! {
         foo {
             @for d in data {
                 bar { "Hello" @d "World" }

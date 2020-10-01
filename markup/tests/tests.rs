@@ -157,7 +157,7 @@ mod e8 {
             arg: (1, 2),
             arg2: "arg2",
             str: "str",
-            v: markup::new!(foo {})
+            v: markup::dynamic!(foo {})
         });
     }
 }
