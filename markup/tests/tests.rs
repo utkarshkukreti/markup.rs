@@ -136,15 +136,17 @@ mod e7 {
 
 mod e8 {
     markup::define! {
-        Hello<'a, T: std::fmt::Debug, U>(
+        Hello<'a, T: std::fmt::Debug, U, V: markup::Render>(
             arg: T,
             arg2: U,
             str: &'a str,
+            v: V,
         ) where U: std::fmt::Display {
             div {
                 @format!("{:?}", arg)
                 @format!("{}", arg2)
                 @str
+                @v
             }
         }
     }
@@ -154,7 +156,8 @@ mod e8 {
         insta::assert_display_snapshot!(Hello {
             arg: (1, 2),
             arg2: "arg2",
-            str: "str"
+            str: "str",
+            v: markup::new!(foo {})
         });
     }
 }

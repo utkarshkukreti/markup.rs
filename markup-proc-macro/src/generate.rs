@@ -1,5 +1,5 @@
 use crate::ast::{
-    Attribute, Element, For, If, IfClause, IfClauseTest, Match, MatchClause, Node, Struct,
+    Attribute, Dynamic, Element, For, If, IfClause, IfClauseTest, Match, MatchClause, Node, Struct,
     ToString, ToWriter,
 };
 use proc_macro2::TokenStream;
@@ -60,6 +60,22 @@ impl ToTokens for Struct {
                 }
             }
         })
+    }
+}
+
+impl ToTokens for Dynamic {
+    fn to_tokens(&self, tokens: &mut TokenStream) {
+        let Self { nodes } = self;
+        let mut stream = Stream::default();
+        nodes.generate(&mut stream);
+        let built = stream.finish();
+        tokens.extend(quote! {{
+            ::markup::dynamic(move |mut __writer: &mut dyn std::fmt::Write| -> std::fmt::Result {
+                let mut __writer = &mut __writer;
+                #built
+                Ok(())
+            })
+        }})
     }
 }
 

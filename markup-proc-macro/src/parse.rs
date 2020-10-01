@@ -1,5 +1,5 @@
 use crate::ast::{
-    Attribute, Element, For, If, IfClause, IfClauseTest, Match, MatchClause, Node, Struct,
+    Attribute, Dynamic, Element, For, If, IfClause, IfClauseTest, Match, MatchClause, Node, Struct,
     ToString, ToWriter,
 };
 use syn::parse::{Parse, ParseStream, Result};
@@ -58,6 +58,13 @@ impl Parse for Struct {
             nodes,
             size_hint,
         })
+    }
+}
+
+impl Parse for Dynamic {
+    fn parse(input: ParseStream) -> Result<Self> {
+        let nodes = input.parse::<Many<Node>>()?.0;
+        Ok(Self { nodes })
     }
 }
 

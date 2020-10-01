@@ -117,18 +117,20 @@ The arguments may have an optional trailing comma.
 }
 - Hello { foo: 1, bar: 2, string: String::from("hello") }
 
-+ Hello<'a, T: std::fmt::Debug, U>(
++ Hello<'a, T: std::fmt::Debug, U, V: markup::Render>(
     arg: T,
     arg2: U,
     str: &'a str,
+    v: V,
 ) where U: std::fmt::Display {
     div {
         @format!("{:?}", arg)
         @format!("{}", arg2)
         @str
+        @v
     }
 }
-- Hello { arg: (1, 2), arg2: "arg2", str: "str" }
+- Hello { arg: (1, 2), arg2: "arg2", str: "str", v: markup::new!(foo {}) }
 
 Other templates can be embedded by simply putting them in braces.
 

@@ -317,24 +317,26 @@ println!("{}", Hello { foo: 1, bar: 2, string: String::from("hello") });
 
 ```rust
 markup::define! {
-    Hello<'a, T: std::fmt::Debug, U>(
+    Hello<'a, T: std::fmt::Debug, U, V: markup::Render>(
         arg: T,
         arg2: U,
         str: &'a str,
+        v: V,
     ) where U: std::fmt::Display {
         div {
             @format!("{:?}", arg)
             @format!("{}", arg2)
             @str
+            @v
         }
     }
 }
 ```
 ```rust
-println!("{}", Hello { arg: (1, 2), arg2: "arg2", str: "str" });
+println!("{}", Hello { arg: (1, 2), arg2: "arg2", str: "str", v: markup::new!(foo {}) });
 ```
 ```html
-<div>(1, 2)arg2str</div>
+<div>(1, 2)arg2str<foo></foo></div>
 ```
 
 Other templates can be embedded by simply putting them in braces.

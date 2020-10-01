@@ -1,5 +1,5 @@
 ---
 source: markup/tests/tests.rs
-expression: "Hello{arg: (1, 2), arg2: \"arg2\", str: \"str\",}"
+expression: "Hello{arg: (1, 2), arg2: \"arg2\", str: \"str\", v: markup::new!(foo { }),}"
 ---
-<div>(1, 2)arg2str</div>
+<div>(1, 2)arg2str<foo></foo></div>

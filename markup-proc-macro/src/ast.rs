@@ -10,6 +10,11 @@ pub struct Struct {
 }
 
 #[derive(Debug)]
+pub struct Dynamic {
+    pub nodes: Vec<Node>,
+}
+
+#[derive(Debug)]
 pub struct ToString {
     pub nodes: Vec<Node>,
     pub size_hint: usize,

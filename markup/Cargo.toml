@@ -21,6 +21,10 @@ criterion = "0.3"
 insta = "0.16"
 
 [[bench]]
+name = "dynamic"
+harness = false
+
+[[bench]]
 name = "escape"
 harness = false
 

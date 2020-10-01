@@ -1,4 +1,4 @@
-pub use markup_proc_macro::{define, to_string, to_writer};
+pub use markup_proc_macro::{define, new, to_string, to_writer};
 
 mod escape;
 
@@ -68,6 +68,37 @@ impl_render_with! {
     [u8 u16 u32 u64 u128 usize i8 i16 i32 i64 i128 isize] => |self_, w| itoa::fmt(w, *self_),
     [str] => |self_, w| escape::escape(self_, w),
     [String] => |self_, w| self_.as_str().render_to(w),
+}
+
+struct Dynamic<F> {
+    f: F,
+}
+
+pub fn dynamic<'a, F>(f: F) -> impl Render + std::fmt::Display + 'a
+where
+    F: Fn(&mut dyn std::fmt::Write) -> std::fmt::Result + 'a,
+{
+    Dynamic { f }
+}
+
+impl<F> Render for Dynamic<F>
+where
+    F: Fn(&mut dyn std::fmt::Write) -> std::fmt::Result,
+{
+    #[inline]
+    fn render_to(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
+        (self.f)(w)
+    }
+}
+
+impl<F> std::fmt::Display for Dynamic<F>
+where
+    F: Fn(&mut dyn std::fmt::Write) -> std::fmt::Result,
+{
+    #[inline]
+    fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
+        Render::render_to(self, fmt)
+    }
 }
 
 #[inline]
