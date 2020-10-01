@@ -33,20 +33,6 @@ impl<T: Render> Render for Option<T> {
     }
 }
 
-impl Render for str {
-    #[inline]
-    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
-        escape::escape(self, w)
-    }
-}
-
-impl Render for String {
-    #[inline]
-    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
-        self.as_str().render(w)
-    }
-}
-
 pub struct Raw<'a>(&'a str);
 
 impl<'a> Render for Raw<'a> {
@@ -80,6 +66,8 @@ macro_rules! impl_render_with {
 impl_render_with! {
     [bool char f32 f64] => |self_, w| write!(w, "{}", self_),
     [u8 u16 u32 u64 u128 usize i8 i16 i32 i64 i128 isize] => |self_, w| itoa::fmt(w, *self_),
+    [str] => |self_, w| escape::escape(self_, w),
+    [String] => |self_, w| self_.as_str().render(w),
 }
 
 #[inline]
