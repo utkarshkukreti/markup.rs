@@ -91,7 +91,7 @@ impl ToTokens for ToString {
             let mut __string = String::with_capacity(#size_hint);
             let __writer = &mut __string;
             // Ignoring the result because writing to a String can't fail.
-            let _ = (|| {
+            let _ = (|| -> std::fmt::Result {
                 #built
                 Ok(())
             })();
