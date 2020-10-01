@@ -41,7 +41,8 @@ impl ToTokens for Struct {
                 pub fn to_string(&self) -> String {
                     use std::fmt::{Display, Write};
                     let mut string = String::with_capacity(#size_hint);
-                    markup::Render::render_to(self, &mut string).unwrap();
+                    // Ignoring the result because writing to a String can't fail.
+                    let _ = markup::Render::render_to(self, &mut string);
                     string
                 }
             }
@@ -89,10 +90,11 @@ impl ToTokens for ToString {
             use std::fmt::Write;
             let mut __string = String::with_capacity(#size_hint);
             let __writer = &mut __string;
-            (|| -> std::fmt::Result {
+            // Ignoring the result because writing to a String can't fail.
+            let _ = (|| -> std::fmt::Result {
                 #built
                 Ok(())
-            })().unwrap();
+            })();
             __string
         }})
     }
