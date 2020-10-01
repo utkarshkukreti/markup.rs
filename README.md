@@ -161,13 +161,13 @@ markup::define! {
         "Hello,"
         " "
         "world!\n"
-        @{1 + 2}
-        @{'π'}
-        @{format!("{}{}", 3, 4)}
-        @{if true { Some(5) } else { None }}
-        @{if false { Some(6) } else { None }}
+        {1 + 2}
+        {'π'}
+        {format!("{}{}", 3, 4)}
+        {if true { Some(5) } else { None }}
+        {if false { Some(6) } else { None }}
         @7
-        @{8 + 9}
+        {8 + 9}
         10
         11.12
         {13 + 14}
@@ -261,11 +261,11 @@ markup::define! {
     Hello {
         .foo[a = 1] {
             "One"
-            @{0 + 1}
+            {0 + 1}
         }
         div {
             "Two"
-            @{1 + 1}
+            {1 + 1}
         }
     }
 }
@@ -302,7 +302,7 @@ The arguments may have an optional trailing comma.
 markup::define! {
     Hello(foo: u32, bar: u32, string: String) {
         div {
-            @{foo + bar}
+            {foo + bar}
             @string
         }
     }
@@ -344,7 +344,7 @@ Other templates can be embedded by simply putting them in braces.
 ```rust
 markup::define! {
     Add(a: u32, b: u32) {
-        span { @{a + b} }
+        span { {a + b} }
     }
     Hello {
         @Add { a: 1, b: 2 }
@@ -503,7 +503,7 @@ Other
 markup::define! {
     Main {
         @for i in 1..5 {
-            @i " * 2 = " @{i * 2} ";\n"
+            @i " * 2 = " {i * 2} ";\n"
         }
     }
 }
