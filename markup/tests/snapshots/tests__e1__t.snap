@@ -3,4 +3,4 @@ source: markup/tests/tests.rs
 expression: "Hello{}"
 ---
 Hello, world!
-3π3457171011.1227
+3π3457171011.1227&lt;&gt;&lt;&gt;

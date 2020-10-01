@@ -171,6 +171,8 @@ markup::define! {
         10
         11.12
         {13 + 14}
+        "<>"
+        {"<>"}
     }
 }
 ```
@@ -179,7 +181,7 @@ println!("{}", Hello {});
 ```
 ```html
 Hello, world!
-3π3457171011.1227
+3π3457171011.1227&lt;&gt;&lt;&gt;
 ```
 
 Elements can either have children inside `{}` or be a void tag, ending with `;`.
