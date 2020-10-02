@@ -41,12 +41,12 @@ impl ToTokens for Struct {
                     use std::fmt::{Display, Write};
                     let mut string = String::with_capacity(#size_hint);
                     // Ignoring the result because writing to a String can't fail.
-                    let _ = markup::Render::render_to(self, &mut string);
+                    let _ = markup::Render::write_to(self, &mut string);
                     string
                 }
             }
             impl #impl_generics markup::Render for #name #ty_generics #where_clause {
-                fn render_to(&self, __writer: &mut impl std::fmt::Write) -> std::fmt::Result {
+                fn write_to(&self, __writer: &mut impl std::fmt::Write) -> std::fmt::Result {
                     use std::fmt::Display;
                     let #name { #splat_fields } = self;
                     #built
@@ -56,7 +56,7 @@ impl ToTokens for Struct {
             impl #impl_generics std::fmt::Display for #name #ty_generics #where_clause {
                 #[inline]
                 fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-                    markup::Render::render_to(self, fmt)
+                    markup::Render::write_to(self, fmt)
                 }
             }
         })
@@ -243,7 +243,7 @@ impl Stream {
                 lit: syn::Lit::Str(lit_str),
                 ..
             }) => self.escaped(&lit_str.value()),
-            _ => self.extend(quote!(markup::Render::render_to(&(#expr), __writer)?;)),
+            _ => self.extend(quote!(markup::Render::write_to(&(#expr), __writer)?;)),
         }
     }
 
