@@ -38,7 +38,6 @@ impl ToTokens for Struct {
             impl #impl_generics #name #ty_generics #where_clause {
                 #[inline]
                 pub fn to_string(&self) -> String {
-                    use std::fmt::{Display, Write};
                     let mut string = String::with_capacity(#size_hint);
                     // Ignoring the result because writing to a String can't fail.
                     let _ = markup::Render::write_to(self, &mut string);
@@ -47,7 +46,6 @@ impl ToTokens for Struct {
             }
             impl #impl_generics markup::Render for #name #ty_generics #where_clause {
                 fn write_to(&self, __writer: &mut impl std::fmt::Write) -> std::fmt::Result {
-                    use std::fmt::Display;
                     let #name { #splat_fields } = self;
                     #built
                     Ok(())
