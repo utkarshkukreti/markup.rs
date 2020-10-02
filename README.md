@@ -104,24 +104,3 @@ fn main() {
   </body>
 </html>
 ```
-
-The template can either be rendered to a String or written to a writer.
-
-```rust
-// Render to a String.
-let string = Page { user: &user, posts: &posts }.to_string();
-
-// Render and print directly to stdout.
-println!(
-    "{}",
-    Page { user: &user, posts: &posts }
-);
-
-// Render and write to `writer`, which can be any value `std::write!` [1] supports.
-// [1]: https://doc.rust-lang.org/stable/std/macro.write.html
-write!(
-    writer,
-    "{}",
-    Page { user: &user, posts: &posts }
-);
-```
