@@ -50,53 +50,6 @@ pub fn dynamic(fortunes: &[Fortune]) -> impl std::fmt::Display + '_ {
     }
 }
 
-pub fn to_string(fortunes: &[Fortune]) -> String {
-    markup::to_string! {
-        {markup::doctype()}
-        html {
-            head {
-                title { "Fortunes" }
-            }
-            body {
-                table {
-                    tr { th { "id" } th { "message" } }
-                    @for item in fortunes {
-                        tr {
-                            td { @item.id }
-                            td { @item.message }
-                        }
-                    }
-                }
-            }
-        }
-
-    }
-}
-
-pub fn to_writer(fortunes: &[Fortune], writer: &mut impl std::fmt::Write) -> std::fmt::Result {
-    markup::to_writer! {
-        writer =>
-        {markup::doctype()}
-        html {
-            head {
-                title { "Fortunes" }
-            }
-            body {
-                table {
-                    tr { th { "id" } th { "message" } }
-                    @for item in fortunes {
-                        tr {
-                            td { @item.id }
-                            td { @item.message }
-                        }
-                    }
-                }
-            }
-        }
-
-    }
-}
-
 pub static FORTUNES: &[Fortune] = &[
     Fortune {
         id: 1,
@@ -153,22 +106,6 @@ pub static FORTUNES: &[Fortune] = &[
 fn t() {
     let define = Define { fortunes: FORTUNES }.to_string();
     let dynamic = dynamic(FORTUNES).to_string();
-    let to_string = to_string(FORTUNES);
-    let to_writer = {
-        let mut string = String::new();
-        to_writer(FORTUNES, &mut string).unwrap();
-        string
-    };
-
     assert_eq!(define.len(), 1153);
     assert_eq!(define, dynamic);
-    assert_eq!(define, to_string);
-    assert_eq!(define, to_writer);
-}
-
-#[test]
-fn to_writer_type_inference_bug() {
-    let mut string = String::new();
-    markup::to_writer!(&mut string => div {}).unwrap();
-    assert_eq!(string, "<div></div>");
 }

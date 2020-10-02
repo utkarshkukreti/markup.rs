@@ -15,18 +15,6 @@ pub struct Dynamic {
 }
 
 #[derive(Debug)]
-pub struct ToString {
-    pub nodes: Vec<Node>,
-    pub size_hint: usize,
-}
-
-#[derive(Debug)]
-pub struct ToWriter {
-    pub writer: syn::Expr,
-    pub nodes: Vec<Node>,
-}
-
-#[derive(Debug)]
 pub enum Node {
     Element(Element),
     If(If),

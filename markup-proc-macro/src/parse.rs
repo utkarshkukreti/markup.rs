@@ -1,6 +1,5 @@
 use crate::ast::{
     Attribute, Dynamic, Element, For, If, IfClause, IfClauseTest, Match, MatchClause, Node, Struct,
-    ToString, ToWriter,
 };
 use syn::parse::{Parse, ParseStream, Result};
 use syn::punctuated::Punctuated;
@@ -65,25 +64,6 @@ impl Parse for Dynamic {
     fn parse(input: ParseStream) -> Result<Self> {
         let nodes = input.parse::<Many<Node>>()?.0;
         Ok(Self { nodes })
-    }
-}
-
-impl Parse for ToString {
-    fn parse(input: ParseStream) -> Result<Self> {
-        let start_input_len = input.to_string().len();
-        let nodes = input.parse::<Many<Node>>()?.0;
-        // See comment above for an explanation of this calculation.
-        let size_hint = start_input_len - input.to_string().len();
-        Ok(Self { nodes, size_hint })
-    }
-}
-
-impl Parse for ToWriter {
-    fn parse(input: ParseStream) -> Result<Self> {
-        let writer = input.parse()?;
-        let _: syn::Token![=>] = input.parse()?;
-        let nodes = input.parse::<Many<Node>>()?.0;
-        Ok(Self { writer, nodes })
     }
 }
 

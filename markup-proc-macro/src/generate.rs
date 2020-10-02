@@ -1,6 +1,5 @@
 use crate::ast::{
     Attribute, Dynamic, Element, For, If, IfClause, IfClauseTest, Match, MatchClause, Node, Struct,
-    ToString, ToWriter,
 };
 use proc_macro2::TokenStream;
 use proc_macro2::TokenTree;
@@ -76,43 +75,6 @@ impl ToTokens for Dynamic {
                 #built
                 Ok(())
             })
-        }})
-    }
-}
-
-impl ToTokens for ToString {
-    fn to_tokens(&self, tokens: &mut TokenStream) {
-        let Self { nodes, size_hint } = self;
-        let mut stream = Stream::default();
-        nodes.generate(&mut stream);
-        let built = stream.finish();
-        tokens.extend(quote! {{
-            use std::fmt::Write;
-            let mut __string = String::with_capacity(#size_hint);
-            let __writer = &mut __string;
-            // Ignoring the result because writing to a String can't fail.
-            let _ = (|| -> std::fmt::Result {
-                #built
-                Ok(())
-            })();
-            __string
-        }})
-    }
-}
-
-impl ToTokens for ToWriter {
-    fn to_tokens(&self, tokens: &mut TokenStream) {
-        let mut stream = Stream::default();
-        self.nodes.generate(&mut stream);
-        let built = stream.finish();
-        let writer = &self.writer;
-        tokens.extend(quote! {{
-            use std::fmt::Write;
-            let mut __writer = #writer;
-            (|| -> std::fmt::Result {
-                #built
-                Ok(())
-            })()
         }})
     }
 }

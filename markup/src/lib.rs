@@ -1,4 +1,4 @@
-pub use markup_proc_macro::{define, dynamic, to_string, to_writer};
+pub use markup_proc_macro::{define, dynamic};
 
 mod escape;
 
