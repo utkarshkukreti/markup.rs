@@ -3,6 +3,7 @@ default:
 	cargo fmt -- --check
 	cargo build
 	cargo test
+	cargo test --examples
 
 publish:
 	cd markup-proc-macro && cargo publish
