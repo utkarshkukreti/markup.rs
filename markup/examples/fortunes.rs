@@ -100,6 +100,11 @@ pub static FORTUNES: &[Fortune] = &[
     },
 ];
 
+#[allow(dead_code)]
+pub fn main() {
+    println!("{}", Define { fortunes: FORTUNES });
+}
+
 #[test]
 fn t() {
     let define = Define { fortunes: FORTUNES }.to_string();

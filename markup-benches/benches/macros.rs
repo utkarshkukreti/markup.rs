@@ -3,7 +3,7 @@ use criterion::{criterion_group, criterion_main, Criterion, Throughput};
 criterion_group!(benches, bench_dynamic);
 criterion_main!(benches);
 
-#[path = "../../markup/tests/macros.rs"]
+#[path = "../../markup/examples/fortunes.rs"]
 mod imp;
 
 fn bench_dynamic(c: &mut Criterion) {
