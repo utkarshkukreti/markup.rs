@@ -144,3 +144,24 @@ t! {
         v: markup::dynamic!(foo {})
     } => "<div>(1, 2)arg2str<foo></foo></div>",
 }
+
+t! {
+    t9,
+    {
+        A<Bar: Fn(i32) -> String>(foo: i32, bar: Bar, baz: B) {
+            @foo
+            @bar(*foo + 1)
+            @baz.foo
+            @format!("{} {} {}", foo, bar(*foo + 2), baz.foo + 3)
+            @B { foo: foo + 4 }
+        }
+        B(foo: i32) {
+            @foo @foo @foo
+        }
+    },
+    A {
+        foo: 1,
+        bar: |x| (x + 2).to_string(),
+        baz: B { foo: 3 },
+    } => "1431 5 6555",
+}
