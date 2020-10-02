@@ -109,3 +109,13 @@ t! {
     },
     A {} => r#"<div a="1" b="2" c e-f="3" g-h="4" j="5"></div><br k="6">"#,
 }
+
+t! {
+    t7,
+    {
+        A(foo: u32, bar: i32, baz: String) {
+            {foo} {bar} {*foo as i32 + bar} {baz}
+        }
+    },
+    A { foo: 1, bar: -2, baz: "3".into() } => "1-2-13",
+}
