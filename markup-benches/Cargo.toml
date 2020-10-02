@@ -10,11 +10,11 @@ markup = { path = "../markup", version = "0.10.0" }
 criterion = "0.3"
 
 [[bench]]
-name = "macros"
+name = "escape"
 harness = false
 
 [[bench]]
-name = "escape"
+name = "fortunes"
 harness = false
 
 [[bench]]
