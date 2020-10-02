@@ -16,72 +16,60 @@ Add the `markup` crate to your dependencies:
 markup = "0.9.1"
 ```
 
-### Template
+## Quick Example
 
 ```rust
-pub struct User {
-    name: String,
-}
-
-pub struct Post {
-    id: u32,
-    title: String,
-}
-
 markup::define! {
-    Page<'a>(user: &'a User, posts: &'a [Post]) {
+    Home<'a>(title: &'a str) {
         @markup::doctype()
         html {
             head {
-                title { "Hello " @user.name }
+                title { @title }
+                style {
+                    "body { background: #fafbfc; }"
+                    "#main { padding: 2rem; }"
+                }
             }
             body {
-                #main.container {
-                    @for post in *posts {
-                        div#{format!("post-{}", post.id)}["data-id" = post.id] {
-                            .title { @post.title }
+                @Header { title }
+                #main {
+                    p {
+                        "This domain is for use in illustrative examples in documents. You may \
+                        use this domain in literature without prior coordination or asking for \
+                        permission."
+                    }
+                    p {
+                        a[href = "https://www.iana.org/domains/example"] {
+                            "More information..."
                         }
                     }
                 }
-                @Footer { name: &user.name, year: 2020 }
+                @Footer { year: 2020 }
             }
         }
     }
 
-    Footer<'a>(name: &'a str, year: u32) {
-        "(c) " @year " " @name
+    Header<'a>(title: &'a str) {
+        header {
+            h1 { @title }
+        }
+    }
+
+    Footer(year: u32) {
+        footer {
+            "(c) " @year
+        }
     }
 }
 
 fn main() {
-    let user = User {
-        name: "Ferris".into(),
-    };
-
-    let posts = [
-        Post {
-            id: 1,
-            title: "Road to Rust 1.0".into(),
-        },
-        Post {
-            id: 2,
-            title: "Stability as a Deliverable".into(),
-        },
-        Post {
-            id: 3,
-            title: "Cargo: Rust's community crate host".into(),
-        },
-    ];
-
     println!(
         "{}",
-        Page {
-            user: &user,
-            posts: &posts
+        Home {
+            title: "Example Domain"
         }
     )
 }
-
 ```
 
 ### Output (manually prettified)
@@ -90,21 +78,29 @@ fn main() {
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Hello Ferris</title>
+    <title>Example Domain</title>
+    <style>
+      body {
+        background: #fafbfc;
+      }
+      #main {
+        padding: 2rem;
+      }
+    </style>
   </head>
   <body>
-    <div id="main" class="container">
-      <div id="post-1" data-id="1">
-        <div class="title">Road to Rust 1.0</div>
-      </div>
-      <div id="post-2" data-id="2">
-        <div class="title">Stability as a Deliverable</div>
-      </div>
-      <div id="post-3" data-id="3">
-        <div class="title">Cargo: Rust's community crate host</div>
-      </div>
+    <header><h1>Example Domain</h1></header>
+    <div id="main">
+      <p>
+        This domain is for use in illustrative examples in documents. You may
+        use this domain in literature without prior coordination or asking for
+        permission.
+      </p>
+      <p>
+        <a href="https://www.iana.org/domains/example">More information...</a>
+      </p>
     </div>
-    (c) 2020 Ferris
+    <footer>(c) 2020</footer>
   </body>
 </html>
 ```
