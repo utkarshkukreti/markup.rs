@@ -313,18 +313,9 @@ impl Parse for For {
 impl Parse for Attribute {
     fn parse(input: ParseStream) -> Result<Self> {
         let name = identifier_or_string_literal_or_expression(input)?;
-        let bool = {
-            let lookahead = input.lookahead1();
-            if lookahead.peek(syn::Token![?]) {
-                let _: syn::Token![?] = input.parse()?;
-                true
-            } else {
-                false
-            }
-        };
         let _: syn::Token![=] = input.parse()?;
         let value = input.parse()?;
-        Ok(Attribute { name, value, bool })
+        Ok(Attribute { name, value })
     }
 }
 

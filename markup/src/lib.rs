@@ -9,12 +9,29 @@ pub trait Render {
     fn is_none(&self) -> bool {
         false
     }
+
+    #[inline]
+    fn as_bool(&self) -> Option<bool> {
+        None
+    }
 }
 
 impl<'a, T: Render + ?Sized> Render for &'a T {
     #[inline]
     fn write_to(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
         (*self).write_to(w)
+    }
+}
+
+impl Render for bool {
+    #[inline]
+    fn write_to(&self, _w: &mut impl std::fmt::Write) -> std::fmt::Result {
+        Ok(())
+    }
+
+    #[inline]
+    fn as_bool(&self) -> Option<bool> {
+        Some(*self)
     }
 }
 
@@ -64,7 +81,7 @@ macro_rules! impl_render_with {
 }
 
 impl_render_with! {
-    [bool char f32 f64] => |self_, w| write!(w, "{}", self_),
+    [char f32 f64] => |self_, w| write!(w, "{}", self_),
     [u8 u16 u32 u64 u128 usize i8 i16 i32 i64 i128 isize] => |self_, w| itoa::fmt(w, *self_),
     [str] => |self_, w| escape::escape(self_, w),
     [String] => |self_, w| self_.as_str().write_to(w),

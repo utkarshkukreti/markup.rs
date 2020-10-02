@@ -97,8 +97,8 @@ t! {
             div [
                 a = 1,
                 b = "2",
-                c? = true,
-                d? = false,
+                c = true,
+                d = false,
                 "e-f" = 3,
                 {"g".to_string() + "-h"} = 4,
                 i = None::<i32>,

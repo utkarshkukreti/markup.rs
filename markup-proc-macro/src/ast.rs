@@ -76,5 +76,4 @@ pub struct For {
 pub struct Attribute {
     pub name: syn::Expr,
     pub value: syn::Expr,
-    pub bool: bool,
 }

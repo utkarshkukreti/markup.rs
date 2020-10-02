@@ -134,24 +134,24 @@ impl Generate for Element {
             }
             stream.raw("\"");
         }
-        for Attribute { name, value, bool } in attributes {
-            if *bool {
-                stream.extend(quote!(if #value));
+        for Attribute { name, value } in attributes {
+            stream.extend(quote!(let __value = #value;));
+            stream.extend(quote!(if let Some(__bool) = markup::Render::as_bool(&__value)));
+            stream.braced(|stream| {
+                stream.extend(quote!(if __bool));
                 stream.braced(|stream| {
                     stream.raw(" ");
                     stream.expr(name);
-                });
-            } else {
-                stream.extend(quote!(let __value = #value;));
-                stream.extend(quote!(if !markup::Render::is_none(&__value)));
-                stream.braced(|stream| {
-                    stream.raw(" ");
-                    stream.expr(name);
-                    stream.raw("=\"");
-                    stream.expr(&syn::parse_quote!(__value));
-                    stream.raw("\"");
-                });
-            }
+                })
+            });
+            stream.extend(quote!(else if !markup::Render::is_none(&__value)));
+            stream.braced(|stream| {
+                stream.raw(" ");
+                stream.expr(name);
+                stream.raw("=\"");
+                stream.expr(&syn::parse_quote!(__value));
+                stream.raw("\"");
+            });
         }
         stream.raw(">");
         children.generate(stream);
