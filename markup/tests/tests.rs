@@ -165,3 +165,27 @@ t! {
         baz: B { foo: 3 },
     } => "1431 5 6555",
 }
+
+t! {
+    t10,
+    {
+        A {
+            @fn foo() -> i32 { 1 }
+            @mod bar {
+                pub fn baz() -> i32 { 2 }
+            }
+            @const QUUX: i32 = 3;
+            @static FOUR: i32 = 4;
+
+            @foo()
+            @bar::baz()
+            @QUUX
+            @FOUR
+
+            @#[derive(Debug)] struct Int(i32);
+            @let Int(five) = Int(5);
+            @five
+        }
+    },
+    A {} => "12345",
+}
