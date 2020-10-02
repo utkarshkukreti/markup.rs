@@ -109,7 +109,7 @@ impl ToTokens for ToWriter {
         tokens.extend(quote! {{
             use std::fmt::Write;
             let mut __writer = #writer;
-            (|| {
+            (|| -> std::fmt::Result {
                 #built
                 Ok(())
             })()

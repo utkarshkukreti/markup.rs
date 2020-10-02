@@ -57,3 +57,10 @@ fn t() {
     assert_eq!(define, to_string);
     assert_eq!(define, to_writer);
 }
+
+#[test]
+fn to_writer_type_inference_bug() {
+    let mut string = String::new();
+    markup::to_writer!(&mut string => div {}).unwrap();
+    assert_eq!(string, "<div></div>");
+}
