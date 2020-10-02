@@ -4,22 +4,24 @@ criterion_group!(benches, bench_dynamic);
 criterion_main!(benches);
 
 #[path = "../../markup/examples/fortunes.rs"]
-mod imp;
+mod fortunes;
 
 fn bench_dynamic(c: &mut Criterion) {
-    let data = imp::FORTUNES;
+    let data = fortunes::FORTUNES;
 
     let mut group = c.benchmark_group("macros");
 
     group.throughput(Throughput::Bytes(
-        imp::dynamic(&data).to_string().len() as u64
+        fortunes::dynamic(&data).to_string().len() as u64,
     ));
 
     group.bench_function("define", |b| {
-        b.iter(|| imp::Define { fortunes: &data }.to_string())
+        b.iter(|| fortunes::Define { fortunes: &data }.to_string())
     });
 
-    group.bench_function("dynamic", |b| b.iter(|| imp::dynamic(&data).to_string()));
+    group.bench_function("dynamic", |b| {
+        b.iter(|| fortunes::dynamic(&data).to_string())
+    });
 
     group.finish();
 }
