@@ -1,0 +1,29 @@
+# markup.rs
+
+> A blazing fast, type-safe template engine for Rust.
+
+`markup.rs` is a template engine for Rust powered by procedural macros which
+parses the template at compile time and generates optimal Rust code to render
+the template at run time. The templates may embed Rust code which is type
+checked by the Rust compiler enabling full type-safety.
+
+## Quick Start
+
+Add the `markup` crate to your dependencies:
+
+```toml
+[dependencies]
+markup = "0.9.1"
+```
+
+## Quick Example
+
+```rust
+<%= File.read("./markup/examples/quick.rs").strip %>
+```
+
+### Output (manually prettified)
+
+```html
+<%= `cargo run --example quick | prettier --parser html`.strip %>
+```

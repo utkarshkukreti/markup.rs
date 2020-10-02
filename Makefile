@@ -1,4 +1,5 @@
 default:
+	erb README.md.erb > README.md
 	cargo build
 	cargo test
 
