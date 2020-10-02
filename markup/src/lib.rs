@@ -1,4 +1,4 @@
-pub use markup_proc_macro::{define, dynamic};
+pub use markup_proc_macro::{define, new};
 
 mod escape;
 
@@ -74,7 +74,7 @@ struct Dynamic<F> {
     f: F,
 }
 
-pub fn dynamic<'a, F>(f: F) -> impl Render + std::fmt::Display + 'a
+pub fn new<'a, F>(f: F) -> impl Render + std::fmt::Display + 'a
 where
     F: Fn(&mut dyn std::fmt::Write) -> std::fmt::Result + 'a,
 {

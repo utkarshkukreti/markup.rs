@@ -26,8 +26,8 @@ markup::define! {
     }
 }
 
-pub fn dynamic(fortunes: &[Fortune]) -> impl std::fmt::Display + '_ {
-    markup::dynamic! {
+pub fn new(fortunes: &[Fortune]) -> impl std::fmt::Display + '_ {
+    markup::new! {
         {markup::doctype()}
         html {
             head {
@@ -108,7 +108,7 @@ pub fn main() {
 #[test]
 fn t() {
     let define = Define { fortunes: FORTUNES }.to_string();
-    let dynamic = dynamic(FORTUNES).to_string();
+    let new = new(FORTUNES).to_string();
     assert_eq!(define.len(), 1153);
-    assert_eq!(define, dynamic);
+    assert_eq!(define, new);
 }

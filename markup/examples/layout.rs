@@ -17,10 +17,10 @@ markup::define! {
 
 fn home() -> String {
     Layout {
-        head: markup::dynamic! {
+        head: markup::new! {
             title { "Home" }
         },
-        body: markup::dynamic! {
+        body: markup::new! {
             "This is the home page."
         },
     }
@@ -29,10 +29,10 @@ fn home() -> String {
 
 fn contact() -> String {
     Layout {
-        head: markup::dynamic! {
+        head: markup::new! {
             title { "Contact" }
         },
-        body: markup::dynamic! {
+        body: markup::new! {
             "This is the contact page."
         },
     }

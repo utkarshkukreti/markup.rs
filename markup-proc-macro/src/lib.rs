@@ -10,7 +10,7 @@ pub fn define(tokens: proc_macro::TokenStream) -> proc_macro::TokenStream {
 }
 
 #[proc_macro]
-pub fn dynamic(tokens: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let dynamic = syn::parse_macro_input!(tokens as ast::Dynamic);
-    quote::quote!( #dynamic ).into()
+pub fn new(tokens: proc_macro::TokenStream) -> proc_macro::TokenStream {
+    let new = syn::parse_macro_input!(tokens as ast::Dynamic);
+    quote::quote!( #new ).into()
 }

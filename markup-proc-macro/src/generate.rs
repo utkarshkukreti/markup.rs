@@ -70,7 +70,7 @@ impl ToTokens for Dynamic {
         nodes.generate(&mut stream);
         let built = stream.finish();
         tokens.extend(quote! {{
-            ::markup::dynamic(move |mut __writer| {
+            ::markup::new(move |mut __writer| {
                 let mut __writer = &mut __writer;
                 #built
                 Ok(())

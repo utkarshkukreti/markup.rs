@@ -12,16 +12,14 @@ fn bench(c: &mut Criterion) {
     let mut group = c.benchmark_group("fortunes");
 
     group.throughput(Throughput::Bytes(
-        fortunes::dynamic(&data).to_string().len() as u64,
+        fortunes::new(&data).to_string().len() as u64
     ));
 
     group.bench_function("define", |b| {
         b.iter(|| fortunes::Define { fortunes: &data }.to_string())
     });
 
-    group.bench_function("dynamic", |b| {
-        b.iter(|| fortunes::dynamic(&data).to_string())
-    });
+    group.bench_function("new", |b| b.iter(|| fortunes::new(&data).to_string()));
 
     group.finish();
 }

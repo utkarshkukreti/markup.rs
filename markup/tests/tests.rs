@@ -141,7 +141,7 @@ t! {
         arg: (1, 2),
         arg2: "arg2",
         str: "str",
-        v: markup::dynamic!(foo {})
+        v: markup::new!(foo {})
     } => "<div>(1, 2)arg2str<foo></foo></div>",
 }
 
