@@ -1,15 +1,15 @@
 use criterion::{criterion_group, criterion_main, Criterion, Throughput};
 
-criterion_group!(benches, bench_dynamic);
+criterion_group!(benches, bench);
 criterion_main!(benches);
 
 #[path = "../../markup/examples/fortunes.rs"]
 mod fortunes;
 
-fn bench_dynamic(c: &mut Criterion) {
+fn bench(c: &mut Criterion) {
     let data = fortunes::FORTUNES;
 
-    let mut group = c.benchmark_group("macros");
+    let mut group = c.benchmark_group("fortunes");
 
     group.throughput(Throughput::Bytes(
         fortunes::dynamic(&data).to_string().len() as u64,
