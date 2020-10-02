@@ -119,3 +119,28 @@ t! {
     },
     A { foo: 1, bar: -2, baz: "3".into() } => "1-2-13",
 }
+
+t! {
+    t8,
+    {
+        A<'a, T: std::fmt::Debug, U, V: markup::Render>(
+            arg: T,
+            arg2: U,
+            str: &'a str,
+            v: V,
+        ) where U: std::fmt::Display {
+            div {
+                {format!("{:?}", arg)}
+                {format!("{}", arg2)}
+                {str}
+                {v}
+            }
+        }
+    },
+    A {
+        arg: (1, 2),
+        arg2: "arg2",
+        str: "str",
+        v: markup::dynamic!(foo {})
+    } => "<div>(1, 2)arg2str<foo></foo></div>",
+}
