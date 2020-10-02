@@ -7,14 +7,14 @@ criterion_main!(benches);
 mod imp;
 
 fn bench_dynamic(c: &mut Criterion) {
-    let data = (1..1000).into_iter().collect::<Vec<_>>();
+    let data = imp::FORTUNES;
 
     let mut group = c.benchmark_group("macros");
 
     group.throughput(Throughput::Bytes(imp::to_string(&data).len() as u64));
 
     group.bench_function("define", |b| {
-        b.iter(|| imp::Define { data: &data }.to_string())
+        b.iter(|| imp::Define { fortunes: &data }.to_string())
     });
 
     group.bench_function("dynamic", |b| b.iter(|| imp::dynamic(&data).to_string()));
