@@ -8,7 +8,7 @@ markup::define! {
     }
 }
 
-fn dynamic(data: &[usize]) -> impl std::fmt::Display + '_ {
+pub fn dynamic(data: &[usize]) -> impl std::fmt::Display + '_ {
     markup::dynamic! {
         foo {
             @for d in data {
@@ -18,7 +18,7 @@ fn dynamic(data: &[usize]) -> impl std::fmt::Display + '_ {
     }
 }
 
-fn to_string(data: &[usize]) -> String {
+pub fn to_string(data: &[usize]) -> String {
     markup::to_string! {
         foo {
             @for d in data {
@@ -28,7 +28,7 @@ fn to_string(data: &[usize]) -> String {
     }
 }
 
-fn to_writer(data: &[usize], writer: &mut impl std::fmt::Write) -> std::fmt::Result {
+pub fn to_writer(data: &[usize], writer: &mut impl std::fmt::Write) -> std::fmt::Result {
     markup::to_writer! {
         writer =>
         foo {

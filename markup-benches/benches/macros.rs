@@ -3,35 +3,31 @@ use criterion::{criterion_group, criterion_main, Criterion, Throughput};
 criterion_group!(benches, bench_dynamic);
 criterion_main!(benches);
 
-markup::define! {
-    Struct<'a>(data: &'a [usize]) {
-        foo {
-            @for d in *data {
-                bar { "Hello" @d "World" }
-            }
-        }
-    }
-}
-
-fn dynamic<'a>(data: &'a [usize]) -> impl markup::Render + std::fmt::Display + 'a {
-    markup::dynamic! {
-        foo {
-            @for d in data {
-                bar { "Hello" @d "World" }
-            }
-        }
-    }
-}
+#[path = "../../markup/tests/macros.rs"]
+mod imp;
 
 fn bench_dynamic(c: &mut Criterion) {
     let data = (1..1000).into_iter().collect::<Vec<_>>();
-    let mut group = c.benchmark_group("dynamic");
-    let len1 = Struct { data: &data }.to_string().len();
-    assert_eq!(len1, 23879);
-    let len2 = dynamic(&data).to_string().len();
-    assert_eq!(len1, len2);
-    group.throughput(Throughput::Bytes(len1 as u64));
-    group.bench_function("struct", |b| b.iter(|| Struct { data: &data }.to_string()));
-    group.bench_function("dynamic", |b| b.iter(|| dynamic(&data).to_string()));
+
+    let mut group = c.benchmark_group("macros");
+
+    group.throughput(Throughput::Bytes(imp::to_string(&data).len() as u64));
+
+    group.bench_function("define", |b| {
+        b.iter(|| imp::Define { data: &data }.to_string())
+    });
+
+    group.bench_function("dynamic", |b| b.iter(|| imp::dynamic(&data).to_string()));
+
+    group.bench_function("to_string", |b| b.iter(|| imp::to_string(&data)));
+
+    group.bench_function("to_writer", |b| {
+        b.iter(|| {
+            let mut string = String::new();
+            let _ = imp::to_writer(&data, &mut string);
+            string
+        })
+    });
+
     group.finish();
 }
