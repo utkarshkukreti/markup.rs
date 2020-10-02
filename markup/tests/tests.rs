@@ -242,7 +242,7 @@ t! {
         E(foo: Option<i32>) {
             @match foo {
                 Some(1) => { "ONE" }
-                Some(2) => { "TWO" }
+                Some(n) if *n == 2 => { "TWO" }
                 Some(_) => { "OTHER" }
                 None => { "NONE" }
             }
