@@ -10,7 +10,7 @@ markup = { path = "../markup", version = "0.10.0" }
 criterion = "0.3"
 
 [[bench]]
-name = "dynamic"
+name = "macros"
 harness = false
 
 [[bench]]
