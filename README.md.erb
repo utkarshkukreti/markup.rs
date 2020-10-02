@@ -13,7 +13,7 @@ Add the `markup` crate to your dependencies:
 
 ```toml
 [dependencies]
-markup = "0.9.1"
+markup = "0.10.0"
 ```
 
 ## Quick Example
