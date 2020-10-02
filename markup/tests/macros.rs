@@ -23,7 +23,6 @@ markup::define! {
                 }
             }
         }
-
     }
 }
 
@@ -46,7 +45,6 @@ pub fn dynamic(fortunes: &[Fortune]) -> impl std::fmt::Display + '_ {
                 }
             }
         }
-
     }
 }
 
