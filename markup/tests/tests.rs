@@ -189,3 +189,69 @@ t! {
     },
     A {} => "12345",
 }
+
+t! {
+    t11,
+    {
+        A {
+            @let foos = [None, Some(1), Some(2), Some(3)];
+            @for (index, foo) in foos.iter().enumerate() {
+                "index=" @index " :: "
+                @B { foo: *foo } ";"
+                @C { foo: *foo } ";"
+                @D { foo: *foo } ";"
+                @E { foo: *foo } "\n"
+            }
+        }
+        B(foo: Option<i32>) {
+            @if foo.is_some() {
+                @let foo = foo.unwrap();
+                @if foo == 1 {
+                    "ONE"
+                } else if foo == 2 {
+                    "TWO"
+                } else {
+                    "OTHER"
+                }
+            } else {
+                "NONE"
+            }
+        }
+        C(foo: Option<i32>) {
+            @if *foo == Some(1) {
+                "ONE"
+            } else if *foo == Some(2) {
+                "TWO"
+            } else if foo.is_some() {
+                "OTHER"
+            } else {
+                "NONE"
+            }
+        }
+        D(foo: Option<i32>) {
+            @if let Some(1) = foo {
+                "ONE"
+            } else if let Some(2) = foo {
+                "TWO"
+            } else if let Some(_) = foo {
+                "OTHER"
+            } else {
+                "NONE"
+            }
+        }
+        E(foo: Option<i32>) {
+            @match foo {
+                Some(1) => { "ONE" }
+                Some(2) => { "TWO" }
+                Some(_) => { "OTHER" }
+                None => { "NONE" }
+            }
+        }
+    },
+    A {} => "\
+index=0 :: NONE;NONE;NONE;NONE
+index=1 :: ONE;ONE;ONE;ONE
+index=2 :: TWO;TWO;TWO;TWO
+index=3 :: OTHER;OTHER;OTHER;OTHER
+",
+}
