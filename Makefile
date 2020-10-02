@@ -1,5 +1,7 @@
 default:
 	erb README.md.erb > README.md
+	erb markup/tests/macros.rs.erb > markup/tests/macros.rs
+	rustfmt markup/tests/macros.rs
 	cargo build
 	cargo test
 

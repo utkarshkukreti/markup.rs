@@ -1,4 +1,24 @@
-pub struct Fortune {
+<%
+impl = <<-RUST
+{markup::doctype()}
+        html {
+            head {
+                title { "Fortunes" }
+            }
+            body {
+                table {
+                    tr { th { "id" } th { "message" } }
+                    @for item in fortunes {
+                        tr {
+                            td { @item.id }
+                            td { @item.message }
+                        }
+                    }
+                }
+            }
+        }
+RUST
+%>pub struct Fortune {
     pub id: i32,
     pub message: String,
 }
@@ -6,94 +26,26 @@ pub struct Fortune {
 markup::define! {
     Define<'a>(fortunes: &'a [Fortune]) {
         @let fortunes = *fortunes;
-        {markup::doctype()}
-        html {
-            head {
-                title { "Fortunes" }
-            }
-            body {
-                table {
-                    tr { th { "id" } th { "message" } }
-                    @for item in fortunes {
-                        tr {
-                            td { @item.id }
-                            td { @item.message }
-                        }
-                    }
-                }
-            }
-        }
-
+        <%= impl %>
     }
 }
 
 pub fn dynamic(fortunes: &[Fortune]) -> impl std::fmt::Display + '_ {
     markup::dynamic! {
-        {markup::doctype()}
-        html {
-            head {
-                title { "Fortunes" }
-            }
-            body {
-                table {
-                    tr { th { "id" } th { "message" } }
-                    @for item in fortunes {
-                        tr {
-                            td { @item.id }
-                            td { @item.message }
-                        }
-                    }
-                }
-            }
-        }
-
+        <%= impl %>
     }
 }
 
 pub fn to_string(fortunes: &[Fortune]) -> String {
     markup::to_string! {
-        {markup::doctype()}
-        html {
-            head {
-                title { "Fortunes" }
-            }
-            body {
-                table {
-                    tr { th { "id" } th { "message" } }
-                    @for item in fortunes {
-                        tr {
-                            td { @item.id }
-                            td { @item.message }
-                        }
-                    }
-                }
-            }
-        }
-
+        <%= impl %>
     }
 }
 
 pub fn to_writer(fortunes: &[Fortune], writer: &mut impl std::fmt::Write) -> std::fmt::Result {
     markup::to_writer! {
         writer =>
-        {markup::doctype()}
-        html {
-            head {
-                title { "Fortunes" }
-            }
-            body {
-                table {
-                    tr { th { "id" } th { "message" } }
-                    @for item in fortunes {
-                        tr {
-                            td { @item.id }
-                            td { @item.message }
-                        }
-                    }
-                }
-            }
-        }
-
+        <%= impl %>
     }
 }
 
@@ -118,13 +70,11 @@ fn t() {
         },
         Fortune {
             id: 5,
-            message: "A computer program does what you tell it to do, not what you want it to do."
-                .into(),
+            message: "A computer program does what you tell it to do, not what you want it to do.".into(),
         },
         Fortune {
             id: 6,
-            message: "Emacs is a nice operating system, but I prefer UNIX. — Tom Christaensen"
-                .into(),
+            message: "Emacs is a nice operating system, but I prefer UNIX. — Tom Christaensen".into(),
         },
         Fortune {
             id: 7,
@@ -144,9 +94,7 @@ fn t() {
         },
         Fortune {
             id: 11,
-            message:
-                "<script>alert(\"This should not be displayed in a browser alert box.\");</script>"
-                    .into(),
+            message: "<script>alert(\"This should not be displayed in a browser alert box.\");</script>".into(),
         },
         Fortune {
             id: 12,
