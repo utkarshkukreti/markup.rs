@@ -7,6 +7,6 @@ default:
 
 publish:
 	cd markup-proc-macro && cargo publish
-	sleep 5
+	sleep 10
 	cargo search markup-proc-macro
 	cd markup && cargo publish
