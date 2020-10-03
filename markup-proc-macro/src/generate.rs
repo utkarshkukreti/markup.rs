@@ -134,15 +134,14 @@ impl Generate for Element {
         }
         for Attribute { name, value } in attributes {
             stream.extend(quote!(let __value = #value;));
-            stream.extend(quote!(if let Some(__bool) = ::markup::Render::as_bool(&__value)));
+            stream.extend(quote!(if ::markup::Render::is_none(&__value) || ::markup::Render::is_false(&__value)));
+            stream.braced(|_| {});
+            stream.extend(quote!(else if ::markup::Render::is_true(&__value)));
             stream.braced(|stream| {
-                stream.extend(quote!(if __bool));
-                stream.braced(|stream| {
-                    stream.raw(" ");
-                    stream.expr(name);
-                })
+                stream.raw(" ");
+                stream.expr(name);
             });
-            stream.extend(quote!(else if !::markup::Render::is_none(&__value)));
+            stream.extend(quote!(else));
             stream.braced(|stream| {
                 stream.raw(" ");
                 stream.expr(name);

@@ -11,8 +11,13 @@ pub trait Render {
     }
 
     #[inline]
-    fn as_bool(&self) -> Option<bool> {
-        None
+    fn is_true(&self) -> bool {
+        false
+    }
+
+    #[inline]
+    fn is_false(&self) -> bool {
+        false
     }
 }
 
@@ -30,8 +35,13 @@ impl Render for bool {
     }
 
     #[inline]
-    fn as_bool(&self) -> Option<bool> {
-        Some(*self)
+    fn is_true(&self) -> bool {
+        *self == true
+    }
+
+    #[inline]
+    fn is_false(&self) -> bool {
+        *self == false
     }
 }
 
