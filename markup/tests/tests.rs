@@ -255,3 +255,18 @@ index=2 :: TWO;TWO;TWO;TWO
 index=3 :: OTHER;OTHER;OTHER;OTHER
 ",
 }
+
+t! {
+    t12,
+    {
+        A(b: B) {
+            @b
+            @format!("{:?}", b)
+        }
+        #[derive(Clone, Debug)]
+        B(foo: i32, bar: char) {
+            @foo @bar
+        }
+    },
+    A { b: B { foo: 1, bar: '?' }.clone() } => "1?B { foo: 1, bar: '?' }",
+}
