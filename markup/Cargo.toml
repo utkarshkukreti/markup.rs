@@ -9,7 +9,7 @@ documentation = "https://docs.rs/markup"
 homepage = "https://github.com/utkarshkukreti/markup.rs"
 repository = "https://github.com/utkarshkukreti/markup.rs"
 readme = "README.md"
-keywords = ["template", "html", "pug", "jade", "haml", "slim"]
+keywords = ["template", "html", "markup", "pug", "jade", "haml", "slim"]
 categories = ["template-engine"]
 
 [dependencies]
