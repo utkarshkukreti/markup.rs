@@ -7,6 +7,14 @@ parses the template at compile time and generates optimal Rust code to render
 the template at run time. The templates may embed Rust code which is type
 checked by the Rust compiler enabling full type-safety.
 
+## Features
+
+* Fully type-safe with inline highlighted errors when using editor extensions like [rust-analyzer](https://github.com/rust-analyzer/rust-analyzer).
+* Less error-prone and terse syntax inspired by [Haml](https://haml.info/), [Slim](http://slim-lang.com/), [Pug](https://pugjs.org).
+* Zero unsafe code.
+* Zero runtime dependencies.
+* ⚡ Blazing fast. The fastest in [this](https://github.com/djc/template-benchmarks-rs) benchmark by a good margin among the zero unsafe template engines.
+
 ## Quick Start
 
 Add the `markup` crate to your dependencies:
