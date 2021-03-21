@@ -3,7 +3,7 @@ pub use markup_proc_macro::{define, new};
 mod escape;
 
 pub trait Render {
-    fn write_to(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result;
+    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result;
 
     #[doc(hidden)]
     #[inline]
@@ -26,14 +26,14 @@ pub trait Render {
 
 impl<'a, T: Render + ?Sized> Render for &'a T {
     #[inline]
-    fn write_to(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
-        (*self).write_to(w)
+    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
+        (*self).render(w)
     }
 }
 
 impl Render for bool {
     #[inline]
-    fn write_to(&self, _w: &mut impl std::fmt::Write) -> std::fmt::Result {
+    fn render(&self, _w: &mut impl std::fmt::Write) -> std::fmt::Result {
         Ok(())
     }
 
@@ -52,9 +52,9 @@ impl Render for bool {
 
 impl<T: Render> Render for Option<T> {
     #[inline]
-    fn write_to(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
+    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
         match self {
-            Some(t) => t.write_to(w),
+            Some(t) => t.render(w),
             None => Ok(()),
         }
     }
@@ -70,7 +70,7 @@ pub struct Raw<'a>(&'a str);
 
 impl<'a> Render for Raw<'a> {
     #[inline]
-    fn write_to(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
+    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
         w.write_str(self.0)
     }
 }
@@ -86,7 +86,7 @@ macro_rules! impl_render_with {
             $(
                 impl Render for $ty {
                     #[inline]
-                    fn write_to(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
+                    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
                         let ($self_, $w) = (self, w);
                         $expr
                     }
@@ -100,7 +100,7 @@ impl_render_with! {
     [char f32 f64] => |self_, w| write!(w, "{}", self_),
     [u8 u16 u32 u64 u128 usize i8 i16 i32 i64 i128 isize] => |self_, w| itoa::fmt(w, *self_),
     [str] => |self_, w| escape::escape(self_, w),
-    [String] => |self_, w| self_.as_str().write_to(w),
+    [String] => |self_, w| self_.as_str().render(w),
 }
 
 struct Dynamic<F> {
@@ -119,7 +119,7 @@ where
     F: Fn(&mut dyn std::fmt::Write) -> std::fmt::Result,
 {
     #[inline]
-    fn write_to(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
+    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
         (self.f)(w)
     }
 }
@@ -130,7 +130,7 @@ where
 {
     #[inline]
     fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
-        Render::write_to(self, fmt)
+        Render::render(self, fmt)
     }
 }
 
