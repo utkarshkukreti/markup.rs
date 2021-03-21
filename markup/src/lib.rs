@@ -103,7 +103,7 @@ impl_render_with! {
     [String] => |self_, w| self_.as_str().render(w),
 }
 
-struct Dynamic<F> {
+struct Template<F> {
     f: F,
 }
 
@@ -111,10 +111,10 @@ pub fn new<'a, F>(f: F) -> impl Render + std::fmt::Display + 'a
 where
     F: Fn(&mut dyn std::fmt::Write) -> std::fmt::Result + 'a,
 {
-    Dynamic { f }
+    Template { f }
 }
 
-impl<F> Render for Dynamic<F>
+impl<F> Render for Template<F>
 where
     F: Fn(&mut dyn std::fmt::Write) -> std::fmt::Result,
 {
@@ -124,7 +124,7 @@ where
     }
 }
 
-impl<F> std::fmt::Display for Dynamic<F>
+impl<F> std::fmt::Display for Template<F>
 where
     F: Fn(&mut dyn std::fmt::Write) -> std::fmt::Result,
 {

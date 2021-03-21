@@ -11,6 +11,6 @@ pub fn define(tokens: proc_macro::TokenStream) -> proc_macro::TokenStream {
 
 #[proc_macro]
 pub fn new(tokens: proc_macro::TokenStream) -> proc_macro::TokenStream {
-    let new = syn::parse_macro_input!(tokens as ast::Dynamic);
+    let new = syn::parse_macro_input!(tokens as ast::Template);
     quote::quote!( #new ).into()
 }

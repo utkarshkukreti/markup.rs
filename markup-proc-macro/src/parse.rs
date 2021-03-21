@@ -1,5 +1,5 @@
 use crate::ast::{
-    Attribute, Dynamic, Element, For, If, IfClause, IfClauseTest, Match, MatchClause, Node, Struct,
+    Attribute, Element, For, If, IfClause, IfClauseTest, Match, MatchClause, Node, Struct, Template,
 };
 use syn::parse::{Parse, ParseStream, Result};
 use syn::punctuated::Punctuated;
@@ -60,7 +60,7 @@ impl Parse for Struct {
     }
 }
 
-impl Parse for Dynamic {
+impl Parse for Template {
     fn parse(input: ParseStream) -> Result<Self> {
         let nodes = input.parse::<Many<Node>>()?.0;
         Ok(Self { nodes })

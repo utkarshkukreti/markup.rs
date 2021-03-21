@@ -10,7 +10,7 @@ pub struct Struct {
 }
 
 #[derive(Debug)]
-pub struct Dynamic {
+pub struct Template {
     pub nodes: Vec<Node>,
 }
 
