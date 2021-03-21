@@ -12,8 +12,13 @@ jobs:
         rust: [stable, nightly, 1.45.2]
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 2
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: ${{ matrix.rust }}
           override: true
+      - run: git checkout HEAD~1
+      - run: cargo bench
+      - run: git checkout -
       - run: cargo bench
