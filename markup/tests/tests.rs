@@ -39,9 +39,11 @@ t! {
             {if true { Some(3) } else { Some(4) }}
             {if false { Some(5) } else { Some(6) }}
             {"<>"}
+            {true}
+            {false}
         }
     },
-    A {} => "3π36&lt;&gt;",
+    A {} => "3π36&lt;&gt;truefalse",
 }
 
 t! {

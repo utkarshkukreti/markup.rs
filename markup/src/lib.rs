@@ -33,8 +33,8 @@ impl<'a, T: Render + ?Sized> Render for &'a T {
 
 impl Render for bool {
     #[inline]
-    fn render(&self, _w: &mut impl std::fmt::Write) -> std::fmt::Result {
-        Ok(())
+    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
+        write!(w, "{}", self)
     }
 
     #[doc(hidden)]
