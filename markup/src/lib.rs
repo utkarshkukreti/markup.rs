@@ -5,16 +5,19 @@ mod escape;
 pub trait Render {
     fn write_to(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result;
 
+    #[doc(hidden)]
     #[inline]
     fn is_none(&self) -> bool {
         false
     }
 
+    #[doc(hidden)]
     #[inline]
     fn is_true(&self) -> bool {
         false
     }
 
+    #[doc(hidden)]
     #[inline]
     fn is_false(&self) -> bool {
         false
@@ -34,11 +37,13 @@ impl Render for bool {
         Ok(())
     }
 
+    #[doc(hidden)]
     #[inline]
     fn is_true(&self) -> bool {
         *self == true
     }
 
+    #[doc(hidden)]
     #[inline]
     fn is_false(&self) -> bool {
         *self == false
@@ -54,6 +59,7 @@ impl<T: Render> Render for Option<T> {
         }
     }
 
+    #[doc(hidden)]
     #[inline]
     fn is_none(&self) -> bool {
         self.is_none()
