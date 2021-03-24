@@ -7,14 +7,15 @@ criterion_main!(benches);
 mod escape;
 
 fn bench_escape(c: &mut Criterion) {
+    let str = include_str!("./escape.html");
     let mut group = c.benchmark_group("escape");
-    group.throughput(Throughput::Bytes(run().len() as u64));
-    group.bench_function("escape", |b| b.iter(run));
+    group.throughput(Throughput::Bytes(escape(str).len() as u64));
+    group.bench_function("escape", |b| b.iter(|| escape(str)));
     group.finish();
+}
 
-    fn run() -> String {
-        let mut string = String::new();
-        escape::escape(include_str!("./escape.html"), &mut string).unwrap();
-        string
-    }
+fn escape(str: &str) -> String {
+    let mut string = String::new();
+    escape::escape(str, &mut string).unwrap();
+    string
 }
