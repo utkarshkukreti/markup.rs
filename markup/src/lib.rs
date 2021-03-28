@@ -66,17 +66,17 @@ impl<T: Render> Render for Option<T> {
     }
 }
 
-pub struct Raw<'a>(&'a str);
+pub struct Raw<T: AsRef<str>>(T);
 
-impl<'a> Render for Raw<'a> {
+impl<T: AsRef<str>> Render for Raw<T> {
     #[inline]
     fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
-        writer.write_str(self.0)
+        writer.write_str(self.0.as_ref())
     }
 }
 
 #[inline]
-pub fn raw(t: &str) -> Raw {
+pub fn raw<T: AsRef<str>>(t: T) -> Raw<T> {
     Raw(t)
 }
 
