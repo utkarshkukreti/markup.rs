@@ -80,27 +80,47 @@ pub fn raw(t: &str) -> Raw {
     Raw(t)
 }
 
-macro_rules! impl_render_with {
-    ($([$($ty:ty)+] => |$self_:ident, $writer:ident| $expr:expr,)+) => {
-        $(
-            $(
-                impl Render for $ty {
-                    #[inline]
-                    fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
-                        let ($self_, $writer) = (self, writer);
-                        $expr
-                    }
-                }
-            )+
-        )+
+macro_rules! tfor {
+    (for $ty:ident in [$($typ:ident),*] $tt:tt) => {
+        $( const _: () = { type $ty = $typ; tfor! { @extract $tt } }; )*
     };
+    (@extract { $($tt:tt)* }) => { $($tt)* };
 }
 
-impl_render_with! {
-    [char f32 f64] => |self_, writer| write!(writer, "{}", self_),
-    [u8 u16 u32 u64 u128 usize i8 i16 i32 i64 i128 isize] => |self_, writer| itoa::fmt(writer, *self_),
-    [str] => |self_, writer| escape::escape(self_, writer),
-    [String] => |self_, writer| self_.as_str().render(writer),
+tfor! {
+    for Ty in [char, f32, f64] {
+        impl Render for Ty {
+            #[inline]
+            fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
+                write!(writer, "{}", self)
+            }
+        }
+    }
+}
+
+tfor! {
+    for Ty in [u8, u16, u32, u64, u128, usize, i8, i16, i32, i64, i128, isize] {
+        impl Render for Ty {
+            #[inline]
+            fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
+                itoa::fmt(writer, *self)
+            }
+        }
+    }
+}
+
+impl Render for str {
+    #[inline]
+    fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
+        escape::escape(self, writer)
+    }
+}
+
+impl Render for String {
+    #[inline]
+    fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
+        self.as_str().render(writer)
+    }
 }
 
 struct Template<F> {
