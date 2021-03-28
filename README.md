@@ -10,21 +10,19 @@ checked by the Rust compiler enabling full type-safety.
 ## Features
 
 * Fully type-safe with inline highlighted errors when using editor extensions like [rust-analyzer](https://github.com/rust-analyzer/rust-analyzer).
-* Less error-prone and terse syntax inspired by [Haml](https://haml.info/), [Slim](http://slim-lang.com/), [Pug](https://pugjs.org).
+* Less error-prone and terse syntax inspired by [Haml](https://haml.info/), [Slim](http://slim-lang.com/), and [Pug](https://pugjs.org).
 * Zero unsafe code.
 * Zero runtime dependencies.
-* ⚡ Blazing fast. The fastest in [this](https://github.com/djc/template-benchmarks-rs) benchmark by a good margin among the zero unsafe template engines.
+* ⚡ Blazing fast. The fastest in [this](https://github.com/djc/template-benchmarks-rs) benchmark among the ones which do not use unsafe code, the second fastest overall.
 
-## Quick Start
-
-Add the `markup` crate to your dependencies:
+## Install
 
 ```toml
 [dependencies]
 markup = "0.11.0"
 ```
 
-## Quick Example
+## Example
 
 ```rust
 markup::define! {
