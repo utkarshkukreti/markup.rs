@@ -1,6 +1,15 @@
+<div align="center">
+
 # markup.rs
 
-> A blazing fast, type-safe template engine for Rust.
+A blazing fast, type-safe template engine for Rust.
+
+[![Build](https://img.shields.io/github/workflow/status/utkarshkukreti/markup.rs/Build?style=for-the-badge)](https://github.com/utkarshkukreti/markup.rs/actions/workflows/build.yml)
+[![Version](https://img.shields.io/crates/v/markup?style=for-the-badge)](https://crates.io/crates/markup)
+[![Downloads](https://img.shields.io/crates/d/markup?style=for-the-badge)](https://crates.io/crates/markup)
+[![License](https://img.shields.io/crates/l/markup?style=for-the-badge)](https://crates.io/crates/markup)
+
+</div>
 
 `markup.rs` is a template engine for Rust powered by procedural macros which
 parses the template at compile time and generates optimal Rust code to render
