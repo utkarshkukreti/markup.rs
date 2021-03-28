@@ -1,10 +1,10 @@
-pub fn escape(str: &str, w: &mut impl std::fmt::Write) -> std::fmt::Result {
+pub fn escape(str: &str, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
     let mut last = 0;
     for (index, byte) in str.bytes().enumerate() {
         macro_rules! go {
             ($expr:expr) => {{
-                w.write_str(&str[last..index])?;
-                w.write_str($expr)?;
+                writer.write_str(&str[last..index])?;
+                writer.write_str($expr)?;
                 last = index + 1;
             }};
         }
@@ -17,7 +17,7 @@ pub fn escape(str: &str, w: &mut impl std::fmt::Write) -> std::fmt::Result {
             _ => {}
         }
     }
-    w.write_str(&str[last..])
+    writer.write_str(&str[last..])
 }
 
 #[test]

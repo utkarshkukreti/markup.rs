@@ -3,7 +3,7 @@ pub use markup_proc_macro::{define, new};
 mod escape;
 
 pub trait Render {
-    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result;
+    fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result;
 
     #[doc(hidden)]
     #[inline]
@@ -26,15 +26,15 @@ pub trait Render {
 
 impl<'a, T: Render + ?Sized> Render for &'a T {
     #[inline]
-    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
-        (*self).render(w)
+    fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
+        (*self).render(writer)
     }
 }
 
 impl Render for bool {
     #[inline]
-    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
-        write!(w, "{}", self)
+    fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
+        write!(writer, "{}", self)
     }
 
     #[doc(hidden)]
@@ -52,9 +52,9 @@ impl Render for bool {
 
 impl<T: Render> Render for Option<T> {
     #[inline]
-    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
+    fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
         match self {
-            Some(t) => t.render(w),
+            Some(t) => t.render(writer),
             None => Ok(()),
         }
     }
@@ -70,8 +70,8 @@ pub struct Raw<'a>(&'a str);
 
 impl<'a> Render for Raw<'a> {
     #[inline]
-    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
-        w.write_str(self.0)
+    fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
+        writer.write_str(self.0)
     }
 }
 
@@ -81,13 +81,13 @@ pub fn raw(t: &str) -> Raw {
 }
 
 macro_rules! impl_render_with {
-    ($([$($ty:ty)+] => |$self_:ident, $w:ident| $expr:expr,)+) => {
+    ($([$($ty:ty)+] => |$self_:ident, $writer:ident| $expr:expr,)+) => {
         $(
             $(
                 impl Render for $ty {
                     #[inline]
-                    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
-                        let ($self_, $w) = (self, w);
+                    fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
+                        let ($self_, $writer) = (self, writer);
                         $expr
                     }
                 }
@@ -97,10 +97,10 @@ macro_rules! impl_render_with {
 }
 
 impl_render_with! {
-    [char f32 f64] => |self_, w| write!(w, "{}", self_),
-    [u8 u16 u32 u64 u128 usize i8 i16 i32 i64 i128 isize] => |self_, w| itoa::fmt(w, *self_),
-    [str] => |self_, w| escape::escape(self_, w),
-    [String] => |self_, w| self_.as_str().render(w),
+    [char f32 f64] => |self_, writer| write!(writer, "{}", self_),
+    [u8 u16 u32 u64 u128 usize i8 i16 i32 i64 i128 isize] => |self_, writer| itoa::fmt(writer, *self_),
+    [str] => |self_, writer| escape::escape(self_, writer),
+    [String] => |self_, writer| self_.as_str().render(writer),
 }
 
 struct Template<F> {
@@ -119,8 +119,8 @@ where
     F: Fn(&mut dyn std::fmt::Write) -> std::fmt::Result,
 {
     #[inline]
-    fn render(&self, w: &mut impl std::fmt::Write) -> std::fmt::Result {
-        (self.f)(w)
+    fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
+        (self.f)(writer)
     }
 }
 
