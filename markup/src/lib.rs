@@ -29,6 +29,24 @@ impl<'a, T: Render + ?Sized> Render for &'a T {
     fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
         (*self).render(writer)
     }
+
+    #[doc(hidden)]
+    #[inline]
+    fn is_none(&self) -> bool {
+        (*self).is_none()
+    }
+
+    #[doc(hidden)]
+    #[inline]
+    fn is_true(&self) -> bool {
+        (*self).is_true()
+    }
+
+    #[doc(hidden)]
+    #[inline]
+    fn is_false(&self) -> bool {
+        (*self).is_false()
+    }
 }
 
 impl Render for bool {

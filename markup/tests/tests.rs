@@ -100,16 +100,24 @@ t! {
                 a = 1,
                 b = "2",
                 c = true,
+                c2 = &true,
+                c3 = &&true,
                 d = false,
+                d2 = &false,
+                d3 = &&false,
                 "e-f" = 3,
                 {"g".to_string() + "-h"} = 4,
                 i = None::<i32>,
-                j = Some(5)
+                i2 = &None::<i32>,
+                i3 = &&None::<i32>,
+                j = Some(5),
+                j2 = &Some(5),
+                j3 = &&Some(5),
             ] {}
             br[k = 6];
         }
     },
-    A {} => r#"<div a="1" b="2" c e-f="3" g-h="4" j="5"></div><br k="6">"#,
+    A {} => r#"<div a="1" b="2" c c2 c3 e-f="3" g-h="4" j="5" j2="5" j3="5"></div><br k="6">"#,
 }
 
 t! {
