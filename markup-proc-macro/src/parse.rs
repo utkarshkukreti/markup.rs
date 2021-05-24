@@ -167,6 +167,7 @@ impl Parse for Element {
                 Vec::new()
             }
         };
+
         let (children, close) = {
             let lookahead = input.lookahead1();
             if lookahead.peek(syn::token::Semi) {
@@ -176,10 +177,14 @@ impl Parse for Element {
                 let children;
                 syn::braced!(children in input);
                 (children.parse::<Many<_>>()?.0, true)
+            } else if lookahead.peek(syn::LitStr) {
+                let string = input.parse::<syn::LitStr>()?.value();
+                (vec![Node::Expr(syn::parse_quote!(#string))], true)
             } else {
                 return Err(lookahead.error());
             }
         };
+
         Ok(Element {
             name,
             id,

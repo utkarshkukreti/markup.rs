@@ -88,8 +88,15 @@ t! {
                 bar#{4}.{5 - 6} { 7 }
             }
         }
+        B {
+            foo "bar"
+            foo#bar "baz"
+            foo.bar[baz = true] "quux"
+            foo.bar[baz = true]; "quux"
+        }
     },
     A {} => r#"<foo id="bar"><baz id="foo" class="quux 1 5"></baz><bar id="4" class="-1">7</bar></foo>"#,
+    B {} => r#"<foo>bar</foo><foo id="bar">baz</foo><foo class="bar" baz>quux</foo><foo class="bar" baz>quux"#,
 }
 
 t! {
