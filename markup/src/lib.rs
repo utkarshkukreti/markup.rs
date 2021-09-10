@@ -49,6 +49,31 @@ impl<'a, T: Render + ?Sized> Render for &'a T {
     }
 }
 
+impl<T: Render + ?Sized> Render for Box<T> {
+    #[inline]
+    fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
+        T::render(self, writer)
+    }
+
+    #[doc(hidden)]
+    #[inline]
+    fn is_none(&self) -> bool {
+        T::is_none(self)
+    }
+
+    #[doc(hidden)]
+    #[inline]
+    fn is_true(&self) -> bool {
+        T::is_true(self)
+    }
+
+    #[doc(hidden)]
+    #[inline]
+    fn is_false(&self) -> bool {
+        T::is_false(self)
+    }
+}
+
 impl Render for bool {
     #[inline]
     fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {

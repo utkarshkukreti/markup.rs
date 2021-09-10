@@ -145,12 +145,14 @@ t! {
             arg: T,
             arg2: U,
             str: &'a str,
+            box_str: Box<str>,
             v: V,
         ) where U: std::fmt::Display {
             div {
                 {format!("{:?}", arg)}
                 {format!("{}", arg2)}
                 {str}
+                {box_str}
                 {v}
             }
         }
@@ -159,8 +161,9 @@ t! {
         arg: (1, 2),
         arg2: "arg2",
         str: "str",
+        box_str: "box_str".into(),
         v: markup::new!(foo {})
-    } => "<div>(1, 2)arg2str<foo></foo></div>",
+    } => "<div>(1, 2)arg2strbox_str<foo></foo></div>",
 }
 
 t! {
