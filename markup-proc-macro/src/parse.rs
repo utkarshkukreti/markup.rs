@@ -37,11 +37,11 @@ impl Parse for Struct {
         } else {
             None
         };
-        let mut nodes = Vec::new();
+        let mut children = Vec::new();
         let inner;
         syn::braced!(inner in input);
         while !inner.is_empty() {
-            nodes.push(inner.parse()?);
+            children.push(inner.parse()?);
         }
         // We use the length of the tokens that define this template as a rough estimate of the
         // number of bytes the output of this template will occupy.
@@ -54,7 +54,7 @@ impl Parse for Struct {
             generics,
             where_clause,
             fields,
-            nodes,
+            children,
             size_hint,
         })
     }
@@ -62,8 +62,8 @@ impl Parse for Struct {
 
 impl Parse for Template {
     fn parse(input: ParseStream) -> Result<Self> {
-        let nodes = input.parse::<Many<Node>>()?.0;
-        Ok(Self { nodes })
+        let children = input.parse::<Many<Node>>()?.0;
+        Ok(Self { children })
     }
 }
 

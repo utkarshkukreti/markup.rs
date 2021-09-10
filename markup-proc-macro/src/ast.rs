@@ -5,13 +5,13 @@ pub struct Struct {
     pub generics: syn::Generics,
     pub where_clause: Option<syn::WhereClause>,
     pub fields: Vec<(syn::Ident, syn::Type)>,
-    pub nodes: Vec<Node>,
+    pub children: Vec<Node>,
     pub size_hint: usize,
 }
 
 #[derive(Debug)]
 pub struct Template {
-    pub nodes: Vec<Node>,
+    pub children: Vec<Node>,
 }
 
 #[derive(Debug)]

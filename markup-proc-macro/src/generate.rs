@@ -13,11 +13,11 @@ impl ToTokens for Struct {
             generics,
             where_clause,
             fields,
-            nodes,
+            children,
             size_hint,
         } = self;
         let mut stream = Stream::default();
-        nodes.generate(&mut stream);
+        children.generate(&mut stream);
         let built = stream.finish();
         let (impl_generics, ty_generics, _) = generics.split_for_impl();
         let mut struct_fields = TokenStream::new();
@@ -63,9 +63,9 @@ impl ToTokens for Struct {
 
 impl ToTokens for Template {
     fn to_tokens(&self, tokens: &mut TokenStream) {
-        let Self { nodes } = self;
+        let Self { children } = self;
         let mut stream = Stream::default();
-        nodes.generate(&mut stream);
+        children.generate(&mut stream);
         let built = stream.finish();
         tokens.extend(quote! {{
             ::markup::new(move |mut __writer| {
