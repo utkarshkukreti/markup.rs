@@ -109,6 +109,7 @@ t! {
                 c = true,
                 c2 = &true,
                 c3 = &&true,
+                c4,
                 d = false,
                 d2 = &false,
                 d3 = &&false,
@@ -124,7 +125,7 @@ t! {
             br[k = 6];
         }
     },
-    A {} => r#"<div a="1" b="2" c c2 c3 e-f="3" g-h="4" j="5" j2="5" j3="5"></div><br k="6">"#,
+    A {} => r#"<div a="1" b="2" c c2 c3 c4 e-f="3" g-h="4" j="5" j2="5" j3="5"></div><br k="6">"#,
 }
 
 t! {
