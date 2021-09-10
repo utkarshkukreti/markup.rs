@@ -22,3 +22,4 @@ jobs:
       - run: cargo fmt -- --check
         if: ${{ matrix.os == 'ubuntu-latest' }}
       - run: cargo clippy
+        continue-on-error: true
