@@ -88,6 +88,13 @@ fn main() {
 }
 ```
 
+### Output
+
+```html
+<!DOCTYPE html><html><head><title>Example Domain</title><style>body { background: #fafbfc; }#main { padding: 2rem; }</style></head><body><header><h1>Example Domain</h1></header><div id="main"><p>This domain is for use in illustrative examples in documents. You may use this domain in literature without prior coordination or asking for permission.</p><p><a href="https://www.iana.org/domains/example">More information...</a></p></div><footer>(c) 2020</footer></body></html>
+```
+
+
 ### Output (manually prettified)
 
 ```html
