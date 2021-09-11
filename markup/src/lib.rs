@@ -109,7 +109,7 @@ impl<T: Render> Render for Option<T> {
     }
 }
 
-pub struct Raw<T: std::fmt::Display>(T);
+struct Raw<T: std::fmt::Display>(T);
 
 impl<T: std::fmt::Display> Render for Raw<T> {
     #[inline]
@@ -119,7 +119,7 @@ impl<T: std::fmt::Display> Render for Raw<T> {
 }
 
 #[inline]
-pub fn raw<T: std::fmt::Display>(t: T) -> Raw<T> {
+pub fn raw<T: std::fmt::Display>(t: T) -> impl Render {
     Raw(t)
 }
 
