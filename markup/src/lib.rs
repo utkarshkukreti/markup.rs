@@ -83,13 +83,13 @@ impl Render for bool {
     #[doc(hidden)]
     #[inline]
     fn is_true(&self) -> bool {
-        *self == true
+        *self
     }
 
     #[doc(hidden)]
     #[inline]
     fn is_false(&self) -> bool {
-        *self == false
+        !self
     }
 }
 

@@ -198,8 +198,7 @@ impl Parse for Element {
 
 impl Parse for If {
     fn parse(input: ParseStream) -> Result<Self> {
-        let mut clauses = Vec::new();
-        clauses.push(input.parse()?);
+        let mut clauses = vec![input.parse()?];
         let mut default = None;
         loop {
             let lookahead = input.lookahead1();
