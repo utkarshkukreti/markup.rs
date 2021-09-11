@@ -119,8 +119,8 @@ impl<T: std::fmt::Display> Render for Raw<T> {
 }
 
 #[inline]
-pub fn raw<T: std::fmt::Display>(t: T) -> impl Render {
-    Raw(t)
+pub fn raw(value: impl std::fmt::Display) -> impl Render {
+    Raw(value)
 }
 
 macro_rules! tfor {
