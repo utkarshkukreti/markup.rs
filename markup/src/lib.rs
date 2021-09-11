@@ -166,6 +166,31 @@ impl Render for String {
     }
 }
 
+macro_rules! tuple_impl {
+    ($($ident:ident)+) => {
+        impl<$($ident: Render,)+> Render for ($($ident,)+) {
+            #[allow(non_snake_case)]
+            #[inline]
+            fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
+                let ($(ref $ident,)+) = *self;
+                $($ident.render(writer)?;)+
+                Ok(())
+            }
+        }
+    }
+}
+
+tuple_impl! { A }
+tuple_impl! { A B }
+tuple_impl! { A B C }
+tuple_impl! { A B C D }
+tuple_impl! { A B C D E }
+tuple_impl! { A B C D E F }
+tuple_impl! { A B C D E F G }
+tuple_impl! { A B C D E F G H }
+tuple_impl! { A B C D E F G H I }
+tuple_impl! { A B C D E F G H I J }
+
 struct Template<F> {
     f: F,
 }

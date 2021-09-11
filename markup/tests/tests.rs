@@ -121,11 +121,12 @@ t! {
                 j = Some(5),
                 j2 = &Some(5),
                 j3 = &&Some(5),
+                h = (6, ("7", String::from("8"), true, Some(false), None::<bool>)),
             ] {}
             br[k = 6];
         }
     },
-    A {} => r#"<div a="1" b="2" c c2 c3 c4 e-f="3" g-h="4" j="5" j2="5" j3="5"></div><br k="6">"#,
+    A {} => r#"<div a="1" b="2" c c2 c3 c4 e-f="3" g-h="4" j="5" j2="5" j3="5" h="678truefalse"></div><br k="6">"#,
 }
 
 t! {
