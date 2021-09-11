@@ -4,7 +4,7 @@ version = "0.0.0"
 edition = "2018"
 
 [dependencies]
-markup = { path = "../markup", version = "0.12.4" }
+markup = { path = "../markup", version = "0.12.5" }
 
 [dev-dependencies]
 criterion = "0.3"
