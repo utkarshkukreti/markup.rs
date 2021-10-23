@@ -191,31 +191,25 @@ tuple_impl! { A B C D E F G H }
 tuple_impl! { A B C D E F G H I }
 tuple_impl! { A B C D E F G H I J }
 
-struct Template<F> {
-    f: F,
+pub struct DynRender<'a> {
+    f: Box<dyn Fn(&mut dyn std::fmt::Write) -> std::fmt::Result + 'a>,
 }
 
-pub fn new<'a, F>(f: F) -> impl Render + std::fmt::Display + 'a
+pub fn new<'a, F>(f: F) -> DynRender<'a>
 where
     F: Fn(&mut dyn std::fmt::Write) -> std::fmt::Result + 'a,
 {
-    Template { f }
+    DynRender { f: Box::new(f) }
 }
 
-impl<F> Render for Template<F>
-where
-    F: Fn(&mut dyn std::fmt::Write) -> std::fmt::Result,
-{
+impl<'a> Render for DynRender<'a> {
     #[inline]
     fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
         (self.f)(writer)
     }
 }
 
-impl<F> std::fmt::Display for Template<F>
-where
-    F: Fn(&mut dyn std::fmt::Write) -> std::fmt::Result,
-{
+impl<'a> std::fmt::Display for DynRender<'a> {
     #[inline]
     fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
         Render::render(self, fmt)
