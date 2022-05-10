@@ -17,7 +17,7 @@ impl Parse for Struct {
                 syn::parenthesized!(fields in input);
                 Punctuated::<syn::Field, syn::token::Comma>::parse_terminated_with(
                     &fields,
-                    |inner| syn::Field::parse_named(inner),
+                    syn::Field::parse_named,
                 )?
                 .into_pairs()
                 .map(|pair| pair.into_value())
