@@ -14,4 +14,4 @@ categories = ["template-engine"]
 
 [dependencies]
 markup-proc-macro = { path = "../markup-proc-macro", version = "0.12.5" }
-itoa = { version = "0.4", features = ["i128"] }
+itoa = { version = "1.0.1" }
