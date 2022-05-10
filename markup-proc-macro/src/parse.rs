@@ -3,7 +3,6 @@ use crate::ast::{
 };
 use syn::parse::{Parse, ParseStream, Result};
 use syn::punctuated::Punctuated;
-use syn::Ident;
 
 impl Parse for Struct {
     fn parse(input: ParseStream) -> Result<Self> {
@@ -68,6 +67,7 @@ impl Parse for Node {
         if lookahead.peek(syn::Ident)
             || lookahead.peek(syn::Token![#])
             || lookahead.peek(syn::Token![.])
+            || lookahead.peek(syn::Token![$])
         {
             Ok(Node::Element(input.parse()?))
         } else if lookahead.peek(syn::Token![@]) {
@@ -114,20 +114,24 @@ impl Parse for Element {
     fn parse(input: ParseStream) -> Result<Self> {
         let (name, mut id, mut classes) = {
             let lookahead = input.lookahead1();
-            if lookahead.peek(syn::Ident) {
-                let name: Ident = input.parse()?;
-                (name.to_string(), None, Vec::new())
+            if lookahead.peek(syn::Token![$]) {
+                let _: syn::Token![$] = input.parse()?;
+                let name = identifier_or_string_literal_or_expression(input)?;
+                (name, None, Vec::new())
+            } else if lookahead.peek(syn::Ident) {
+                let name = identifier_or_string_literal_or_expression(input)?;
+                (name, None, Vec::new())
             } else if lookahead.peek(syn::Token![#]) {
                 let _: syn::Token![#] = input.parse()?;
                 (
-                    "div".into(),
+                    syn::parse_quote!("div"),
                     Some(identifier_or_string_literal_or_expression(input)?),
                     Vec::new(),
                 )
             } else if lookahead.peek(syn::Token![.]) {
                 let _: syn::Token![.] = input.parse()?;
                 (
-                    "div".into(),
+                    syn::parse_quote!("div"),
                     None,
                     vec![identifier_or_string_literal_or_expression(input)?],
                 )

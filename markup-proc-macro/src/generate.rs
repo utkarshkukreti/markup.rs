@@ -117,7 +117,7 @@ impl Generate for Element {
             close,
         } = self;
         stream.raw("<");
-        stream.escaped(name);
+        stream.expr(name);
         if let Some(id) = id {
             stream.raw(" id=\"");
             stream.expr(id);
@@ -158,7 +158,7 @@ impl Generate for Element {
         children.generate(stream);
         if *close {
             stream.raw("</");
-            stream.escaped(name);
+            stream.expr(name);
             stream.raw(">");
         }
     }

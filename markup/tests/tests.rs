@@ -292,3 +292,20 @@ t! {
     },
     A { b: B { foo: 1, bar: '?' }.clone() } => "1?B { foo: 1, bar: '?' }",
 }
+
+t! {
+    t13,
+    {
+        A() {
+            $"foo-bar";
+            $"foo-bar" {}
+            $"foo-bar"[baz = "quux"] {}
+        }
+        B(name: &'static str) {
+            ${name};
+            ${name} {}
+        }
+    },
+    A {} => r#"<foo-bar><foo-bar></foo-bar><foo-bar baz="quux"></foo-bar>"#,
+    B { name: "foo-bar" } => r#"<foo-bar><foo-bar></foo-bar>"#,
+}
