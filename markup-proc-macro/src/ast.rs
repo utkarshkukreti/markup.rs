@@ -4,7 +4,7 @@ pub struct Struct {
     pub attributes: Vec<syn::Attribute>,
     pub generics: syn::Generics,
     pub where_clause: Option<syn::WhereClause>,
-    pub fields: Vec<(syn::Ident, syn::Type)>,
+    pub fields: Vec<syn::Field>,
     pub children: Vec<Node>,
     pub size_hint: usize,
 }

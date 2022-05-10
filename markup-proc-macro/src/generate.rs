@@ -22,8 +22,12 @@ impl ToTokens for Struct {
         let (impl_generics, ty_generics, _) = generics.split_for_impl();
         let mut struct_fields = TokenStream::new();
         let mut splat_fields = TokenStream::new();
-        for (name, ty) in fields {
+        for field in fields {
+            let attrs = &field.attrs;
+            let name = field.ident.as_ref().unwrap();
+            let ty = &field.ty;
             struct_fields.extend(quote! {
+                #(#attrs)*
                 pub #name: #ty,
             });
             splat_fields.extend(quote! {
