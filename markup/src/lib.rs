@@ -1,3 +1,5 @@
+use std::fmt::Write;
+
 pub use markup_proc_macro::{define, new};
 
 mod escape;
@@ -163,6 +165,13 @@ impl Render for String {
     #[inline]
     fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
         self.as_str().render(writer)
+    }
+}
+
+impl Render for std::fmt::Arguments<'_> {
+    #[inline]
+    fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
+        escape::Escape(writer).write_fmt(*self)
     }
 }
 
