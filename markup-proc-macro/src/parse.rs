@@ -11,8 +11,7 @@ impl Parse for Struct {
         let name = input.parse()?;
         let generics = input.parse()?;
         let fields = {
-            let lookahead = input.lookahead1();
-            if lookahead.peek(syn::token::Paren) {
+            if input.peek(syn::token::Paren) {
                 let fields;
                 syn::parenthesized!(fields in input);
                 Punctuated::<syn::Field, syn::token::Comma>::parse_terminated_with(
@@ -134,11 +133,10 @@ impl Parse for Element {
         };
 
         loop {
-            let lookahead = input.lookahead1();
-            if lookahead.peek(syn::Token![#]) {
+            if input.peek(syn::Token![#]) {
                 let _: syn::Token![#] = input.parse()?;
                 id = Some(identifier_or_string_literal_or_expression(input)?);
-            } else if lookahead.peek(syn::Token![.]) {
+            } else if input.peek(syn::Token![.]) {
                 let _: syn::Token![.] = input.parse()?;
                 classes.push(identifier_or_string_literal_or_expression(input)?);
             } else {
@@ -147,8 +145,7 @@ impl Parse for Element {
         }
 
         let attributes = {
-            let lookahead = input.lookahead1();
-            if lookahead.peek(syn::token::Bracket) {
+            if input.peek(syn::token::Bracket) {
                 let attributes;
                 syn::bracketed!(attributes in input);
                 Punctuated::<Attribute, syn::Token![,]>::parse_terminated(&attributes)?
@@ -193,11 +190,9 @@ impl Parse for If {
         let mut clauses = vec![input.parse()?];
         let mut default = None;
         loop {
-            let lookahead = input.lookahead1();
-            if lookahead.peek(syn::token::Else) {
+            if input.peek(syn::token::Else) {
                 let _: syn::token::Else = input.parse()?;
-                let lookahead = input.lookahead1();
-                if lookahead.peek(syn::token::If) {
+                if input.peek(syn::token::If) {
                     let _: syn::token::If = input.parse()?;
                     clauses.push(input.parse()?);
                 } else {
@@ -230,8 +225,7 @@ impl Parse for IfClause {
 
 impl Parse for IfClauseTest {
     fn parse(input: ParseStream) -> Result<Self> {
-        let lookahead = input.lookahead1();
-        if lookahead.peek(syn::token::Let) {
+        if input.peek(syn::token::Let) {
             let _: syn::token::Let = input.parse()?;
             let pattern = input.parse()?;
             let _: syn::Token![=] = input.parse()?;
