@@ -94,7 +94,7 @@ impl Parse for Node {
             }
         } else if lookahead.peek(syn::Lit) {
             let lit: syn::Lit = input.parse()?;
-            Ok(Node::Expr(syn::parse2(quote::quote!(#lit))?))
+            Ok(Node::Expr(syn::parse_quote!(#lit)))
         } else if lookahead.peek(syn::token::Brace) {
             let inner;
             syn::braced!(inner in input);
