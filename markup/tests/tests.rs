@@ -94,9 +94,13 @@ t! {
             foo.bar[baz = true] "quux"
             foo.bar[baz = true]; "quux"
         }
+        C {
+            foo[fn = true, async = false, mod = true] {}
+        }
     },
     A {} => r#"<foo id="bar"><baz id="foo" class="quux 1 5"></baz><bar id="4" class="-1">7</bar></foo>"#,
     B {} => r#"<foo>bar</foo><foo id="bar">baz</foo><foo class="bar" baz>quux</foo><foo class="bar" baz>quux"#,
+    C {} => r#"<foo fn mod></foo>"#,
 }
 
 t! {
