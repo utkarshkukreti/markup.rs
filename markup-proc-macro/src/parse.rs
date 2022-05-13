@@ -344,7 +344,7 @@ fn identifier_or_string_literal_or_expression(input: ParseStream) -> Result<syn:
     let lookahead = input.lookahead1();
     if lookahead.peek(syn::Ident::peek_any) {
         let ident = syn::Ident::parse_any(input)?;
-        let string = ident.to_string();
+        let string = ident.unraw().to_string();
         Ok(syn::parse_quote!(#string))
     } else if lookahead.peek(syn::LitStr) {
         let string = input.parse::<syn::LitStr>()?.value();
