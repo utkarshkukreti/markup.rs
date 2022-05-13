@@ -211,9 +211,12 @@ t! {
             @#[derive(Debug)] struct Int(i32);
             @let Int(five) = Int(5);
             @five
+            @{6}
+            @{6 + 1}
+            @{let eight = Int(8); eight.0}
         }
     },
-    A {} => "12345",
+    A {} => "12345678",
 }
 
 t! {

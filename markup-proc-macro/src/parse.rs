@@ -82,7 +82,10 @@ impl Parse for Node {
             } else if lookahead.peek(syn::token::Match) {
                 let _: syn::token::Match = input.parse()?;
                 Ok(Node::Match(input.parse()?))
-            } else if lookahead.peek(syn::Lit) || lookahead.peek(syn::Ident) {
+            } else if lookahead.peek(syn::Lit)
+                || lookahead.peek(syn::Ident)
+                || lookahead.peek(syn::token::Brace)
+            {
                 Ok(Node::Expr(input.parse()?))
             } else if input.fork().parse::<syn::Stmt>().is_ok() {
                 Ok(Node::Stmt(input.parse()?))
