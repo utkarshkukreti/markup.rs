@@ -340,15 +340,10 @@ impl<P: Parse> Parse for Many<P> {
 }
 
 fn identifier_or_string_literal_or_expression(input: ParseStream) -> Result<syn::Expr> {
+    use syn::ext::IdentExt;
     let lookahead = input.lookahead1();
-    let ident = input.step(|cursor| {
-        if let Some((ident, rest)) = cursor.ident() {
-            Ok((ident, rest))
-        } else {
-            Err(cursor.error("expected identifier".to_string()))
-        }
-    });
-    if let Ok(ident) = ident {
+    if lookahead.peek(syn::Ident::peek_any) {
+        let ident = syn::Ident::parse_any(input)?;
         let string = ident.to_string();
         Ok(syn::parse_quote!(#string))
     } else if lookahead.peek(syn::LitStr) {
