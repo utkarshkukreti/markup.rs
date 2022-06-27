@@ -218,9 +218,18 @@ t! {
             @crate::add(10, -1)
 
             @self::add(10, -2)
+
+            @const _: () = {
+                impl A {
+                    fn answer() -> &'static str {
+                        "7"
+                    }
+                }
+            };
+            @Self::answer()
         }
     },
-    A {} => "1234567898",
+    A {} => "12345678987",
 }
 
 fn add(a: i32, b: i32) -> i32 {
