@@ -1,3 +1,4 @@
+#[macro_export]
 macro_rules! t {
     ($name:ident, {$($define:tt)+}, $($eval:expr => $expect:expr,)+) => {
         #[test]
@@ -332,4 +333,16 @@ t! {
     },
     A {} => r#"<foo-bar><foo-bar></foo-bar><foo-bar baz="quux"></foo-bar>"#,
     B { name: "foo-bar" } => r#"<foo-bar><foo-bar></foo-bar>"#,
+}
+
+mod inner {
+    super::t! {
+        t14,
+        {
+            A() {
+                @super::add(7, 7)
+            }
+        },
+        A {} => "14",
+    }
 }
