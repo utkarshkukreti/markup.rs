@@ -220,13 +220,11 @@ t! {
 
             @self::add(10, -2)
 
-            @const _: () = {
-                impl A {
-                    fn answer() -> &'static str {
-                        "7"
-                    }
+            @impl A {
+                fn answer() -> &'static str {
+                    "7"
                 }
-            };
+            }
             @Self::answer()
         }
     },
