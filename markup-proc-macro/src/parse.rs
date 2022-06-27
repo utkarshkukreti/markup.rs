@@ -87,6 +87,7 @@ impl Parse for Node {
                 || lookahead.peek(syn::token::Crate)
                 || lookahead.peek(syn::token::SelfValue)
                 || lookahead.peek(syn::token::SelfType)
+                || lookahead.peek(syn::token::Super)
             {
                 Ok(Node::Expr(input.parse()?))
             } else if input.fork().parse::<syn::Stmt>().is_ok() {
