@@ -148,9 +148,14 @@ tfor! {
         impl Render for Ty {
             #[inline]
             fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
-                let mut buffer = itoa::Buffer::new();
-                let str = buffer.format(*self);
-                writer.write_str(str)
+                #[cfg(feature = "itoa")] {
+                    let mut buffer = itoa::Buffer::new();
+                    let str = buffer.format(*self);
+                    writer.write_str(str)
+                }
+                #[cfg(not(feature = "itoa"))] {
+                    write!(writer, "{}", self)
+                }
             }
         }
     }
