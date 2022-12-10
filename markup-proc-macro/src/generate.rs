@@ -191,7 +191,7 @@ impl Generate for If {
 
 impl Generate for Match {
     fn generate(&self, stream: &mut Stream) {
-        let Match { expr, clauses } = &*self;
+        let Match { expr, clauses } = self;
         stream.extend(quote!(match #expr));
         stream.braced(|stream| {
             for clause in clauses {
