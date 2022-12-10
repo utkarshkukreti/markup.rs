@@ -5,6 +5,9 @@ on: [push, pull_request]
 jobs:
   build:
     name: ${{ matrix.os }} - ${{ matrix.rust }}
+    env:
+      # Required for Rust 1.45.2, see https://github.com/rust-lang/cargo/issues/10303
+      CARGO_NET_GIT_FETCH_WITH_CLI: true
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
