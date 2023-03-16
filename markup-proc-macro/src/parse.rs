@@ -1,5 +1,6 @@
 use crate::ast::{
-    Attribute, Element, For, If, IfClause, IfClauseTest, Match, MatchClause, Node, Struct, Template,
+    Attribute, ElemAttributes, Element, For, If, IfClause, IfClauseTest, Match, MatchClause, Node,
+    Struct, Template,
 };
 use syn::parse::{Parse, ParseStream, Result};
 use syn::punctuated::Punctuated;
@@ -152,12 +153,18 @@ impl Parse for Element {
             if input.peek(syn::token::Bracket) {
                 let attributes;
                 syn::bracketed!(attributes in input);
-                Punctuated::<Attribute, syn::Token![,]>::parse_terminated(&attributes)?
-                    .into_pairs()
-                    .map(|a| a.into_value())
-                    .collect()
+                let attributes =
+                    Punctuated::<Attribute, syn::Token![,]>::parse_terminated(&attributes)?
+                        .into_pairs()
+                        .map(|a| a.into_value())
+                        .collect();
+                ElemAttributes::Attributes(attributes)
+            } else if input.peek(syn::token::Paren) {
+                let children;
+                syn::parenthesized!(children in input);
+                ElemAttributes::RawAttributes(children.parse::<Many<Node>>()?.0)
             } else {
-                Vec::new()
+                ElemAttributes::Attributes(Vec::new())
             }
         };
 

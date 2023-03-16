@@ -1,3 +1,4 @@
+use crate::ast::ElemAttributes;
 use crate::ast::{
     Attribute, Element, For, If, IfClause, IfClauseTest, Match, MatchClause, Node, Struct, Template,
 };
@@ -136,25 +137,35 @@ impl Generate for Element {
             }
             stream.raw("\"");
         }
-        for Attribute { name, value } in attributes {
-            stream.extend(quote!(let __value = #value;));
-            stream.extend(quote!(if ::markup::Render::is_none(&__value) || ::markup::Render::is_false(&__value)));
-            stream.braced(|_| {});
-            stream.extend(quote!(else if ::markup::Render::is_true(&__value)));
-            stream.braced(|stream| {
+        match attributes {
+            ElemAttributes::Attributes(ref attributes) => {
+                for Attribute { name, value } in attributes {
+                    stream.extend(quote!(let __value = #value;));
+                    stream.extend(quote!(if ::markup::Render::is_none(&__value) || ::markup::Render::is_false(&__value)));
+                    stream.braced(|_| {});
+                    stream.extend(quote!(else if ::markup::Render::is_true(&__value)));
+                    stream.braced(|stream| {
+                        stream.raw(" ");
+                        stream.expr(name);
+                    });
+                    stream.extend(quote!(else));
+                    stream.braced(|stream| {
+                        stream.raw(" ");
+                        stream.expr(name);
+                        stream.raw("=\"");
+                        stream.expr(&syn::parse_quote!(__value));
+                        stream.raw("\"");
+                    });
+                }
+                stream.raw(">");
+            }
+            ElemAttributes::RawAttributes(attributes) => {
                 stream.raw(" ");
-                stream.expr(name);
-            });
-            stream.extend(quote!(else));
-            stream.braced(|stream| {
-                stream.raw(" ");
-                stream.expr(name);
-                stream.raw("=\"");
-                stream.expr(&syn::parse_quote!(__value));
-                stream.raw("\"");
-            });
+                attributes.generate(stream);
+                stream.raw(">");
+            }
         }
-        stream.raw(">");
+
         children.generate(stream);
         if *close {
             stream.raw("</");

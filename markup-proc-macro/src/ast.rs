@@ -29,7 +29,7 @@ pub struct Element {
     pub name: syn::Expr,
     pub id: Option<syn::Expr>,
     pub classes: Vec<syn::Expr>,
-    pub attributes: Vec<Attribute>,
+    pub attributes: ElemAttributes,
     pub children: Vec<Node>,
     pub close: bool,
 }
@@ -77,3 +77,10 @@ pub struct Attribute {
     pub name: syn::Expr,
     pub value: syn::Expr,
 }
+
+#[derive(Debug)]
+pub enum ElemAttributes {
+    Attributes(Vec<Attribute>),
+    RawAttributes(Vec<Node>),
+}
+
