@@ -245,7 +245,8 @@ t! {
                 @B { foo: *foo } ";"
                 @C { foo: *foo } ";"
                 @D { foo: *foo } ";"
-                @E { foo: *foo } "\n"
+                @E { foo: *foo } ";"
+                @F { foo: *foo } "\n"
             }
         }
         B(foo: Option<i32>) {
@@ -276,8 +277,8 @@ t! {
         D(foo: Option<i32>) {
             @if let Some(1) = foo {
                 "ONE"
-            } else if let Some(2) = foo {
-                "TWO"
+            } else if let | Some(2) | Some(3) = foo {
+                "TWO OR THREE"
             } else if let Some(_) = foo {
                 "OTHER"
             } else {
@@ -292,12 +293,19 @@ t! {
                 None => { "NONE" }
             }
         }
+        F(foo: Option<i32>) {
+            @match foo {
+                | Some(1) | Some(2) => { "ONE OR TWO" }
+                | Some(n) if *n == 3 => { "THREE" }
+                Some(_) | None => { "OTHER OR NONE" }
+            }
+        }
     },
     A {} => "\
-index=0 :: NONE;NONE;NONE;NONE
-index=1 :: ONE;ONE;ONE;ONE
-index=2 :: TWO;TWO;TWO;TWO
-index=3 :: OTHER;OTHER;OTHER;OTHER
+index=0 :: NONE;NONE;NONE;NONE;OTHER OR NONE
+index=1 :: ONE;ONE;ONE;ONE;ONE OR TWO
+index=2 :: TWO;TWO;TWO OR THREE;TWO;ONE OR TWO
+index=3 :: OTHER;OTHER;TWO OR THREE;OTHER;THREE
 ",
 }
 
@@ -343,4 +351,16 @@ mod inner {
         },
         A {} => "14",
     }
+}
+
+t! {
+    t15,
+    {
+        A() {
+            @for | Ok(x) | Err(x) in vec![Ok(1), Err(2), Ok(3)] {
+                @x
+            }
+        }
+    },
+    A {} => "123",
 }

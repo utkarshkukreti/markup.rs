@@ -231,7 +231,7 @@ impl Parse for IfClauseTest {
     fn parse(input: ParseStream) -> Result<Self> {
         if input.peek(syn::token::Let) {
             let _: syn::token::Let = input.parse()?;
-            let pattern = input.parse()?;
+            let pattern = syn::Pat::parse_multi_with_leading_vert(input)?;
             let _: syn::Token![=] = input.parse()?;
             let expr = syn::Expr::parse_without_eager_brace(input)?;
             Ok(IfClauseTest::Let(pattern, expr))
@@ -255,25 +255,7 @@ impl Parse for Match {
 
 impl Parse for MatchClause {
     fn parse(input: ParseStream) -> Result<Self> {
-        let leading_vert: Option<syn::Token![|]> = input.parse()?;
-        let pat: syn::Pat = input.parse()?;
-        let pat = if leading_vert.is_some() || input.peek(syn::Token![|]) {
-            let mut cases = Punctuated::new();
-            cases.push_value(pat);
-            while input.peek(syn::Token![|]) {
-                let punct = input.parse()?;
-                cases.push_punct(punct);
-                let pat: syn::Pat = input.parse()?;
-                cases.push_value(pat);
-            }
-            syn::Pat::Or(syn::PatOr {
-                attrs: Vec::new(),
-                leading_vert,
-                cases,
-            })
-        } else {
-            pat
-        };
+        let pat = syn::Pat::parse_multi_with_leading_vert(input)?;
         let guard = if input.peek(syn::Token![if]) {
             let _: syn::Token![if] = input.parse()?;
             Some(input.parse()?)
@@ -294,7 +276,7 @@ impl Parse for MatchClause {
 
 impl Parse for For {
     fn parse(input: ParseStream) -> Result<Self> {
-        let pat = input.parse()?;
+        let pat = syn::Pat::parse_multi_with_leading_vert(input)?;
         let _: syn::token::In = input.parse()?;
         let expr = syn::Expr::parse_without_eager_brace(input)?;
         let body;
