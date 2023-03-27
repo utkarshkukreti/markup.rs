@@ -139,9 +139,12 @@ impl Generate for Element {
 
         fn attr(stream: &mut Stream, name: &syn::Expr, value: &syn::Expr) {
             stream.extend(quote!(let __value = #value;));
-            stream.extend(quote!(if ::markup::Render::is_none(&__value) || ::markup::Render::is_false(&__value)));
+            stream.extend(quote!(
+            if ::markup::RenderAttributeValue::is_none(&__value) ||
+               ::markup::RenderAttributeValue::is_false(&__value)
+            ));
             stream.braced(|_| {});
-            stream.extend(quote!(else if ::markup::Render::is_true(&__value)));
+            stream.extend(quote!(else if ::markup::RenderAttributeValue::is_true(&__value)));
             stream.braced(|stream| {
                 stream.raw(" ");
                 stream.expr(name);

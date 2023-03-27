@@ -6,20 +6,19 @@ mod escape;
 
 pub trait Render {
     fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result;
+}
 
-    #[doc(hidden)]
+pub trait RenderAttributeValue: Render {
     #[inline]
     fn is_none(&self) -> bool {
         false
     }
 
-    #[doc(hidden)]
     #[inline]
     fn is_true(&self) -> bool {
         false
     }
 
-    #[doc(hidden)]
     #[inline]
     fn is_false(&self) -> bool {
         false
@@ -31,20 +30,19 @@ impl<'a, T: Render + ?Sized> Render for &'a T {
     fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
         T::render(self, writer)
     }
+}
 
-    #[doc(hidden)]
+impl<'a, T: RenderAttributeValue + ?Sized> RenderAttributeValue for &'a T {
     #[inline]
     fn is_none(&self) -> bool {
         T::is_none(self)
     }
 
-    #[doc(hidden)]
     #[inline]
     fn is_true(&self) -> bool {
         T::is_true(self)
     }
 
-    #[doc(hidden)]
     #[inline]
     fn is_false(&self) -> bool {
         T::is_false(self)
@@ -56,20 +54,19 @@ impl<T: Render + ?Sized> Render for Box<T> {
     fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
         T::render(self, writer)
     }
+}
 
-    #[doc(hidden)]
+impl<T: RenderAttributeValue + ?Sized> RenderAttributeValue for Box<T> {
     #[inline]
     fn is_none(&self) -> bool {
         T::is_none(self)
     }
 
-    #[doc(hidden)]
     #[inline]
     fn is_true(&self) -> bool {
         T::is_true(self)
     }
 
-    #[doc(hidden)]
     #[inline]
     fn is_false(&self) -> bool {
         T::is_false(self)
@@ -81,14 +78,14 @@ impl Render for bool {
     fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
         write!(writer, "{}", self)
     }
+}
 
-    #[doc(hidden)]
+impl RenderAttributeValue for bool {
     #[inline]
     fn is_true(&self) -> bool {
         *self
     }
 
-    #[doc(hidden)]
     #[inline]
     fn is_false(&self) -> bool {
         !self
@@ -103,8 +100,9 @@ impl<T: Render> Render for Option<T> {
             None => Ok(()),
         }
     }
+}
 
-    #[doc(hidden)]
+impl<T: RenderAttributeValue> RenderAttributeValue for Option<T> {
     #[inline]
     fn is_none(&self) -> bool {
         self.is_none()
@@ -120,8 +118,10 @@ impl<T: std::fmt::Display> Render for Raw<T> {
     }
 }
 
+impl<T: std::fmt::Display> RenderAttributeValue for Raw<T> {}
+
 #[inline]
-pub fn raw(value: impl std::fmt::Display) -> impl Render {
+pub fn raw(value: impl std::fmt::Display) -> impl Render + RenderAttributeValue {
     Raw(value)
 }
 
@@ -139,6 +139,9 @@ tfor! {
             fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
                 write!(writer, "{}", self)
             }
+        }
+
+        impl RenderAttributeValue for Ty {
         }
     }
 }
@@ -158,6 +161,9 @@ tfor! {
                 }
             }
         }
+
+        impl RenderAttributeValue for Ty {
+        }
     }
 }
 
@@ -168,6 +174,8 @@ impl Render for str {
     }
 }
 
+impl RenderAttributeValue for str {}
+
 impl Render for String {
     #[inline]
     fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
@@ -175,12 +183,16 @@ impl Render for String {
     }
 }
 
+impl RenderAttributeValue for String {}
+
 impl Render for std::fmt::Arguments<'_> {
     #[inline]
     fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
         escape::Escape(writer).write_fmt(*self)
     }
 }
+
+impl RenderAttributeValue for std::fmt::Arguments<'_> {}
 
 macro_rules! tuple_impl {
     ($($ident:ident)+) => {
@@ -192,6 +204,9 @@ macro_rules! tuple_impl {
                 $($ident.render(writer)?;)+
                 Ok(())
             }
+        }
+
+        impl<$($ident: RenderAttributeValue,)+> RenderAttributeValue for ($($ident,)+) {
         }
     }
 }
