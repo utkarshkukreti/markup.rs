@@ -364,3 +364,25 @@ t! {
     },
     A {} => "123",
 }
+
+t! {
+    t16,
+    {
+        A() {
+            div[..Vec::<(String, String)>::new(), ..[("foo", "bar")]] {}
+        }
+        B<'a>(attrs: &'a [(&'static str, Option<&'static str>)]) {
+            div[id = "b", ..*attrs] {}
+        }
+        C(data: std::collections::BTreeMap<&'static str, &'static str>) {
+            div[..data.iter().map(|(k, v)| (("data-", k), v))] {}
+        }
+    },
+    A {} => r#"<div foo="bar"></div>"#,
+    B {
+        attrs: &[("foo", None), ("bar", Some("baz"))]
+    } => r#"<div id="b" bar="baz"></div>"#,
+    C {
+        data: [("foo", "bar"), ("baz", "quux")].iter().cloned().collect()
+    } => r#"<div data-baz="quux" data-foo="bar"></div>"#,
+}

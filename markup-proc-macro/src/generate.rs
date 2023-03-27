@@ -136,7 +136,8 @@ impl Generate for Element {
             }
             stream.raw("\"");
         }
-        for Attribute { name, value } in attributes {
+
+        fn attr(stream: &mut Stream, name: &syn::Expr, value: &syn::Expr) {
             stream.extend(quote!(let __value = #value;));
             stream.extend(quote!(if ::markup::Render::is_none(&__value) || ::markup::Render::is_false(&__value)));
             stream.braced(|_| {});
@@ -154,8 +155,27 @@ impl Generate for Element {
                 stream.raw("\"");
             });
         }
+
+        for attribute in attributes {
+            match attribute {
+                Attribute::One(name, value) => attr(stream, name, value),
+                Attribute::Many(iter) => {
+                    stream.extend(quote!(for (__name, __value) in #iter));
+                    stream.braced(|stream| {
+                        attr(
+                            stream,
+                            &syn::parse_quote!(__name),
+                            &syn::parse_quote!(__value),
+                        );
+                    });
+                }
+            }
+        }
+
         stream.raw(">");
+
         children.generate(stream);
+
         if *close {
             stream.raw("</");
             stream.expr(name);

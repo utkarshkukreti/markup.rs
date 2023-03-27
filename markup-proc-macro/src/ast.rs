@@ -73,7 +73,7 @@ pub struct For {
 }
 
 #[derive(Debug)]
-pub struct Attribute {
-    pub name: syn::Expr,
-    pub value: syn::Expr,
+pub enum Attribute {
+    One(syn::Expr, syn::Expr),
+    Many(syn::Expr),
 }

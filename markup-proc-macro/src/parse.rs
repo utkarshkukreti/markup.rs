@@ -288,6 +288,11 @@ impl Parse for For {
 
 impl Parse for Attribute {
     fn parse(input: ParseStream) -> Result<Self> {
+        if input.peek(syn::Token![..]) {
+            let _: syn::Token![..] = input.parse()?;
+            return Ok(Attribute::Many(input.parse()?));
+        }
+
         let name = identifier_or_string_literal_or_expression(input)?;
         let value = if input.peek(syn::Token![=]) {
             let _: syn::Token![=] = input.parse()?;
@@ -295,7 +300,7 @@ impl Parse for Attribute {
         } else {
             syn::parse_quote!(true)
         };
-        Ok(Attribute { name, value })
+        Ok(Attribute::One(name, value))
     }
 }
 
