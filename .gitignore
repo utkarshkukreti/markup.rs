@@ -1,5 +1,6 @@
+**/*.rs.bk
 /examples/target
+/markup/examples/reference.rs
 /markup/target
 /target
-**/*.rs.bk
 Cargo.lock
