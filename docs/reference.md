@@ -163,16 +163,16 @@ markup::define! {
     Match(x: Option<u32>) {
         @match x {
             Some(1) | Some(2) => {
-                "x is 1 or 2\n"
+                "x is 1 or 2"
             }
             Some(x) if *x == 3 => {
-                "x is 3\n"
+                "x is 3"
             }
             None => {
-                "x is None\n"
+                "x is None"
             }
             _ => {
-                "x is something else\n"
+                "x is something else"
             }
         }
     }
