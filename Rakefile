@@ -26,14 +26,15 @@ task :default do
   codes.zip(output).each do |code, output|
     md = md.sub(code[0], "
 <table>
-  <tr><th>Code</th><th>Output</th></tr>
+  <tr><th>Code</th></tr>
   <tr><td width=\"1000px\">
 
   ```rust
 #{indent(code[1], with: "  ")}
   ```
-  </td>
-  <td width=\"1000px\">
+  </td></tr>
+  <tr><th>Output</th></tr>
+  <tr><td width=\"1000px\">
 
   ```html
 #{indent(output, with: "  ")}

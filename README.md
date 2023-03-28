@@ -137,7 +137,7 @@ There are two ways to define templates: `markup::define!` and `markup::new!`.
 
 
 <table>
-  <tr><th>Code</th><th>Output</th></tr>
+  <tr><th>Code</th></tr>
   <tr><td width="1000px">
 
   ```rust
@@ -158,8 +158,9 @@ There are two ways to define templates: `markup::define!` and `markup::new!`.
   let string = Hello { name: "World 3" }.to_string();
   println!("{}", string);
   ```
-  </td>
-  <td width="1000px">
+  </td></tr>
+  <tr><th>Output</th></tr>
+  <tr><td width="1000px">
 
   ```html
   Hello, World!
@@ -174,7 +175,7 @@ There are two ways to define templates: `markup::define!` and `markup::new!`.
 
 
 <table>
-  <tr><th>Code</th><th>Output</th></tr>
+  <tr><th>Code</th></tr>
   <tr><td width="1000px">
 
   ```rust
@@ -191,8 +192,9 @@ There are two ways to define templates: `markup::define!` and `markup::new!`.
   let string = template.to_string();
   println!("{}", string);
   ```
-  </td>
-  <td width="1000px">
+  </td></tr>
+  <tr><th>Output</th></tr>
+  <tr><td width="1000px">
 
   ```html
   Hello, World!
@@ -209,7 +211,7 @@ Templates can have bare literal values, which are rendered as is. They can also 
 
 
 <table>
-  <tr><th>Code</th><th>Output</th></tr>
+  <tr><th>Code</th></tr>
   <tr><td width="1000px">
 
   ```rust
@@ -229,8 +231,9 @@ Templates can have bare literal values, which are rendered as is. They can also 
 
   println!("{}", Expressions { a: 5, b: 3 });
   ```
-  </td>
-  <td width="1000px">
+  </td></tr>
+  <tr><th>Output</th></tr>
+  <tr><td width="1000px">
 
   ```html
   1 + 2 = 3
@@ -250,7 +253,7 @@ Elements are defined using a CSS selector-like syntax. Elements can contain othe
 
 
 <table>
-  <tr><th>Code</th><th>Output</th></tr>
+  <tr><th>Code</th></tr>
   <tr><td width="1000px">
 
   ```rust
@@ -279,8 +282,9 @@ Elements are defined using a CSS selector-like syntax. Elements can contain othe
 
   println!("{}", Elements { name: "span" });
   ```
-  </td>
-  <td width="1000px">
+  </td></tr>
+  <tr><th>Output</th></tr>
+  <tr><td width="1000px">
 
   ```html
   <div></div>
@@ -299,7 +303,7 @@ Attributes are defined after the element name. `id` and `class` attributes can b
 
 
 <table>
-  <tr><th>Code</th><th>Output</th></tr>
+  <tr><th>Code</th></tr>
   <tr><td width="1000px">
 
   ```rust
@@ -331,8 +335,9 @@ Attributes are defined after the element name. `id` and `class` attributes can b
 
   println!("{}", Attributes { id: 123, category: String::from("tutorial") });
   ```
-  </td>
-  <td width="1000px">
+  </td></tr>
+  <tr><th>Output</th></tr>
+  <tr><td width="1000px">
 
   ```html
   <div id="foo" class="bar baz"></div>
