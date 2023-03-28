@@ -303,7 +303,7 @@ Attributes are defined after the element name. `id` and `class` attributes can b
 
   ```rust
   markup::define! {
-      Attributes(id: u32, category: String) {
+      Attributes(id: u32, category: String, data: std::collections::BTreeMap<String, String>) {
           // A div with an id and two classes.
           div#foo.bar.baz {}
           '\n'
@@ -325,10 +325,21 @@ Attributes are defined after the element name. `id` and `class` attributes can b
 
           // Attribute names can also be expressions wrapped in braces.
           div[{format!("{}{}", "data-", "post-id")} = id] {}
+          '\n'
+
+          // Multiple attributes can be added dynamically using the `..` syntax.
+          div[..data.iter().map(|(k, v)| (("data-", k), v))] {}
       }
   }
 
-  println!("{}", Attributes { id: 123, category: String::from("tutorial") });
+  println!("{}", Attributes {
+      id: 123,
+      category: String::from("tutorial"),
+      data: [
+          (String::from("foo"), String::from("bar")),
+          (String::from("baz"), String::from("quux"))
+      ].iter().cloned().collect(),
+  });
   ```
   </td></tr>
   <tr><th>Output</th></tr>
@@ -342,6 +353,7 @@ Attributes are defined after the element name. `id` and `class` attributes can b
   <input checked>
   <input type="text">
   <div data-post-id="123"></div>
+  <div data-baz="quux" data-foo="bar"></div>
   ```
   </td></tr>
 </table>
