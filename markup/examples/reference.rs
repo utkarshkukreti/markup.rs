@@ -168,6 +168,18 @@ fn _6() {
     println!("{}", Match { x: Some(4) });
 }
 
+fn _7() {
+    markup::define! {
+        For<'a>(xs: &'a [u32]) {
+            @for (i, x) in xs.iter().enumerate() {
+                @i ": " @x "\n"
+            }
+        }
+    }
+
+    println!("{}", For { xs: &[1, 2, 4, 8] });
+}
+
 fn main() {
     _0();
     println!("---");
@@ -182,5 +194,7 @@ fn main() {
     _5();
     println!("---");
     _6();
+    println!("---");
+    _7();
     println!("---");
 }

@@ -447,3 +447,34 @@ Attributes are defined after the element name. `id` and `class` attributes can b
 
 
 ### @for
+
+`@for` works similar to Rust.
+
+
+<table>
+  <tr><th>Code</th></tr>
+  <tr><td width="1000px">
+
+  ```rust
+  markup::define! {
+      For<'a>(xs: &'a [u32]) {
+          @for (i, x) in xs.iter().enumerate() {
+              @i ": " @x "\n"
+          }
+      }
+  }
+
+  println!("{}", For { xs: &[1, 2, 4, 8] });
+  ```
+  </td></tr>
+  <tr><th>Output</th></tr>
+  <tr><td width="1000px">
+
+  ```html
+  0: 1
+  1: 2
+  2: 4
+  3: 8
+  ```
+  </td></tr>
+</table>

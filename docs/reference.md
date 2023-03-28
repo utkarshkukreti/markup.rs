@@ -184,3 +184,17 @@ println!("{}", Match { x: Some(4) });
 ```
 
 # @for
+
+`@for` works similar to Rust.
+
+```rust
+markup::define! {
+    For<'a>(xs: &'a [u32]) {
+        @for (i, x) in xs.iter().enumerate() {
+            @i ": " @x "\n"
+        }
+    }
+}
+
+println!("{}", For { xs: &[1, 2, 4, 8] });
+```
