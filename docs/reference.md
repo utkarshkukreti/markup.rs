@@ -95,7 +95,7 @@ println!("{}", Elements { name: "span" });
 
 # Attributes
 
-Attributes are defined after the element name. `id` and `class` attributes can be defined using CSS selector-like syntax using '#' and '.'. Classes may be specified multiple times using this shorthand syntax. Other attributes are specified in square brackets.
+Attributes are defined after the element name. `id` and `class` attributes can be defined using CSS selector-like syntax using `#` and `.`. Classes may be specified multiple times using this shorthand syntax. Other attributes are specified in square brackets.
 
 ```rust
 markup::define! {
