@@ -4,7 +4,7 @@
 
 A blazing fast, type-safe template engine for Rust.
 
-[![Build](https://img.shields.io/github/workflow/status/utkarshkukreti/markup.rs/Build?style=for-the-badge)](https://github.com/utkarshkukreti/markup.rs/actions/workflows/build.yml)
+[![Build](https://img.shields.io/github/actions/workflow/status/utkarshkukreti/markup.rs/build.yml?style=for-the-badge)](https://github.com/utkarshkukreti/markup.rs/actions/workflows/build.yml)
 [![Version](https://img.shields.io/crates/v/markup?style=for-the-badge)](https://crates.io/crates/markup)
 [![Documentation](https://img.shields.io/docsrs/markup?style=for-the-badge)](https://docs.rs/markup)
 [![Downloads](https://img.shields.io/crates/d/markup?style=for-the-badge)](https://crates.io/crates/markup)
