@@ -24,7 +24,7 @@ task :default do
   end
 
   codes.zip(output).each do |code, output|
-    md = md.sub(code[0], "
+    md = md.sub(code[0], "\
 <table>
   <tr><th>Code</th></tr>
   <tr><td width=\"1000px\">

@@ -129,7 +129,7 @@ println!("{}", Attributes { id: 123, category: String::from("tutorial") });
 
 # @if and @if let
 
-`@if` and `@if let` work the same as in Rust.
+`@if` and `@if let` works similar to Rust.
 
 ```rust
 markup::define! {
@@ -156,7 +156,7 @@ println!("{}", If { x: 3, y: None });
 
 # @match
 
-`@match` work similar to Rust, but the branches must be wrapped in braces and may contain any valid template code.
+`@match` works similar to Rust, but the branches must be wrapped in braces.
 
 ```rust
 markup::define! {

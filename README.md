@@ -135,7 +135,6 @@ There are two ways to define templates: `markup::define!` and `markup::new!`.
 
 `markup::define!` defines a template with named arguments. These templates cannot access variables from outer scope. The templates can have generic parameters. Under the hood, `markup::define!` compiles to a Rust struct that implements `markup::Render` and `std::fmt::Display` traits.
 
-
 <table>
   <tr><th>Code</th></tr>
   <tr><td width="1000px">
@@ -173,7 +172,6 @@ There are two ways to define templates: `markup::define!` and `markup::new!`.
 
 `markup::new!` defines a template without any arguments. These can access variables from outer scope.
 
-
 <table>
   <tr><th>Code</th></tr>
   <tr><td width="1000px">
@@ -208,7 +206,6 @@ There are two ways to define templates: `markup::define!` and `markup::new!`.
 ### Expressions
 
 Templates can have bare literal values, which are rendered as is. They can also have expressions (including function and macro calls) preceded by `@` sign. All strings are HTML-escaped unless they are wrapped in `markup::raw()`.
-
 
 <table>
   <tr><th>Code</th></tr>
@@ -250,7 +247,6 @@ Templates can have bare literal values, which are rendered as is. They can also 
 ### Elements
 
 Elements are defined using a CSS selector-like syntax. Elements can contain other nested elements in braces or be followed by a semicolon for self-closing elements.
-
 
 <table>
   <tr><th>Code</th></tr>
@@ -300,7 +296,6 @@ Elements are defined using a CSS selector-like syntax. Elements can contain othe
 ### Attributes
 
 Attributes are defined after the element name. `id` and `class` attributes can be defined using CSS selector-like syntax using `#` and `.`. Classes may be specified multiple times using this shorthand syntax. Other attributes are specified in square brackets.
-
 
 <table>
   <tr><th>Code</th></tr>
@@ -354,8 +349,7 @@ Attributes are defined after the element name. `id` and `class` attributes can b
 
 ### @if and @if let
 
-`@if` and `@if let` work the same as in Rust.
-
+`@if` and `@if let` works similar to Rust.
 
 <table>
   <tr><th>Code</th></tr>
@@ -400,8 +394,7 @@ Attributes are defined after the element name. `id` and `class` attributes can b
 
 ### @match
 
-`@match` work similar to Rust, but the branches must be wrapped in braces and may contain any valid template code.
-
+`@match` works similar to Rust, but the branches must be wrapped in braces.
 
 <table>
   <tr><th>Code</th></tr>
@@ -449,7 +442,6 @@ Attributes are defined after the element name. `id` and `class` attributes can b
 ### @for
 
 `@for` works similar to Rust.
-
 
 <table>
   <tr><th>Code</th></tr>
