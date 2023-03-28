@@ -129,6 +129,31 @@ println!("{}", Attributes { id: 123, category: String::from("tutorial") });
 
 # @if and @if let
 
+`@if` and `@if let` work the same as in Rust.
+
+```rust
+markup::define! {
+    If(x: u32, y: Option<u32>) {
+        @if *x == 1 {
+            "x = 1\n"
+        } else if *x == 2 {
+            "x = 2\n"
+        } else {
+            "x is neither 1 nor 2\n"
+        }
+
+        @if let Some(y) = y {
+            "y = " @y "\n"
+        } else {
+            "y is None\n"
+        }
+    }
+}
+
+println!("{}", If { x: 2, y: Some(2) });
+println!("{}", If { x: 3, y: None });
+```
+
 # @match
 
 # @for

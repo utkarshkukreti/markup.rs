@@ -354,6 +354,50 @@ Attributes are defined after the element name. `id` and `class` attributes can b
 
 ### @if and @if let
 
+`@if` and `@if let` work the same as in Rust.
+
+
+<table>
+  <tr><th>Code</th></tr>
+  <tr><td width="1000px">
+
+  ```rust
+  markup::define! {
+      If(x: u32, y: Option<u32>) {
+          @if *x == 1 {
+              "x = 1\n"
+          } else if *x == 2 {
+              "x = 2\n"
+          } else {
+              "x is neither 1 nor 2\n"
+          }
+
+          @if let Some(y) = y {
+              "y = " @y "\n"
+          } else {
+              "y is None\n"
+          }
+      }
+  }
+
+  println!("{}", If { x: 2, y: Some(2) });
+  println!("{}", If { x: 3, y: None });
+  ```
+  </td></tr>
+  <tr><th>Output</th></tr>
+  <tr><td width="1000px">
+
+  ```html
+  x = 2
+  y = 2
+
+  x is neither 1 nor 2
+  y is None
+  ```
+  </td></tr>
+</table>
+
+
 ### @match
 
 ### @for

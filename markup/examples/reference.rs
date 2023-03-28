@@ -120,6 +120,29 @@ fn _4() {
     );
 }
 
+fn _5() {
+    markup::define! {
+        If(x: u32, y: Option<u32>) {
+            @if *x == 1 {
+                "x = 1\n"
+            } else if *x == 2 {
+                "x = 2\n"
+            } else {
+                "x is neither 1 nor 2\n"
+            }
+
+            @if let Some(y) = y {
+                "y = " @y "\n"
+            } else {
+                "y is None\n"
+            }
+        }
+    }
+
+    println!("{}", If { x: 2, y: Some(2) });
+    println!("{}", If { x: 3, y: None });
+}
+
 fn main() {
     _0();
     println!("---");
@@ -130,5 +153,7 @@ fn main() {
     _3();
     println!("---");
     _4();
+    println!("---");
+    _5();
     println!("---");
 }
