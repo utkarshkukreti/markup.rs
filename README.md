@@ -295,6 +295,58 @@ Elements are defined using a CSS selector-like syntax. Elements can contain othe
 
 ### Attributes
 
+Attributes are defined after the element name. `id` and `class` attributes can be defined using CSS selector-like syntax using '#' and '.'. Classes may be specified multiple times using this shorthand syntax. Other attributes are specified in square brackets.
+
+
+<table>
+  <tr><th>Code</th><th>Output</th></tr>
+  <tr><td width="1000px">
+
+  ```rust
+  markup::define! {
+      Attributes(id: u32, category: String) {
+          // A div with an id and two classes.
+          div#foo.bar.baz {}
+          '\n'
+          // A div with a dynamically computed id and one static and one dynamic class.
+          div#{format!("post-{}", id)}.post.{format!("category-{}", category)} {}
+          '\n'
+
+          // Boolean attributes are only rendered if true. Specifying no value is the same as `true`.
+          input[checked = true];
+          '\n'
+          input[checked = false];
+          '\n'
+          input[checked];
+          '\n'
+
+          // `Option` attributes are rendered only if they're `Some`.
+          input[type = Some("text"), minlength = None::<String>];
+          '\n'
+
+          // Attribute names can also be expressions wrapped in braces.
+          div[{format!("{}{}", "data-", "post-id")} = id] {}
+      }
+  }
+
+  println!("{}", Attributes { id: 123, category: String::from("tutorial") });
+  ```
+  </td>
+  <td width="1000px">
+
+  ```html
+  <div id="foo" class="bar baz"></div>
+  <div id="post-123" class="post category-tutorial"></div>
+  <input checked>
+  <input>
+  <input checked>
+  <input type="text">
+  <div data-post-id="123"></div>
+  ```
+  </td></tr>
+</table>
+
+
 ### @if and @if let
 
 ### @match

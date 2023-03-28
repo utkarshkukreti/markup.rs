@@ -95,6 +95,38 @@ println!("{}", Elements { name: "span" });
 
 # Attributes
 
+Attributes are defined after the element name. `id` and `class` attributes can be defined using CSS selector-like syntax using '#' and '.'. Classes may be specified multiple times using this shorthand syntax. Other attributes are specified in square brackets.
+
+```rust
+markup::define! {
+    Attributes(id: u32, category: String) {
+        // A div with an id and two classes.
+        div#foo.bar.baz {}
+        '\n'
+        // A div with a dynamically computed id and one static and one dynamic class.
+        div#{format!("post-{}", id)}.post.{format!("category-{}", category)} {}
+        '\n'
+
+        // Boolean attributes are only rendered if true. Specifying no value is the same as `true`.
+        input[checked = true];
+        '\n'
+        input[checked = false];
+        '\n'
+        input[checked];
+        '\n'
+
+        // `Option` attributes are rendered only if they're `Some`.
+        input[type = Some("text"), minlength = None::<String>];
+        '\n'
+
+        // Attribute names can also be expressions wrapped in braces.
+        div[{format!("{}{}", "data-", "post-id")} = id] {}
+    }
+}
+
+println!("{}", Attributes { id: 123, category: String::from("tutorial") });
+```
+
 # @if and @if let
 
 # @match
