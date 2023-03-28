@@ -400,4 +400,50 @@ Attributes are defined after the element name. `id` and `class` attributes can b
 
 ### @match
 
+`@match` work similar to Rust, but the branches must be wrapped in braces and may contain any valid template code.
+
+
+<table>
+  <tr><th>Code</th></tr>
+  <tr><td width="1000px">
+
+  ```rust
+  markup::define! {
+      Match(x: Option<u32>) {
+          @match x {
+              Some(1) | Some(2) => {
+                  "x is 1 or 2\n"
+              }
+              Some(x) if *x == 3 => {
+                  "x is 3\n"
+              }
+              None => {
+                  "x is None\n"
+              }
+              _ => {
+                  "x is something else\n"
+              }
+          }
+      }
+  }
+
+  println!("{}", Match { x: None });
+  println!("{}", Match { x: Some(2) });
+  println!("{}", Match { x: Some(4) });
+  ```
+  </td></tr>
+  <tr><th>Output</th></tr>
+  <tr><td width="1000px">
+
+  ```html
+  x is None
+
+  x is 1 or 2
+
+  x is something else
+  ```
+  </td></tr>
+</table>
+
+
 ### @for

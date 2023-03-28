@@ -143,6 +143,31 @@ fn _5() {
     println!("{}", If { x: 3, y: None });
 }
 
+fn _6() {
+    markup::define! {
+        Match(x: Option<u32>) {
+            @match x {
+                Some(1) | Some(2) => {
+                    "x is 1 or 2\n"
+                }
+                Some(x) if *x == 3 => {
+                    "x is 3\n"
+                }
+                None => {
+                    "x is None\n"
+                }
+                _ => {
+                    "x is something else\n"
+                }
+            }
+        }
+    }
+
+    println!("{}", Match { x: None });
+    println!("{}", Match { x: Some(2) });
+    println!("{}", Match { x: Some(4) });
+}
+
 fn main() {
     _0();
     println!("---");
@@ -155,5 +180,7 @@ fn main() {
     _4();
     println!("---");
     _5();
+    println!("---");
+    _6();
     println!("---");
 }
