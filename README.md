@@ -480,3 +480,39 @@ Attributes are defined after the element name. `id` and `class` attributes can b
   ```
   </td></tr>
 </table>
+
+
+### Statements
+
+Templates can have statements preceded by `@` sign. The most useful such
+statement is `@let` to compute a value for later reuse. `@fn` can be used to
+define a function. Also supported are `@struct`, `@mod`, `@impl`, `@const`,
+`@static` and more.
+
+<table>
+  <tr><th>Code</th></tr>
+  <tr><td width="1000px">
+
+  ```rust
+  markup::define! {
+      Statement(x: i32) {
+          @let double_x = x * 2;
+          @double_x '\n'
+
+          @fn triple(x: i32) -> i32 { x * 3 }
+          @triple(*x)
+      }
+  }
+
+  println!("{}", Statement { x: 2 });
+  ```
+  </td></tr>
+  <tr><th>Output</th></tr>
+  <tr><td width="1000px">
+
+  ```html
+  4
+  6
+  ```
+  </td></tr>
+</table>

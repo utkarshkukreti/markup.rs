@@ -209,3 +209,24 @@ markup::define! {
 
 println!("{}", For { xs: &[1, 2, 4, 8] });
 ```
+
+# Statements
+
+Templates can have statements preceded by `@` sign. The most useful such
+statement is `@let` to compute a value for later reuse. `@fn` can be used to
+define a function. Also supported are `@struct`, `@mod`, `@impl`, `@const`,
+`@static` and more.
+
+```rust
+markup::define! {
+    Statement(x: i32) {
+        @let double_x = x * 2;
+        @double_x '\n'
+
+        @fn triple(x: i32) -> i32 { x * 3 }
+        @triple(*x)
+    }
+}
+
+println!("{}", Statement { x: 2 });
+```
