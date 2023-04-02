@@ -1,7 +1,7 @@
 [package]
 name = "markup-benches"
 version = "0.0.0"
-edition = "2018"
+edition = "2021"
 
 [dependencies]
 markup = { path = "../markup", version = "0.13.1" }

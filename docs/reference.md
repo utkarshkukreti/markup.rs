@@ -101,10 +101,12 @@ Attributes are defined after the element name. `id` and `class` attributes can b
 markup::define! {
     Attributes(id: u32, category: String, data: std::collections::BTreeMap<String, String>) {
         // A div with an id and two classes.
-        div#foo.bar.baz {}
+        // Note: Starting with Rust 2021, there must be a space between the
+        // element name and `#` due to reserved syntax (https://doc.rust-lang.org/edition-guide/rust-2021/reserving-syntax.html).
+        div #foo.bar.baz {}
         '\n'
         // A div with a dynamically computed id and one static and one dynamic class.
-        div#{format!("post-{}", id)}.post.{format!("category-{}", category)} {}
+        div #{format!("post-{}", id)}.post.{format!("category-{}", category)} {}
         '\n'
 
         // Boolean attributes are only rendered if true. Specifying no value is the same as `true`.

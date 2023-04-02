@@ -84,14 +84,14 @@ t! {
     t5,
     {
         A {
-            foo#bar {
-                baz.quux#"foo".{1}.{2 + 3} {}
-                bar#{4}.{5 - 6} { 7 }
+            foo #bar {
+                baz.quux #"foo".{1}.{2 + 3} {}
+                bar #{4}.{5 - 6} { 7 }
             }
         }
         B {
             foo "bar"
-            foo#bar "baz"
+            foo #bar "baz"
             foo.bar[baz = true] "quux"
             foo.bar[baz = true]; "quux"
         }

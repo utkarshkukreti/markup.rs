@@ -17,7 +17,7 @@ markup::define! {
             body {
                 #main.container {
                     @for post in *posts {
-                        div#{format!("post-{}", post.id)}["data-id" = post.id] {
+                        div #{format!("post-{}", post.id)}["data-id" = post.id] {
                             .title { @post.title }
                         }
                     }
