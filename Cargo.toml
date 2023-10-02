@@ -1,2 +1,3 @@
 [workspace]
 members = ["markup", "markup-proc-macro", "markup-benches"]
+resolver = "2"
