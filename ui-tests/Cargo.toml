@@ -1,0 +1,9 @@
+[package]
+name = "ui-tests"
+version = "0.1.0"
+edition = "2021"
+publish = false
+
+[dependencies]
+markup = { path = "../markup" }
+trybuild = "1.0.85"
