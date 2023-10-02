@@ -1,9 +1,11 @@
 use crate::ast::{
     Attribute, Element, For, If, IfClause, IfClauseTest, Match, MatchClause, Node, Struct, Template,
 };
+use proc_macro2::Span;
 use proc_macro2::TokenStream;
 use proc_macro2::TokenTree;
 use quote::{quote, ToTokens};
+use syn::Ident;
 
 impl ToTokens for Struct {
     fn to_tokens(&self, tokens: &mut TokenStream) {
@@ -17,8 +19,9 @@ impl ToTokens for Struct {
             size_hint,
         } = self;
         let mut stream = Stream::default();
-        children.generate(&mut stream);
-        let built = stream.finish();
+        let writer = Ident::new("__writer", name.span());
+        children.generate(&mut stream, &writer);
+        let built = stream.finish(&writer);
         let (impl_generics, ty_generics, _) = generics.split_for_impl();
         let mut struct_fields = TokenStream::new();
         let mut splat_fields = TokenStream::new();
@@ -49,7 +52,7 @@ impl ToTokens for Struct {
                 }
             }
             impl #impl_generics ::markup::Render for #name #ty_generics #where_clause {
-                fn render(&self, __writer: &mut impl std::fmt::Write) -> std::fmt::Result {
+                fn render(&self, #writer: &mut impl std::fmt::Write) -> std::fmt::Result {
                     let #name { #splat_fields } = self;
                     #built
                     Ok(())
@@ -68,12 +71,13 @@ impl ToTokens for Struct {
 impl ToTokens for Template {
     fn to_tokens(&self, tokens: &mut TokenStream) {
         let Self { children } = self;
+        let writer = Ident::new("__writer", Span::call_site());
         let mut stream = Stream::default();
-        children.generate(&mut stream);
-        let built = stream.finish();
+        children.generate(&mut stream, &writer);
+        let built = stream.finish(&writer);
         tokens.extend(quote! {{
-            ::markup::new(move |mut __writer| {
-                let mut __writer = &mut __writer;
+            ::markup::new(move |mut ___writer| {
+                let mut #writer = &mut ___writer;
                 #built
                 Ok(())
             })
@@ -82,32 +86,32 @@ impl ToTokens for Template {
 }
 
 trait Generate {
-    fn generate(&self, stream: &mut Stream);
+    fn generate(&self, stream: &mut Stream, writer: &Ident);
 }
 
 impl<T: Generate> Generate for Vec<T> {
-    fn generate(&self, stream: &mut Stream) {
+    fn generate(&self, stream: &mut Stream, writer: &Ident) {
         for x in self {
-            x.generate(stream)
+            x.generate(stream, writer)
         }
     }
 }
 
 impl Generate for Node {
-    fn generate(&self, stream: &mut Stream) {
+    fn generate(&self, stream: &mut Stream, writer: &Ident) {
         match self {
-            Node::Element(element) => element.generate(stream),
-            Node::If(if_) => if_.generate(stream),
-            Node::Match(match_) => match_.generate(stream),
-            Node::For(for_) => for_.generate(stream),
-            Node::Expr(expr) => stream.expr(expr),
-            Node::Stmt(stmt) => stream.extend(stmt.into_token_stream()),
+            Node::Element(element) => element.generate(stream, writer),
+            Node::If(if_) => if_.generate(stream, writer),
+            Node::Match(match_) => match_.generate(stream, writer),
+            Node::For(for_) => for_.generate(stream, writer),
+            Node::Expr(expr) => stream.expr(expr, writer),
+            Node::Stmt(stmt) => stream.extend(stmt.into_token_stream(), writer),
         }
     }
 }
 
 impl Generate for Element {
-    fn generate(&self, stream: &mut Stream) {
+    fn generate(&self, stream: &mut Stream, writer: &Ident) {
         let Element {
             name,
             id,
@@ -117,10 +121,10 @@ impl Generate for Element {
             close,
         } = self;
         stream.raw("<");
-        stream.expr(name);
+        stream.expr(name, writer);
         if let Some(id) = id {
             stream.raw(" id=\"");
-            stream.expr(id);
+            stream.expr(id, writer);
             stream.raw("\"");
         }
         if !classes.is_empty() {
@@ -132,115 +136,132 @@ impl Generate for Element {
                 } else {
                     stream.raw(" ");
                 }
-                stream.expr(class);
+                stream.expr(class, writer);
             }
             stream.raw("\"");
         }
 
-        fn attr(stream: &mut Stream, name: &syn::Expr, value: &syn::Expr) {
-            stream.extend(quote!(let __value = #value;));
-            stream.extend(quote!(
-            if ::markup::RenderAttributeValue::is_none(&__value) ||
-               ::markup::RenderAttributeValue::is_false(&__value)
-            ));
-            stream.braced(|_| {});
-            stream.extend(quote!(else if ::markup::RenderAttributeValue::is_true(&__value)));
-            stream.braced(|stream| {
-                stream.raw(" ");
-                stream.expr(name);
-            });
-            stream.extend(quote!(else));
-            stream.braced(|stream| {
-                stream.raw(" ");
-                stream.expr(name);
-                stream.raw("=\"");
-                stream.expr(&syn::parse_quote!(__value));
-                stream.raw("\"");
-            });
+        fn attr(stream: &mut Stream, name: &syn::Expr, value: &syn::Expr, writer: &Ident) {
+            stream.extend(quote!(let __value = #value;), writer);
+            stream.extend(
+                quote! {
+                    if ::markup::RenderAttributeValue::is_none(&__value) ||
+                       ::markup::RenderAttributeValue::is_false(&__value)
+                },
+                writer,
+            );
+            stream.braced(|_| {}, writer);
+            stream.extend(
+                quote!(else if ::markup::RenderAttributeValue::is_true(&__value)),
+                writer,
+            );
+            stream.braced(
+                |stream| {
+                    stream.raw(" ");
+                    stream.expr(name, writer);
+                },
+                writer,
+            );
+            stream.extend(quote!(else), writer);
+            stream.braced(
+                |stream| {
+                    stream.raw(" ");
+                    stream.expr(name, writer);
+                    stream.raw("=\"");
+                    stream.expr(&syn::parse_quote!(__value), writer);
+                    stream.raw("\"");
+                },
+                writer,
+            );
         }
 
         for attribute in attributes {
             match attribute {
-                Attribute::One(name, value) => attr(stream, name, value),
+                Attribute::One(name, value) => attr(stream, name, value, writer),
                 Attribute::Many(iter) => {
-                    stream.extend(quote!(for (__name, __value) in #iter));
-                    stream.braced(|stream| {
-                        attr(
-                            stream,
-                            &syn::parse_quote!(__name),
-                            &syn::parse_quote!(__value),
-                        );
-                    });
+                    stream.extend(quote!(for (__name, __value) in #iter), writer);
+                    stream.braced(
+                        |stream| {
+                            attr(
+                                stream,
+                                &syn::parse_quote!(__name),
+                                &syn::parse_quote!(__value),
+                                writer,
+                            );
+                        },
+                        writer,
+                    );
                 }
             }
         }
 
         stream.raw(">");
 
-        children.generate(stream);
+        children.generate(stream, writer);
 
         if *close {
             stream.raw("</");
-            stream.expr(name);
+            stream.expr(name, writer);
             stream.raw(">");
         }
     }
 }
 
 impl Generate for If {
-    fn generate(&self, stream: &mut Stream) {
+    fn generate(&self, stream: &mut Stream, writer: &Ident) {
         let mut first = true;
         for clause in &self.clauses {
             let IfClause { test, consequent } = clause;
             if first {
                 first = false;
             } else {
-                stream.extend(quote!(else));
+                stream.extend(quote!(else), writer);
             }
             match test {
-                IfClauseTest::Expr(expr) => stream.extend(quote!(if #expr)),
-                IfClauseTest::Let(pattern, expr) => stream.extend(quote!(if let #pattern = #expr)),
+                IfClauseTest::Expr(expr) => stream.extend(quote!(if #expr), writer),
+                IfClauseTest::Let(pattern, expr) => {
+                    stream.extend(quote!(if let #pattern = #expr), writer)
+                }
             }
-            stream.braced(|stream| {
-                consequent.generate(stream);
-            });
+            stream.braced(|stream| consequent.generate(stream, writer), writer);
         }
         if let Some(default) = &self.default {
-            stream.extend(quote!(else));
-            stream.braced(|stream| default.generate(stream))
+            stream.extend(quote!(else), writer);
+            stream.braced(|stream| default.generate(stream, writer), writer);
         }
     }
 }
 
 impl Generate for Match {
-    fn generate(&self, stream: &mut Stream) {
-        let Match { expr, clauses } = self;
-        stream.extend(quote!(match #expr));
-        stream.braced(|stream| {
-            for clause in clauses {
-                let MatchClause {
-                    pat,
-                    guard,
-                    consequent,
-                } = clause;
-                stream.extend(quote!(#pat));
-                if let Some(guard) = guard {
-                    stream.extend(quote!(if #guard));
+    fn generate(&self, stream: &mut Stream, writer: &Ident) {
+        let Match { expr, clauses, .. } = self;
+        stream.extend(quote!(match #expr), writer);
+        stream.braced(
+            |stream| {
+                for clause in clauses {
+                    let MatchClause {
+                        pat,
+                        guard,
+                        consequent,
+                    } = clause;
+                    stream.extend(quote!(#pat), writer);
+                    if let Some(guard) = guard {
+                        stream.extend(quote!(if #guard), writer);
+                    }
+                    stream.extend(quote!(=>), writer);
+                    stream.braced(|stream| consequent.generate(stream, writer), writer)
                 }
-                stream.extend(quote!(=>));
-                stream.braced(|stream| {
-                    consequent.generate(stream);
-                })
-            }
-        });
+            },
+            writer,
+        );
     }
 }
 
 impl Generate for For {
-    fn generate(&self, stream: &mut Stream) {
+    fn generate(&self, stream: &mut Stream, writer: &Ident) {
         let For { pat, expr, body } = self;
-        stream.extend(quote!(for #pat in #expr));
-        stream.braced(|stream| body.generate(stream))
+        stream.extend(quote!(for #pat in #expr), writer);
+        stream.braced(|stream| body.generate(stream, writer), writer)
     }
 }
 
@@ -261,36 +282,39 @@ impl Stream {
         self.buffer.push_str(&string);
     }
 
-    fn expr(&mut self, expr: &syn::Expr) {
+    fn expr(&mut self, expr: &syn::Expr, writer: &Ident) {
         match expr {
             syn::Expr::Lit(syn::ExprLit {
                 lit: syn::Lit::Str(lit_str),
                 ..
             }) => self.escaped(&lit_str.value()),
-            _ => self.extend(quote!(::markup::Render::render(&(#expr), __writer)?;)),
+            _ => self.extend(
+                quote!(::markup::Render::render(&(#expr), #writer)?;),
+                writer,
+            ),
         }
     }
 
-    fn extend<Iter: IntoIterator<Item = TokenTree>>(&mut self, iter: Iter) {
+    fn extend<Iter: IntoIterator<Item = TokenTree>>(&mut self, iter: Iter, writer: &Ident) {
         if !self.buffer.is_empty() {
             let buffer = &self.buffer;
             self.stream.extend(quote! {
-                __writer.write_str(#buffer)?;
+                #writer.write_str(#buffer)?;
             });
             self.buffer.clear();
         }
         self.stream.extend(iter);
     }
 
-    fn braced(&mut self, f: impl Fn(&mut Stream)) {
+    fn braced(&mut self, f: impl Fn(&mut Stream), writer: &Ident) {
         let mut stream = Stream::default();
         f(&mut stream);
-        let stream = stream.finish();
+        let stream = stream.finish(writer);
         self.stream.extend(quote!({#stream}));
     }
 
-    fn finish(mut self) -> TokenStream {
-        self.extend(None);
+    fn finish(mut self, writer: &Ident) -> TokenStream {
+        self.extend(None, writer);
         self.stream
     }
 }
