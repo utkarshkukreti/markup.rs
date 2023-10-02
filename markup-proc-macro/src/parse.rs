@@ -3,6 +3,8 @@ use crate::ast::{
 };
 use syn::parse::{Parse, ParseStream, Result};
 use syn::punctuated::Punctuated;
+use syn::spanned::Spanned;
+use syn::{LitBool, LitStr};
 
 impl Parse for Struct {
     fn parse(input: ParseStream) -> Result<Self> {
@@ -97,7 +99,7 @@ impl Parse for Node {
             }
         } else if lookahead.peek(syn::Lit) {
             let lit: syn::Lit = input.parse()?;
-            Ok(Node::Expr(syn::parse_quote!(#lit)))
+            Ok(Node::Expr(syn::parse_quote_spanned!(lit.span() => #lit)))
         } else if lookahead.peek(syn::token::Brace) {
             Ok(Node::Expr(input.parse()?))
         } else {
@@ -118,16 +120,18 @@ impl Parse for Element {
                 let name = identifier_or_string_literal_or_expression(input)?;
                 (name, None, Vec::new())
             } else if lookahead.peek(syn::Token![#]) {
-                let _: syn::Token![#] = input.parse()?;
+                let token: syn::Token![#] = input.parse()?;
+                let div = LitStr::new("div", token.span);
                 (
-                    syn::parse_quote!("div"),
+                    syn::parse_quote_spanned!(token.span => #div),
                     Some(identifier_or_string_literal_or_expression(input)?),
                     Vec::new(),
                 )
             } else if lookahead.peek(syn::Token![.]) {
-                let _: syn::Token![.] = input.parse()?;
+                let token: syn::Token![.] = input.parse()?;
+                let div = LitStr::new("div", token.span);
                 (
-                    syn::parse_quote!("div"),
+                    syn::parse_quote_spanned!(token.span => #div),
                     None,
                     vec![identifier_or_string_literal_or_expression(input)?],
                 )
@@ -171,8 +175,11 @@ impl Parse for Element {
                 syn::braced!(children in input);
                 (children.parse::<Many<_>>()?.0, true)
             } else if lookahead.peek(syn::LitStr) {
-                let string = input.parse::<syn::LitStr>()?.value();
-                (vec![Node::Expr(syn::parse_quote!(#string))], true)
+                let string = input.parse::<syn::LitStr>()?;
+                (
+                    vec![syn::parse_quote_spanned!(string.span() => #string)],
+                    true,
+                )
             } else {
                 return Err(lookahead.error());
             }
@@ -298,7 +305,9 @@ impl Parse for Attribute {
             let _: syn::Token![=] = input.parse()?;
             input.parse()?
         } else {
-            syn::parse_quote!(true)
+            let span = name.span();
+            let lit = LitBool::new(true, span);
+            syn::parse_quote_spanned!(span => #lit)
         };
         Ok(Attribute::One(name, value))
     }
@@ -322,11 +331,12 @@ fn identifier_or_string_literal_or_expression(input: ParseStream) -> Result<syn:
     let lookahead = input.lookahead1();
     if lookahead.peek(syn::Ident::peek_any) {
         let ident = syn::Ident::parse_any(input)?;
-        let string = ident.unraw().to_string();
-        Ok(syn::parse_quote!(#string))
+        let string = LitStr::new(&ident.unraw().to_string(), ident.span());
+        Ok(syn::parse_quote_spanned!(ident.span() => #string))
     } else if lookahead.peek(syn::LitStr) {
-        let string = input.parse::<syn::LitStr>()?.value();
-        Ok(syn::parse_quote!(#string))
+        let lit_str = &input.parse::<syn::LitStr>()?;
+        let string = LitStr::new(&lit_str.value(), lit_str.span());
+        Ok(syn::parse_quote_spanned!(lit_str.span() => #string))
     } else if lookahead.peek(syn::token::Brace) {
         let inner;
         syn::braced!(inner in input);
