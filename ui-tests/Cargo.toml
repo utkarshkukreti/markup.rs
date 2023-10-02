@@ -6,4 +6,5 @@ publish = false
 
 [dependencies]
 markup = { path = "../markup" }
+rustc_version = "0.4.0"
 trybuild = "1.0.85"

@@ -1,5 +1,5 @@
 error[E0277]: the trait bound `NotRender: RenderAttributeValue` is not satisfied
- --> fail/not-render.rs:6:26
+ --> fail-1.72/not-render.rs:6:26
   |
 6 |         html["attr-user"=name] {
   |                          ^^^^ the trait `RenderAttributeValue` is not implemented for `NotRender`
@@ -17,7 +17,7 @@ error[E0277]: the trait bound `NotRender: RenderAttributeValue` is not satisfied
   = note: required for `&NotRender` to implement `RenderAttributeValue`
 
 error[E0277]: the trait bound `NotRender: Render` is not satisfied
- --> fail/not-render.rs:8:36
+ --> fail-1.72/not-render.rs:8:36
   |
 8 |                 strong { "Hello " @name "!" }
   |                                    ^^^^ the trait `Render` is not implemented for `NotRender`

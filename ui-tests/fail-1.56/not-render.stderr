@@ -1,0 +1,25 @@
+error[E0277]: the trait bound `NotRender: RenderAttributeValue` is not satisfied
+ --> fail-1.56/not-render.rs:6:26
+  |
+6 |         html["attr-user"=name] {
+  |                          ^^^^ the trait `RenderAttributeValue` is not implemented for `NotRender`
+  |
+  = note: required because of the requirements on the impl of `RenderAttributeValue` for `&NotRender`
+note: required by `is_none`
+ --> $WORKSPACE/markup/src/lib.rs
+  |
+  |     fn is_none(&self) -> bool {
+  |     ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0277]: the trait bound `NotRender: Render` is not satisfied
+ --> fail-1.56/not-render.rs:8:36
+  |
+8 |                 strong { "Hello " @name "!" }
+  |                                    ^^^^ the trait `Render` is not implemented for `NotRender`
+  |
+  = note: required because of the requirements on the impl of `Render` for `&NotRender`
+note: required by a bound in `render`
+ --> $WORKSPACE/markup/src/lib.rs
+  |
+  |     fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result;
+  |                                   ^^^^^^^^^^^^^^^^^^^^ required by this bound in `render`
