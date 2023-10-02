@@ -4,7 +4,9 @@ use crate::ast::{
 use proc_macro2::Span;
 use proc_macro2::TokenStream;
 use proc_macro2::TokenTree;
+use quote::quote_spanned;
 use quote::{quote, ToTokens};
+use syn::spanned::Spanned;
 use syn::Ident;
 
 impl ToTokens for Struct {
@@ -29,21 +31,25 @@ impl ToTokens for Struct {
             let attrs = &field.attrs;
             let name = field.ident.as_ref().unwrap();
             let ty = &field.ty;
-            struct_fields.extend(quote! {
+            struct_fields.extend(quote_spanned! {
+                name.span() =>
                 #(#attrs)*
                 pub #name: #ty,
             });
-            splat_fields.extend(quote! {
+            splat_fields.extend(quote_spanned! {
+                name.span() =>
                 #name,
             });
         }
-        tokens.extend(quote! {
+        tokens.extend(quote_spanned! {
+            name.span() =>
             #(#attributes)*
             pub struct #name #generics #where_clause {
                 #struct_fields
             }
             impl #impl_generics #name #ty_generics #where_clause {
                 #[inline]
+                #[allow(unused)]
                 pub fn to_string(&self) -> String {
                     let mut string = String::with_capacity(#size_hint);
                     // Ignoring the result because writing to a String can't fail.
@@ -141,18 +147,21 @@ impl Generate for Element {
             stream.raw("\"");
         }
 
-        fn attr(stream: &mut Stream, name: &syn::Expr, value: &syn::Expr, writer: &Ident) {
-            stream.extend(quote!(let __value = #value;), writer);
+        fn attr(stream: &mut Stream, name: &syn::Expr, expr: &syn::Expr, writer: &Ident) {
+            let span = expr.span();
+            let value = syn::Ident::new("__value", span);
+            stream.extend(quote_spanned!(span => let #value = #expr;), writer);
             stream.extend(
-                quote! {
-                    if ::markup::RenderAttributeValue::is_none(&__value) ||
-                       ::markup::RenderAttributeValue::is_false(&__value)
+                quote_spanned! {
+                    span =>
+                    if ::markup::RenderAttributeValue::is_none(&#value) ||
+                       ::markup::RenderAttributeValue::is_false(&#value)
                 },
                 writer,
             );
             stream.braced(|_| {}, writer);
             stream.extend(
-                quote!(else if ::markup::RenderAttributeValue::is_true(&__value)),
+                quote_spanned!(span => else if ::markup::RenderAttributeValue::is_true(&#value)),
                 writer,
             );
             stream.braced(
@@ -162,13 +171,13 @@ impl Generate for Element {
                 },
                 writer,
             );
-            stream.extend(quote!(else), writer);
+            stream.extend(quote_spanned!(span => else), writer);
             stream.braced(
                 |stream| {
                     stream.raw(" ");
                     stream.expr(name, writer);
                     stream.raw("=\"");
-                    stream.expr(&syn::parse_quote!(__value), writer);
+                    stream.expr(&syn::parse_quote_spanned!(span => #value), writer);
                     stream.raw("\"");
                 },
                 writer,
@@ -179,15 +188,13 @@ impl Generate for Element {
             match attribute {
                 Attribute::One(name, value) => attr(stream, name, value, writer),
                 Attribute::Many(iter) => {
-                    stream.extend(quote!(for (__name, __value) in #iter), writer);
+                    let span = iter.span();
+                    let name = syn::parse_quote_spanned!(span => __name);
+                    let value = syn::parse_quote_spanned!(span => __value);
+                    stream.extend(quote_spanned!(span => for (#name, #value) in #iter), writer);
                     stream.braced(
                         |stream| {
-                            attr(
-                                stream,
-                                &syn::parse_quote!(__name),
-                                &syn::parse_quote!(__value),
-                                writer,
-                            );
+                            attr(stream, &name, &value, writer);
                         },
                         writer,
                     );
@@ -215,13 +222,20 @@ impl Generate for If {
             if first {
                 first = false;
             } else {
-                stream.extend(quote!(else), writer);
+                let span = match test {
+                    IfClauseTest::Expr(e) => e.span(),
+                    IfClauseTest::Let(e, _) => e.span(),
+                };
+                stream.extend(quote_spanned!(span => else), writer);
             }
             match test {
-                IfClauseTest::Expr(expr) => stream.extend(quote!(if #expr), writer),
-                IfClauseTest::Let(pattern, expr) => {
-                    stream.extend(quote!(if let #pattern = #expr), writer)
+                IfClauseTest::Expr(expr) => {
+                    stream.extend(quote_spanned!(expr.span() => if #expr), writer)
                 }
+                IfClauseTest::Let(pattern, expr) => stream.extend(
+                    quote_spanned!(pattern.span() => if let #pattern = #expr),
+                    writer,
+                ),
             }
             stream.braced(|stream| consequent.generate(stream, writer), writer);
         }
@@ -235,7 +249,7 @@ impl Generate for If {
 impl Generate for Match {
     fn generate(&self, stream: &mut Stream, writer: &Ident) {
         let Match { expr, clauses, .. } = self;
-        stream.extend(quote!(match #expr), writer);
+        stream.extend(quote_spanned!(expr.span() => match #expr), writer);
         stream.braced(
             |stream| {
                 for clause in clauses {
@@ -244,11 +258,11 @@ impl Generate for Match {
                         guard,
                         consequent,
                     } = clause;
-                    stream.extend(quote!(#pat), writer);
+                    stream.extend(quote_spanned!(pat.span() => #pat), writer);
                     if let Some(guard) = guard {
-                        stream.extend(quote!(if #guard), writer);
+                        stream.extend(quote_spanned!(guard.span() => if #guard), writer);
                     }
-                    stream.extend(quote!(=>), writer);
+                    stream.extend(quote_spanned!(pat.span() => =>), writer);
                     stream.braced(|stream| consequent.generate(stream, writer), writer)
                 }
             },
@@ -260,7 +274,7 @@ impl Generate for Match {
 impl Generate for For {
     fn generate(&self, stream: &mut Stream, writer: &Ident) {
         let For { pat, expr, body } = self;
-        stream.extend(quote!(for #pat in #expr), writer);
+        stream.extend(quote_spanned!(pat.span() => for #pat in #expr), writer);
         stream.braced(|stream| body.generate(stream, writer), writer)
     }
 }
@@ -289,7 +303,7 @@ impl Stream {
                 ..
             }) => self.escaped(&lit_str.value()),
             _ => self.extend(
-                quote!(::markup::Render::render(&(#expr), #writer)?;),
+                quote_spanned!(expr.span() => ::markup::Render::render(&(#expr), #writer)?;),
                 writer,
             ),
         }
