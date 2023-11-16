@@ -29,7 +29,7 @@ checked by the Rust compiler enabling full type-safety.
 
 ```toml
 [dependencies]
-markup = "0.13.1"
+markup = "0.14.0"
 ```
 
 ## Example

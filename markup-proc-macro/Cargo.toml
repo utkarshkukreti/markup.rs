@@ -1,6 +1,6 @@
 [package]
 name = "markup-proc-macro"
-version = "0.13.1"
+version = "0.14.0"
 authors = ["Utkarsh Kukreti <utkarshkukreti@gmail.com>"]
 edition = "2021"
 description = "A blazing fast, type-safe template engine for Rust."
