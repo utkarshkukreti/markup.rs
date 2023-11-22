@@ -36,8 +36,8 @@ markup = "0.14.0"
 
 We have integration examples for the following web frameworks:
 
-1. [examples/axum/src/main.rs](Axum)
-2. [examples/rocket/src/main.rs](Rocket)
+1. [Axum](examples/axum/src/main.rs)
+2. [Rocket](examples/rocket/src/main.rs)
 
 ## Quick Example
 
