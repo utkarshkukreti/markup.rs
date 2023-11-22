@@ -55,7 +55,7 @@ fn post(form: rocket::form::Form<Contact>) -> rocket::response::content::RawHtml
             title { "Message sent! | Home" }
         },
         main: markup::new! {
-            h1 { "Message sent!"}
+            h1 { "Message sent!" }
             p {
                 "Thanks for the "
                 @form.message.chars().count()

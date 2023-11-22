@@ -53,7 +53,7 @@ async fn post(form: axum::extract::Form<Contact>) -> impl axum::response::IntoRe
             title { "Message sent! | Home" }
         },
         main: markup::new! {
-            h1 { "Message sent!"}
+            h1 { "Message sent!" }
             p {
                 "Thanks for the "
                 @form.message.chars().count()
