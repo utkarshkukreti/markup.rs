@@ -1,0 +1,24 @@
+body {
+  font-family: Lucida Grande, sans-serif;
+  font-size: 16px;
+  max-width: 600px;
+  margin: 0 auto;
+  padding: 1rem;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+input,
+textarea {
+  margin-bottom: 0.5rem;
+}
+
+input,
+textarea,
+button {
+  padding: 6px 8px;
+}
