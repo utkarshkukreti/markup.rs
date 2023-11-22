@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, macos-latest, windows-latest]
-        rust: [stable, nightly, 1.63.0]
+        rust: [stable, nightly, 1.65.0]
     steps:
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@master
