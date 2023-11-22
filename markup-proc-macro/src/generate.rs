@@ -49,6 +49,7 @@ impl ToTokens for Struct {
             }
             impl #impl_generics #name #ty_generics #where_clause {
                 #[inline]
+                #[allow(clippy::inherent_to_string_shadow_display)]
                 #[allow(unused)]
                 pub fn to_string(&self) -> String {
                     let mut string = String::with_capacity(#size_hint);
