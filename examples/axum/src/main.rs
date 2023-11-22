@@ -57,7 +57,7 @@ async fn post(form: axum::extract::Form<Contact>) -> impl axum::response::IntoRe
             p {
                 "Thanks for the "
                 @form.message.chars().count()
-                " character(s) long message, "
+                " character long message, "
                 strong { @form.name }
                 "!"
             }

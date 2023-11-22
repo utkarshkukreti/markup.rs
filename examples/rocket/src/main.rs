@@ -59,7 +59,7 @@ fn post(form: rocket::form::Form<Contact>) -> rocket::response::content::RawHtml
             p {
                 "Thanks for the "
                 @form.message.chars().count()
-                " character(s) long message, "
+                " character long message, "
                 strong { @form.name }
                 "!"
             }
