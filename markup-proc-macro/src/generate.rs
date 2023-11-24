@@ -67,7 +67,7 @@ impl ToTokens for Struct {
             }
             impl #impl_generics std::fmt::Display for #name #ty_generics #where_clause {
                 #[inline]
-                fn fmt(&self, fmt: &mut std::fmt::Formatter) -> std::fmt::Result {
+                fn fmt(&self, fmt: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
                     ::markup::Render::render(self, fmt)
                 }
             }
