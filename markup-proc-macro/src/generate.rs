@@ -150,7 +150,7 @@ impl Generate for Element {
 
         fn attr(stream: &mut Stream, name: &syn::Expr, expr: &syn::Expr, writer: &Ident) {
             let span = expr.span();
-            let value = syn::Ident::new("__value", span);
+            let value = Ident::new("__value", span);
             stream.extend(quote_spanned!(span => let #value = #expr;), writer);
             stream.extend(
                 quote_spanned! {
