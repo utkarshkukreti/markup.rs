@@ -71,10 +71,11 @@ async fn post(form: axum::extract::Form<Contact>) -> impl axum::response::IntoRe
 async fn main() {
     let app = axum::Router::new().route("/", axum::routing::get(get).post(post));
 
-    eprintln!("starting on http://0.0.0.0:3000");
+    let address = "0.0.0.0:3000";
 
-    axum::Server::bind(&([0, 0, 0, 0], 3000).into())
-        .serve(app.into_make_service())
-        .await
-        .unwrap();
+    eprintln!("starting on http://{}", address);
+
+    let listener = tokio::net::TcpListener::bind(address).await.unwrap();
+
+    axum::serve(listener, app).await.unwrap();
 }
