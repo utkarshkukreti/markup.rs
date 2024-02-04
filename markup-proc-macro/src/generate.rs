@@ -125,7 +125,6 @@ impl Generate for Element {
             classes,
             attributes,
             children,
-            close,
         } = self;
         stream.raw("<");
         stream.expr(name, writer);
@@ -203,14 +202,14 @@ impl Generate for Element {
             }
         }
 
-        stream.raw(">");
-
-        children.generate(stream, writer);
-
-        if *close {
+        if let Some(children) = children {
+            stream.raw(">");
+            children.generate(stream, writer);
             stream.raw("</");
             stream.expr(name, writer);
             stream.raw(">");
+        } else {
+            stream.raw(" />");
         }
     }
 }

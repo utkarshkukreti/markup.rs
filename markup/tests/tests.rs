@@ -55,7 +55,7 @@ t! {
             br;
         }
     },
-    A {} => "<div></div><br>",
+    A {} => "<div></div><br />",
 }
 
 t! {
@@ -100,7 +100,7 @@ t! {
         }
     },
     A {} => r#"<foo id="bar"><baz id="foo" class="quux 1 5"></baz><bar id="4" class="-1">7</bar></foo>"#,
-    B {} => r#"<foo>bar</foo><foo id="bar">baz</foo><foo class="bar" baz>quux</foo><foo class="bar" baz>quux"#,
+    B {} => r#"<foo>bar</foo><foo id="bar">baz</foo><foo class="bar" baz>quux</foo><foo class="bar" baz />quux"#,
     C {} => r#"<foo fn mod move></foo>"#,
 }
 
@@ -132,7 +132,7 @@ t! {
             br[k = 6];
         }
     },
-    A {} => r#"<div a="1" b="2" c c2 c3 c4 e-f="3" g-h="4" j="5" j2="5" j3="5" h="678truefalse" i="foo"></div><br k="6">"#,
+    A {} => r#"<div a="1" b="2" c c2 c3 c4 e-f="3" g-h="4" j="5" j2="5" j3="5" h="678truefalse" i="foo"></div><br k="6" />"#,
 }
 
 t! {
@@ -338,8 +338,8 @@ t! {
             ${name} {}
         }
     },
-    A {} => r#"<foo-bar><foo-bar></foo-bar><foo-bar baz="quux"></foo-bar>"#,
-    B { name: "foo-bar" } => r#"<foo-bar><foo-bar></foo-bar>"#,
+    A {} => r#"<foo-bar /><foo-bar></foo-bar><foo-bar baz="quux"></foo-bar>"#,
+    B { name: "foo-bar" } => r#"<foo-bar /><foo-bar></foo-bar>"#,
 }
 
 mod inner {
