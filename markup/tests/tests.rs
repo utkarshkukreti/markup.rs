@@ -358,7 +358,7 @@ t! {
     t15,
     {
         A() {
-            @for | Ok(x) | Err(x) in vec![Ok(1), Err(2), Ok(3)] {
+            @for | Ok(x) | Err(x) in [Ok(1), Err(2), Ok(3)] {
                 @x
             }
         }

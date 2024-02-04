@@ -121,7 +121,7 @@ impl<T: std::fmt::Display> Render for Raw<T> {
 impl<T: std::fmt::Display> RenderAttributeValue for Raw<T> {}
 
 #[inline]
-pub fn raw(value: impl std::fmt::Display) -> impl Render + RenderAttributeValue {
+pub fn raw(value: impl std::fmt::Display) -> impl RenderAttributeValue {
     Raw(value)
 }
 
@@ -222,8 +222,10 @@ tuple_impl! { A B C D E F G H }
 tuple_impl! { A B C D E F G H I }
 tuple_impl! { A B C D E F G H I J }
 
+pub type RenderFn<'a> = dyn Fn(&mut dyn std::fmt::Write) -> std::fmt::Result + 'a;
+
 pub struct DynRender<'a> {
-    f: Box<dyn Fn(&mut dyn std::fmt::Write) -> std::fmt::Result + 'a>,
+    f: Box<RenderFn<'a>>,
 }
 
 pub fn new<'a, F>(f: F) -> DynRender<'a>
