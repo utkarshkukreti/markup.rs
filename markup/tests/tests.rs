@@ -387,3 +387,54 @@ t! {
         data: [("foo", "bar"), ("baz", "quux")].iter().cloned().collect()
     } => r#"<div data-baz="quux" data-foo="bar"></div>"#,
 }
+
+#[test]
+fn t17() {
+    markup::define! {
+        A(use_div: bool) {
+            @if *use_div {
+                div {}
+            } else {
+                span {}
+            }
+        }
+        B(use_div: bool) {
+            @if use_div {
+                div {}
+            } else {
+                span {}
+            }
+        }
+        C<'a>(use_div: &'a bool) {
+            @if *use_div {
+                div {}
+            } else {
+                span {}
+            }
+        }
+        D<'a>(use_div: &'a bool) {
+            @if use_div {
+                div {}
+            } else {
+                span {}
+            }
+        }
+        E() {
+            @if true && true {
+                "y"
+            } else {
+                "n"
+            }
+        }
+    }
+
+    assert_eq!(A { use_div: true }.to_string(), "<div></div>");
+    assert_eq!(A { use_div: false }.to_string(), "<span></span>");
+    assert_eq!(B { use_div: true }.to_string(), "<div></div>");
+    assert_eq!(B { use_div: false }.to_string(), "<span></span>");
+    assert_eq!(C { use_div: &true }.to_string(), "<div></div>");
+    assert_eq!(C { use_div: &false }.to_string(), "<span></span>");
+    assert_eq!(D { use_div: &true }.to_string(), "<div></div>");
+    assert_eq!(D { use_div: &false }.to_string(), "<span></span>");
+    assert_eq!(E {}.to_string(), "y");
+}
