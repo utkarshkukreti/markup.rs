@@ -30,8 +30,7 @@ pub struct Element {
     pub id: Option<syn::Expr>,
     pub classes: Vec<syn::Expr>,
     pub attributes: Vec<Attribute>,
-    pub children: Vec<Node>,
-    pub close: bool,
+    pub children: Option<Vec<Node>>,
 }
 
 #[derive(Debug)]

@@ -165,21 +165,19 @@ impl Parse for Element {
             }
         };
 
-        let (children, close) = {
+        let children = {
             let lookahead = input.lookahead1();
             if lookahead.peek(syn::token::Semi) {
                 let _: syn::Token![;] = input.parse()?;
-                (Vec::new(), false)
+                None
             } else if lookahead.peek(syn::token::Brace) {
                 let children;
                 syn::braced!(children in input);
-                (children.parse::<Many<_>>()?.0, true)
+                let Many(children) = children.parse()?;
+                Some(children)
             } else if lookahead.peek(syn::LitStr) {
                 let string = input.parse::<syn::LitStr>()?;
-                (
-                    vec![syn::parse_quote_spanned!(string.span() => #string)],
-                    true,
-                )
+                Some(vec![syn::parse_quote_spanned!(string.span() => #string)])
             } else {
                 return Err(lookahead.error());
             }
@@ -191,7 +189,6 @@ impl Parse for Element {
             classes,
             attributes,
             children,
-            close,
         })
     }
 }

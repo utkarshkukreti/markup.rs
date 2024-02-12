@@ -3,23 +3,51 @@ name: Build
 on: [push, pull_request]
 
 jobs:
-  build:
-    name: ${{ matrix.os }} - ${{ matrix.rust }}
+  clippy:
     runs-on: ${{ matrix.os }}
     strategy:
       matrix:
-        os: [ubuntu-latest, macos-latest, windows-latest]
-        rust: [stable, nightly, 1.65.0]
+        os: [ubuntu-latest]
+        rust: [stable, nightly]
     steps:
       - uses: actions/checkout@v3
       - uses: dtolnay/rust-toolchain@master
         with:
           toolchain: ${{ matrix.rust }}
-          components: clippy, rustfmt
-      - run: cargo build
-      - run: cargo test
-      - run: cargo test --features itoa
-        working-directory: markup
-      - run: cargo fmt -- --check
-        if: ${{ matrix.os == 'ubuntu-latest' }}
-      - run: cargo clippy --all-targets
+          components: clippy
+      - run: cargo clippy --workspace --no-default-features
+      - run: cargo clippy --workspace --all-features
+
+  fmt:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        rust: [nightly]
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust }}
+          components: rustfmt
+      - run: cargo fmt --all -- --check
+
+  test:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+        rust: [stable, nightly, '1.65.0']
+    steps:
+      - uses: actions/checkout@v3
+      - uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: ${{ matrix.rust }}
+      - uses: taiki-e/install-action@v2
+        with:
+          tool: cargo-hack
+      - run: cargo generate-lockfile -Zminimal-versions
+        env:
+          RUSTC_BOOTSTRAP: 1
+        if: ${{ matrix.rust == '1.65.0' }}
+      - run: cargo hack test --workspace --feature-powerset --optional-deps
