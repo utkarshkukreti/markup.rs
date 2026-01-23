@@ -73,6 +73,32 @@ impl<T: RenderAttributeValue + ?Sized> RenderAttributeValue for Box<T> {
     }
 }
 
+impl<'a, T: Render + ToOwned + ?Sized> Render for std::borrow::Cow<'a, T> {
+    #[inline]
+    fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
+        T::render(self, writer)
+    }
+}
+
+impl<'a, T: RenderAttributeValue + ToOwned + ?Sized> RenderAttributeValue
+    for std::borrow::Cow<'a, T>
+{
+    #[inline]
+    fn is_none(&self) -> bool {
+        T::is_none(self)
+    }
+
+    #[inline]
+    fn is_true(&self) -> bool {
+        T::is_true(self)
+    }
+
+    #[inline]
+    fn is_false(&self) -> bool {
+        T::is_false(self)
+    }
+}
+
 impl Render for bool {
     #[inline]
     fn render(&self, writer: &mut impl std::fmt::Write) -> std::fmt::Result {
