@@ -230,9 +230,10 @@ impl Generate for If {
                 stream.extend(quote_spanned!(span => else), writer);
             }
             match test {
-                IfClauseTest::Expr(expr) => {
-                    stream.extend(quote_spanned!(expr.span() => if #expr), writer)
-                }
+                IfClauseTest::Expr(expr) => stream.extend(
+                    quote_spanned!(expr.span() => if *(&(#expr) as &::core::primitive::bool)),
+                    writer,
+                ),
                 IfClauseTest::Let(pattern, expr) => stream.extend(
                     quote_spanned!(pattern.span() => if let #pattern = #expr),
                     writer,
